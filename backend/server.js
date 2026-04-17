@@ -4,10 +4,14 @@ const cors = require("cors");
 
 const db = require("./config/db");
 
+const patientsRoutes = require("./routes/patients");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/patients", patientsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is working 🚀");
