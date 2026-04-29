@@ -1,6 +1,7 @@
-const express = require("express");
+import express from 'express';
+import db from '../config/db.js';
+
 const router = express.Router();
-const db = require("../config/db");
 
 
 router.get("/", (req, res) => {
@@ -25,4 +26,4 @@ router.post("/", (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

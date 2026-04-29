@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model admissions {
+  id            Int       @id @default(autoincrement())
+  patient_id    Int?
+  room_id       Int?
+  data_pranimit DateTime? @db.Date
+  data_lirimit  DateTime? @db.Date
+  statusi       String?   @db.VarChar(50)
+  bed_id        Int?
+  patients      patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "admissions_ibfk_1")
+  rooms         rooms?    @relation(fields: [room_id], references: [id], onUpdate: Restrict, map: "admissions_ibfk_2")
+  beds          beds?     @relation(fields: [bed_id], references: [id], onUpdate: Restrict, map: "admissions_ibfk_3")
+
+  @@index([bed_id], map: "bed_id")
+  @@index([patient_id], map: "patient_id")
+  @@index([room_id], map: "room_id")
+}
+
+model allergies {
+  id         Int       @id @default(autoincrement())
+  patient_id Int?
+  pershkrimi String?   @db.Text
+  patients   patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "allergies_ibfk_1")
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model appointments {
+  id         Int       @id @default(autoincrement())
+  patient_id Int?
+  doctor_id  Int?
+  data       DateTime? @db.Date
+  ora        DateTime? @db.Time(0)
+  statusi    String?   @db.VarChar(50)
+  shenime    String?   @db.Text
+  patients   patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "appointments_ibfk_1")
+  doctors    doctors?  @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "appointments_ibfk_2")
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id], map: "patient_id")
+}
+
+model beds {
+  id               Int          @id @default(autoincrement())
+  room_id          Int?
+  numri_shtreterit String?      @db.VarChar(10)
+  statusi          String?      @db.VarChar(50)
+  admissions       admissions[]
+  rooms            rooms?       @relation(fields: [room_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "beds_ibfk_1")
+
+  @@index([room_id], map: "room_id")
+}
+
+model departments {
+  id         Int       @id @default(autoincrement())
+  emertimi   String?   @db.VarChar(100)
+  pershkrimi String?   @db.Text
+  lokacioni  String?   @db.VarChar(100)
+  doctors    doctors[]
+  nurses     nurses[]
+  rooms      rooms[]
+}
+
+model doctors {
+  id                    Int                     @id @default(autoincrement())
+  user_id               Int?
+  emri                  String?                 @db.VarChar(50)
+  mbiemri               String?                 @db.VarChar(50)
+  specializimi          String?                 @db.VarChar(100)
+  department_id         Int?
+  telefoni              String?                 @db.VarChar(20)
+  appointments          appointments[]
+  users                 users?                  @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "doctors_ibfk_1")
+  departments           departments?            @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "doctors_ibfk_2")
+  doctorspecializations doctorspecializations[]
+  medicalrecords        medicalrecords[]
+  schedules             schedules[]
+
+  @@index([department_id], map: "department_id")
+  @@index([user_id], map: "user_id")
+}
+
+model doctorspecializations {
+  id                Int              @id @default(autoincrement())
+  doctor_id         Int?
+  specialization_id Int?
+  doctors           doctors?         @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "doctorspecializations_ibfk_1")
+  specializations   specializations? @relation(fields: [specialization_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "doctorspecializations_ibfk_2")
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([specialization_id], map: "specialization_id")
+}
+
+model invoices {
+  id         Int        @id @default(autoincrement())
+  patient_id Int?
+  shuma      Decimal?   @db.Decimal(10, 2)
+  data       DateTime?  @db.Date
+  statusi    String?    @db.VarChar(50)
+  pershkrimi String?    @db.Text
+  patients   patients?  @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "invoices_ibfk_1")
+  payments   payments[]
+
+  @@index([patient_id], map: "patient_id")
+}
+
+model medicalrecords {
+  id            Int             @id @default(autoincrement())
+  patient_id    Int?
+  doctor_id     Int?
+  diagnoza      String?         @db.Text
+  trajtimi      String?         @db.Text
+  recetat       String?         @db.Text
+  data          DateTime?       @db.Date
+  patients      patients?       @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "medicalrecords_ibfk_1")
+  doctors       doctors?        @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "medicalrecords_ibfk_2")
+  prescriptions prescriptions[]
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id], map: "patient_id")
+}
+
+model nurses {
+  id            Int          @id @default(autoincrement())
+  emri          String?      @db.VarChar(50)
+  mbiemri       String?      @db.VarChar(50)
+  department_id Int?
+  turni         String?      @db.VarChar(50)
+  departments   departments? @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "nurses_ibfk_1")
+
+  @@index([department_id], map: "department_id")
+}
+
+model patients {
+  id             Int              @id @default(autoincrement())
+  emri           String?          @db.VarChar(50)
+  mbiemri        String?          @db.VarChar(50)
+  data_lindjes   DateTime?        @db.Date
+  gjinia         String?          @db.VarChar(10)
+  telefoni       String?          @db.VarChar(20)
+  adresa         String?          @db.VarChar(100)
+  grupa_gjakut   String?          @db.VarChar(5)
+  admissions     admissions[]
+  allergies      allergies[]
+  appointments   appointments[]
+  invoices       invoices[]
+  medicalrecords medicalrecords[]
+  vitals         vitals[]
+}
+
+model payments {
+  id         Int       @id @default(autoincrement())
+  invoice_id Int?
+  shuma      Decimal?  @db.Decimal(10, 2)
+  metoda     String?   @db.VarChar(50)
+  data       DateTime? @db.Date
+  invoices   invoices? @relation(fields: [invoice_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "payments_ibfk_1")
+
+  @@index([invoice_id], map: "invoice_id")
+}
+
+model prescriptions {
+  id                Int             @id @default(autoincrement())
+  medical_record_id Int?
+  bari              String?         @db.VarChar(100)
+  dozimi            String?         @db.VarChar(50)
+  kohezgjatja       String?         @db.VarChar(50)
+  udhezime          String?         @db.Text
+  medicalrecords    medicalrecords? @relation(fields: [medical_record_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "prescriptions_ibfk_1")
+
+  @@index([medical_record_id], map: "medical_record_id")
+}
+
+model roles {
+  id        Int         @id @default(autoincrement())
+  emri      String?     @db.VarChar(50)
+  userroles userroles[]
+}
+
+model rooms {
+  id            Int          @id @default(autoincrement())
+  numri_dhomes  String?      @db.VarChar(10)
+  department_id Int?
+  lloji         String?      @db.VarChar(50)
+  statusi       String?      @db.VarChar(50)
+  kapaciteti    Int?
+  admissions    admissions[]
+  beds          beds[]
+  departments   departments? @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "rooms_ibfk_1")
+
+  @@index([department_id], map: "department_id")
+}
+
+model roomtypes {
+  id    Int      @id @default(autoincrement())
+  emri  String?  @db.VarChar(50)
+  cmimi Decimal? @db.Decimal(10, 2)
+}
+
+model schedules {
+  id           Int       @id @default(autoincrement())
+  doctor_id    Int?
+  dita         String?   @db.VarChar(20)
+  ora_fillimit DateTime? @db.Time(0)
+  ora_mbarimit DateTime? @db.Time(0)
+  doctors      doctors?  @relation(fields: [doctor_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "schedules_ibfk_1")
+
+  @@index([doctor_id], map: "doctor_id")
+}
+
+model specializations {
+  id                    Int                     @id @default(autoincrement())
+  emri                  String?                 @db.VarChar(100)
+  doctorspecializations doctorspecializations[]
+}
+
+model userroles {
+  id      Int    @id @default(autoincrement())
+  user_id Int?
+  role_id Int?
+  users   users? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "userroles_ibfk_1")
+  roles   roles? @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "userroles_ibfk_2")
+
+  @@index([role_id], map: "role_id")
+  @@index([user_id], map: "user_id")
+}
+
+model users {
+  id        Int         @id @default(autoincrement())
+  username  String?     @unique(map: "username") @db.VarChar(50)
+  password  String?     @db.VarChar(255)
+  role      String?     @db.VarChar(50)
+  doctors   doctors[]
+  userroles userroles[]
+}
+
+model vitals {
+  id          Int       @id @default(autoincrement())
+  patient_id  Int?
+  temperatura Decimal?  @db.Decimal(4, 1)
+  tensioni    String?   @db.VarChar(20)
+  data        DateTime? @db.DateTime(0)
+  patients    patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "vitals_ibfk_1")
+
+  @@index([patient_id], map: "patient_id")
+}
