@@ -1,3 +1,4 @@
+console.log("Medical route loaded ✅");
 import express from 'express';
 import db from '../config/db.js';
 

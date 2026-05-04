@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/patients", patientsRoutes);
-app.use("/medical-records", medicalRoutes);
+app.use("/api/medical-records", medicalRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is working 🚀");
