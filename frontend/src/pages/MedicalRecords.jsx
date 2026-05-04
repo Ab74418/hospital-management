@@ -19,7 +19,12 @@ function MedicalRecords() {
     };
 
     useEffect(() => {
-        fetchRecords();
+        const loadData = async () => {
+            const res = await axios.get(API);
+            setRecords(res.data);
+        };
+
+        loadData();
     }, []);
 
     const handleChange = (e) => {
