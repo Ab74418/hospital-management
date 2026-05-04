@@ -1,11 +1,13 @@
+import "dotenv/config";
 console.log("SERVER FILE RUNNING");
+
 import express from 'express';
 import cors from 'cors';
 
 import db from './config/db.js';
 import medicalRoutes from './routes/medicalRecords.js';
-
 import patientsRoutes from './routes/patients.js';
+import appointmentsRoutes from "./routes/appointments.js";
 
 const app = express();
 
@@ -14,11 +16,12 @@ app.use(express.json());
 
 app.use("/patients", patientsRoutes);
 app.use("/medical-records", medicalRoutes);
+app.use("/appointments", appointmentsRoutes); 
 
 app.get("/", (req, res) => {
-  res.send("API is working 🚀");
+    res.send("API is working 🚀");
 });
 
 app.listen(5000, () => {
-  console.log("Server running on port 5000");
+    console.log("Server running on port 5000");
 });
