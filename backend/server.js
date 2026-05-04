@@ -11,6 +11,7 @@ import appointmentsRoutes from "./routes/appointments.js";
 import roomsRoutes from "./routes/rooms.js";
 import admissionsRoutes from "./routes/admissions.js";
 import invoicesRoutes from "./routes/invoices.js";
+import prescriptionRoutes from "./routes/prescriptions.js";
 
 const app = express();
 
@@ -19,13 +20,13 @@ app.use(express.json());
 
 app.use("/patients", patientsRoutes);
 app.use("/api/medical-records", medicalRoutes);
-app.use("/appointments", appointmentsRoutes);q
+app.use("/appointments", appointmentsRoutes);
 app.use("/api/rooms", roomsRoutes);
 app.use("/api/admissions", admissionsRoutes);
 app.use("/api/invoices", invoicesRoutes);
 
 app.get("/", (req, res) => {
-    res.send("API is working ");
+    res.send("API is working 🚀");
 });
 
 app.listen(5000, () => {
