@@ -1,10 +1,11 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 import Patients from "./pages/Patients";
-import MedicalRecords from "./pages/MedicalRecords";
-import Appointments from "./pages/Appointments";
 import PatientDetails from "./pages/PatientDetails";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
     return (
@@ -13,16 +14,29 @@ function App() {
                 <h1>Hospital Management</h1>
 
                 <Routes>
-                    <Route path="/" element={<Patients />} />
-                    <Route path="/patients" element={<Patients />} />
-                    <Route path="/patients/:id" element={<PatientDetails />} />
+                    <Route path="/" element={<Navigate to="/login" />} />
+
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+
+                    <Route
+                        path="/patients"
+                        element={
+                            <ProtectedRoute>
+                                <Patients />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/patients/:id"
+                        element={
+                            <ProtectedRoute>
+                                <PatientDetails />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
-
-                <h2>Medical Records</h2>
-                <MedicalRecords />
-
-                <h2>Appointments</h2>
-                <Appointments />
             </div>
         </Router>
     );

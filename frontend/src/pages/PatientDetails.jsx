@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function PatientDetails() {
     const { id } = useParams();
+    const navigate = useNavigate(); 
+
     const [data, setData] = useState([]);
 
     useEffect(() => {
         axios
             .get(`http://localhost:5000/api/patients/${id}/details`)
             .then((res) => {
-                console.log(res.data); 
+                console.log(res.data);
                 setData(res.data);
             })
             .catch((err) => console.log(err));
@@ -18,6 +20,18 @@ function PatientDetails() {
 
     return (
         <div style={{ padding: "20px" }}>
+
+            <button
+                onClick={() => navigate("/patients")}
+                style={{
+                    marginBottom: "15px",
+                    padding: "8px 15px",
+                    cursor: "pointer"
+                }}
+            >
+                ⬅ Back
+            </button>
+
             <h2>Patient Details</h2>
 
             {data.length === 0 ? (

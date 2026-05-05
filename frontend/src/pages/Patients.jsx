@@ -100,6 +100,13 @@ function Patients() {
         <div style={{ padding: "20px" }}>
             <h2>Patients</h2>
 
+            <button onClick={() => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }}>
+                Logout
+            </button>
+
             <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
                 <input name="emri" value={form.emri} onChange={handleChange} placeholder="Emri" required />
                 <input name="mbiemri" value={form.mbiemri} onChange={handleChange} placeholder="Mbiemri" required />
