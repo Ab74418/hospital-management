@@ -6,7 +6,12 @@ const prisma = new PrismaClient();
 
 router.get("/", async (req, res) => {
     try {
-        const data = await prisma.prescriptions.findMany();
+        const data = await prisma.prescriptions.findMany({
+            include: {
+                medicalrecords: true,
+            },
+        });
+
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -28,6 +33,28 @@ router.post("/", async (req, res) => {
         });
 
         res.json(prescription);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+router.put("/:id", async (req, res) => {
+    try {
+        const { medical_record_id, bari, dozimi, kohezgjatja, udhezime } = req.body;
+
+        const updated = await prisma.prescriptions.update({
+            where: { id: Number(req.params.id) },
+            data: {
+                medical_record_id: Number(medical_record_id),
+                bari,
+                dozimi,
+                kohezgjatja,
+                udhezime,
+            },
+        });
+
+        res.json(updated);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

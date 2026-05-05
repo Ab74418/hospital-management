@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "reacimport { useEffect, useState } from "react";
 import axios from "axios";
 
 const API = "http://localhost:5000/api/medical-records";

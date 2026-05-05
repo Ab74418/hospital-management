@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const API = "http://localhost:5000/patients";
+const API = "http://localhost:5000/api/patients";
 
 function Patients() {
     const [patients, setPatients] = useState([]);
     const [editingId, setEditingId] = useState(null);
+    const navigate = useNavigate();
 
     const [form, setForm] = useState({
         emri: "",
@@ -21,12 +23,16 @@ function Patients() {
         const res = await axios.get(API);
         setPatients(res.data);
     };
-
     useEffect(() => {
-        const load = async () => {
-            await fetchPatients();
+        const loadPatients = async () => {
+            try {
+                await fetchPatients();
+            } catch (err) {
+                console.log(err);
+            }
         };
-        load();
+
+        loadPatients();
     }, []);
     const handleChange = (e) => {
         setForm({
@@ -136,7 +142,11 @@ function Patients() {
                         </tr>
                     ) : (
                         patients.map((p) => (
-                            <tr key={p.id}>
+                            <tr
+                                key={p.id}
+                                onClick={() => navigate(`/patients/${p.id}`)}
+                                style={{ cursor: "pointer" }}
+                            >
                                 <td>{p.id}</td>
                                 <td>{p.emri}</td>
                                 <td>{p.mbiemri}</td>
@@ -146,8 +156,8 @@ function Patients() {
                                 <td>{p.adresa}</td>
                                 <td>{p.grupa_gjakut}</td>
                                 <td>
-                                    <button onClick={() => handleEdit(p)}>Edit</button>
-                                    <button onClick={() => handleDelete(p.id)}>Delete</button>
+                                    <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }}>Edit</button>
+                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}>Delete</button>
                                 </td>
                             </tr>
                         ))

@@ -6,6 +6,7 @@ const API = "http://localhost:5000/api/prescriptions";
 function Prescriptions() {
     const [prescriptions, setPrescriptions] = useState([]);
     const [records, setRecords] = useState([]);
+    const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
         medical_record_id: "",
@@ -27,8 +28,14 @@ function Prescriptions() {
 
     useEffect(() => {
         const loadData = async () => {
-            await fetchPrescriptions();
-            await fetchRecords();
+            try {
+                await Promise.all([
+                    fetchPrescriptions(),
+                    fetchRecords()
+                ]);
+            } catch (err) {
+                console.log(err);
+            }
         };
 
         loadData();
@@ -43,7 +50,12 @@ function Prescriptions() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        await axios.post(API, form);
+        if (editingId) {
+            await axios.put(`${API}/${editingId}`, form);
+            setEditingId(null);
+        } else {
+            await axios.post(API, form);
+        }
 
         fetchPrescriptions();
 
@@ -61,12 +73,23 @@ function Prescriptions() {
         fetchPrescriptions();
     };
 
+    const handleEdit = (p) => {
+        setForm({
+            medical_record_id: p.medical_record_id,
+            bari: p.bari,
+            dozimi: p.dozimi,
+            kohezgjatja: p.kohezgjatja,
+            udhezime: p.udhezime,
+        });
+
+        setEditingId(p.id);
+    };
+
     return (
         <div style={{ padding: "20px" }}>
             <h2>Prescriptions</h2>
 
             <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-
                 <select
                     name="medical_record_id"
                     value={form.medical_record_id}
@@ -81,47 +104,24 @@ function Prescriptions() {
                     ))}
                 </select>
 
-                <input
-                    name="bari"
-                    value={form.bari}
-                    onChange={handleChange}
-                    placeholder="Ilaçi"
-                    required
-                />
+                <input name="bari" value={form.bari} onChange={handleChange} placeholder="Ilaçi" required />
+                <input name="dozimi" value={form.dozimi} onChange={handleChange} placeholder="Dozimi" />
+                <input name="kohezgjatja" value={form.kohezgjatja} onChange={handleChange} placeholder="Kohëzgjatja" />
+                <input name="udhezime" value={form.udhezime} onChange={handleChange} placeholder="Udhëzime" />
 
-                <input
-                    name="dozimi"
-                    value={form.dozimi}
-                    onChange={handleChange}
-                    placeholder="Dozimi"
-                />
-
-                <input
-                    name="kohezgjatja"
-                    value={form.kohezgjatja}
-                    onChange={handleChange}
-                    placeholder="Kohëzgjatja"
-                />
-
-                <input
-                    name="udhezime"
-                    value={form.udhezime}
-                    onChange={handleChange}
-                    placeholder="Udhëzime"
-                />
-
-                <button type="submit">Add Prescription</button>
+                <button type="submit">
+                    {editingId ? "Update" : "Add Prescription"}
+                </button>
             </form>
 
             <table border="1" cellPadding="8">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Medical Record</th>
+                        <th>Diagnoza</th>
                         <th>Bari</th>
                         <th>Dozimi</th>
                         <th>Kohëzgjatja</th>
-                        <th>Udhëzime</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -130,16 +130,15 @@ function Prescriptions() {
                     {prescriptions.map((p) => (
                         <tr key={p.id}>
                             <td>{p.id}</td>
-                            <td>
-                                {
-                                    records.find(r => r.id === p.medical_record_id)?.diagnoza
-                                }
-                            </td>
+
+                            <td>{p.medicalrecords?.diagnoza}</td>
+
                             <td>{p.bari}</td>
                             <td>{p.dozimi}</td>
                             <td>{p.kohezgjatja}</td>
-                            <td>{p.udhezime}</td>
+
                             <td>
+                                <button onClick={() => handleEdit(p)}>Edit</button>
                                 <button onClick={() => handleDelete(p.id)}>Delete</button>
                             </td>
                         </tr>

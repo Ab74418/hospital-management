@@ -3,15 +3,15 @@ import db from '../config/db.js';
 
 const router = express.Router();
 
-
 router.get("/", (req, res) => {
     db.query("SELECT * FROM patients", (err, results) => {
-        if (err) return res.status(500).json(err);
+        if (err) {
+            console.log("GET /patients ERROR:", err); 
+            return res.status(500).json(err);
+        }
         res.json(results);
     });
 });
-
-
 router.get("/:id/details", (req, res) => {
     const id = req.params.id;
 
@@ -25,49 +25,33 @@ router.get("/:id/details", (req, res) => {
         p.telefoni,
         p.adresa,
         p.grupa_gjakut,
-        m.id AS record_id,
-        m.diagnoza,
-        m.trajtimi,
-        m.data,
-        m.doctor_id
+
+        mr.id AS record_id,
+        mr.diagnoza,
+        mr.trajtimi,
+        mr.data,
+        mr.doctor_id,
+
+        pr.id AS prescription_id,
+        pr.bari,
+        pr.dozimi,
+        pr.kohezgjatja,
+        pr.udhezime
+
     FROM patients p
-    LEFT JOIN medicalrecords m 
-    ON p.id = m.patient_id
+    LEFT JOIN medicalrecords mr 
+        ON p.id = mr.patient_id
+    LEFT JOIN prescriptions pr 
+        ON mr.id = pr.medical_record_id
     WHERE p.id = ?
     `;
 
     db.query(sql, [id], (err, results) => {
-        if (err) return res.status(500).json(err);
-
-        if (results.length === 0) {
-            return res.status(404).json({ message: "Patient not found" });
+        if (err) {
+            console.log("GET /patients/:id/details ERROR:", err); 
+            return res.status(500).json(err);
         }
-
-        const patient = {
-            id: results[0].patient_id,
-            emri: results[0].emri,
-            mbiemri: results[0].mbiemri,
-            data_lindjes: results[0].data_lindjes,
-            gjinia: results[0].gjinia,
-            telefoni: results[0].telefoni,
-            adresa: results[0].adresa,
-            grupa_gjakut: results[0].grupa_gjakut,
-            medical_records: []
-        };
-
-        results.forEach(row => {
-            if (row.record_id) {
-                patient.medical_records.push({
-                    id: row.record_id,
-                    diagnoza: row.diagnoza,
-                    trajtimi: row.trajtimi,
-                    data: row.data,
-                    doctor_id: row.doctor_id
-                });
-            }
-        });
-
-        res.json(patient);
+        res.json(results);
     });
 });
 
@@ -75,7 +59,10 @@ router.get("/:id", (req, res) => {
     const id = req.params.id;
 
     db.query("SELECT * FROM patients WHERE id = ?", [id], (err, result) => {
-        if (err) return res.status(500).json(err);
+        if (err) {
+            console.log("GET /patients/:id ERROR:", err);
+            return res.status(500).json(err);
+        }
 
         if (result.length === 0) {
             return res.status(404).json({ message: "Patient not found" });
@@ -98,11 +85,14 @@ router.post("/", (req, res) => {
     `;
 
     db.query(sql, [emri, mbiemri, data_lindjes, gjinia, telefoni, adresa, grupa_gjakut], (err, result) => {
-        if (err) return res.status(500).json(err);
-        res.json({ message: "Patient added successfully ✅", id: result.insertId });
+        if (err) {
+            console.log("POST /patients ERROR:", err);
+            return res.status(500).json(err);
+        }
+
+        res.json({ message: "Patient added successfully", id: result.insertId });
     });
 });
-
 
 router.put("/:id", (req, res) => {
     const id = req.params.id;
@@ -115,21 +105,26 @@ router.put("/:id", (req, res) => {
     `;
 
     db.query(sql, [emri, mbiemri, data_lindjes, gjinia, telefoni, adresa, grupa_gjakut, id], (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ message: "Patient updated ✅" });
+        if (err) {
+            console.log("PUT /patients ERROR:", err);
+            return res.status(500).json(err);
+        }
+
+        res.json({ message: "Patient updated" });
     });
 });
-
-
 
 router.delete("/:id", (req, res) => {
     const id = req.params.id;
 
     db.query("DELETE FROM patients WHERE id = ?", [id], (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ message: "Patient deleted ✅" });
+        if (err) {
+            console.log("DELETE /patients ERROR:", err);
+            return res.status(500).json(err);
+        }
+
+        res.json({ message: "Patient deleted" });
     });
 });
-
 
 export default router;
