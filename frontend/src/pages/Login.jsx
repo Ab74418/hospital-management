@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
     const [username, setUsername] = useState("");
@@ -29,7 +29,11 @@ function Login() {
 
         } catch (err) {
             console.log(err);
-            alert("Login failed!");
+
+            alert(
+                err.response?.data?.message ||
+                "Login failed!"
+            );
         }
     };
 
@@ -38,12 +42,14 @@ function Login() {
             <h2>Login</h2>
 
             <form onSubmit={handleSubmit}>
+
                 <input
                     placeholder="Username"
                     value={username}
                     onChange={(e) =>
                         setUsername(e.target.value)
                     }
+                    required
                 />
 
                 <input
@@ -53,12 +59,22 @@ function Login() {
                     onChange={(e) =>
                         setPassword(e.target.value)
                     }
+                    required
                 />
 
                 <button type="submit">
                     Login
                 </button>
+
             </form>
+
+            <p>
+                Don't have an account?{" "}
+
+                <Link to="/register">
+                    Register
+                </Link>
+            </p>
         </div>
     );
 }
