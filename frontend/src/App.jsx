@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Navigate,
+} from "react-router-dom";
 
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/PatientDetails";
@@ -14,10 +19,21 @@ function App() {
                 <h1>Hospital Management</h1>
 
                 <Routes>
-                    <Route path="/" element={<Navigate to="/login" />} />
 
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route
+                        path="/"
+                        element={<Navigate to="/login" />}
+                    />
+
+                    <Route
+                        path="/login"
+                        element={<Login />}
+                    />
+
+                    <Route
+                        path="/register"
+                        element={<Register />}
+                    />
 
                     <Route
                         path="/patients"
@@ -36,6 +52,7 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+
                 </Routes>
             </div>
         </Router>

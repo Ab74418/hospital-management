@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 function PatientDetails() {
     const { id } = useParams();
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const [data, setData] = useState([]);
 

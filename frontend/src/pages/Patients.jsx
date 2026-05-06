@@ -7,6 +7,7 @@ const API = "http://localhost:5000/api/patients";
 function Patients() {
     const [patients, setPatients] = useState([]);
     const [editingId, setEditingId] = useState(null);
+
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
@@ -23,6 +24,7 @@ function Patients() {
         const res = await axios.get(API);
         setPatients(res.data);
     };
+
     useEffect(() => {
         const loadPatients = async () => {
             try {
@@ -34,6 +36,7 @@ function Patients() {
 
         loadPatients();
     }, []);
+
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -85,6 +88,7 @@ function Patients() {
 
     const handleCancel = () => {
         setEditingId(null);
+
         setForm({
             emri: "",
             mbiemri: "",
@@ -100,21 +104,68 @@ function Patients() {
         <div style={{ padding: "20px" }}>
             <h2>Patients</h2>
 
-            <button onClick={() => {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-            }}>
+            <button
+                onClick={() => {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                }}
+            >
                 Logout
             </button>
 
             <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-                <input name="emri" value={form.emri} onChange={handleChange} placeholder="Emri" required />
-                <input name="mbiemri" value={form.mbiemri} onChange={handleChange} placeholder="Mbiemri" required />
-                <input type="date" name="data_lindjes" value={form.data_lindjes} onChange={handleChange} required />
-                <input name="gjinia" value={form.gjinia} onChange={handleChange} placeholder="Gjinia" />
-                <input name="telefoni" value={form.telefoni} onChange={handleChange} placeholder="Telefoni" />
-                <input name="adresa" value={form.adresa} onChange={handleChange} placeholder="Adresa" />
-                <input name="grupa_gjakut" value={form.grupa_gjakut} onChange={handleChange} placeholder="Grupi i gjakut" />
+
+                <input
+                    name="emri"
+                    value={form.emri}
+                    onChange={handleChange}
+                    placeholder="Emri"
+                    required
+                />
+
+                <input
+                    name="mbiemri"
+                    value={form.mbiemri}
+                    onChange={handleChange}
+                    placeholder="Mbiemri"
+                    required
+                />
+
+                <input
+                    type="date"
+                    name="data_lindjes"
+                    value={form.data_lindjes}
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    name="gjinia"
+                    value={form.gjinia}
+                    onChange={handleChange}
+                    placeholder="Gjinia"
+                />
+
+                <input
+                    name="telefoni"
+                    value={form.telefoni}
+                    onChange={handleChange}
+                    placeholder="Telefoni"
+                />
+
+                <input
+                    name="adresa"
+                    value={form.adresa}
+                    onChange={handleChange}
+                    placeholder="Adresa"
+                />
+
+                <input
+                    name="grupa_gjakut"
+                    value={form.grupa_gjakut}
+                    onChange={handleChange}
+                    placeholder="Grupi i gjakut"
+                />
 
                 <button type="submit">
                     {editingId ? "Update Patient" : "Add Patient"}
@@ -162,9 +213,25 @@ function Patients() {
                                 <td>{p.telefoni}</td>
                                 <td>{p.adresa}</td>
                                 <td>{p.grupa_gjakut}</td>
+
                                 <td>
-                                    <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }}>Edit</button>
-                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }}>Delete</button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleEdit(p);
+                                        }}
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete(p.id);
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))

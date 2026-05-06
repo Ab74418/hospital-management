@@ -1,5 +1,5 @@
 import "dotenv/config";
-console.log("SERVER FILE RUNNING");
+console.log("Serveri po punon");
 
 import express from "express";
 import cors from "cors";

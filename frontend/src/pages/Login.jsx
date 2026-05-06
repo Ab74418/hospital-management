@@ -12,12 +12,19 @@ function Login() {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/login", {
-                username,
-                password,
-            });
+            const res = await axios.post(
+                "http://localhost:5000/api/auth/login",
+                {
+                    username,
+                    password,
+                }
+            );
 
-            localStorage.setItem("token", res.data.token);
+            localStorage.setItem(
+                "token",
+                res.data.token
+            );
+
             navigate("/patients");
 
         } catch (err) {
@@ -27,24 +34,30 @@ function Login() {
     };
 
     return (
-        <div style={{ padding: "20px" }}>
+        <div>
             <h2>Login</h2>
 
             <form onSubmit={handleSubmit}>
                 <input
                     placeholder="Username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) =>
+                        setUsername(e.target.value)
+                    }
                 />
 
                 <input
                     type="password"
                     placeholder="Password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) =>
+                        setPassword(e.target.value)
+                    }
                 />
 
-                <button type="submit">Login</button>
+                <button type="submit">
+                    Login
+                </button>
             </form>
         </div>
     );

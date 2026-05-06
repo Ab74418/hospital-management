@@ -11,17 +11,26 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        await axios.post("http://localhost:5000/api/auth/register", {
-            username,
-            password,
-        });
+        try {
+            await axios.post(
+                "http://localhost:5000/api/auth/register",
+                {
+                    username,
+                    password,
+                }
+            );
 
-        alert("Registered successfully!");
-        navigate("/login");
+            alert("Registered successfully!");
+            navigate("/login");
+
+        } catch (err) {
+            console.log(err);
+            alert("Register failed!");
+        }
     };
 
     return (
-        <div style={{ padding: "20px" }}>
+        <div>
             <h2>Register</h2>
 
             <form onSubmit={handleSubmit}>
@@ -38,7 +47,9 @@ function Register() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button type="submit">Register</button>
+                <button type="submit">
+                    Register
+                </button>
             </form>
         </div>
     );
