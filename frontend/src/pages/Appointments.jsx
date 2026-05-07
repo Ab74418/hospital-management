@@ -13,6 +13,7 @@ export default function Appointments() {
     });
 
     const [editId, setEditId] = useState(null);
+    const [selectedDoctor, setSelectedDoctor] = useState("");
 
     useEffect(() => {
         fetchAppointments();
@@ -38,8 +39,8 @@ export default function Appointments() {
         setForm({
             patient_id: app.patient_id,
             doctor_id: app.doctor_id,
-            data: app.data.slice(0, 10),
-            ora: app.ora.slice(11, 16),
+            data: app.data?.slice(0, 10),
+            ora: app.ora?.slice(11, 16),
             statusi: app.statusi,
             shenime: app.shenime || "",
         });
@@ -50,8 +51,8 @@ export default function Appointments() {
 
         const overlap = appointments.find((a) =>
             Number(a.doctor_id) === Number(form.doctor_id) &&
-            a.data.slice(0, 10) === form.data &&
-            a.ora.slice(11, 16) === form.ora &&
+            a.data?.slice(0, 10) === form.data &&
+            a.ora?.slice(11, 16) === form.ora &&
             a.id !== editId
         );
 
@@ -95,6 +96,22 @@ export default function Appointments() {
         setEditId(null);
         fetchAppointments();
     };
+
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("A je e sigurt që don me fshi këtë appointment?");
+
+        if (!confirmDelete) return;
+
+        await fetch(`http://localhost:5000/appointments/${id}`, {
+            method: "DELETE",
+        });
+
+        fetchAppointments();
+    };
+
+    const filteredAppointments = selectedDoctor
+        ? appointments.filter((app) => Number(app.doctor_id) === Number(selectedDoctor))
+        : appointments;
 
     return (
         <div style={{ padding: "20px" }}>
@@ -153,13 +170,30 @@ export default function Appointments() {
                 />
 
                 <button type="submit">
-                    {editId ? "Update" : "Add"}
+                    {editId ? "Update Appointment" : "Add Appointment"}
                 </button>
             </form>
 
             <hr />
 
-            {appointments.map((app) => (
+            <h3>Schedule View për doktor</h3>
+
+            <input
+                type="number"
+                placeholder="Shfaq terminet për Doctor ID"
+                value={selectedDoctor}
+                onChange={(e) => setSelectedDoctor(e.target.value)}
+                style={{ marginBottom: "15px" }}
+            />
+
+            <button
+                onClick={() => setSelectedDoctor("")}
+                style={{ marginLeft: "10px" }}
+            >
+                Shfaq të gjitha
+            </button>
+
+            {filteredAppointments.map((app) => (
                 <div
                     key={app.id}
                     style={{
@@ -170,6 +204,7 @@ export default function Appointments() {
                 >
                     <p><b>Pacienti:</b> {app.patients?.emri} {app.patients?.mbiemri}</p>
                     <p><b>Doktori:</b> {app.doctors?.emri} {app.doctors?.mbiemri}</p>
+                    <p><b>Doctor ID:</b> {app.doctor_id}</p>
                     <p><b>Data:</b> {app.data?.slice(0, 10)}</p>
                     <p><b>Ora:</b> {app.ora?.slice(11, 16)}</p>
                     <p><b>Statusi:</b> {app.statusi}</p>
@@ -179,7 +214,10 @@ export default function Appointments() {
                         Edit
                     </button>
 
-                    <button onClick={() => handleDelete(app.id)}>
+                    <button
+                        onClick={() => handleDelete(app.id)}
+                        style={{ marginLeft: "10px", color: "red" }}
+                    >
                         Delete
                     </button>
                 </div>
