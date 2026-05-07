@@ -11,6 +11,7 @@ import PatientDetails from "./pages/PatientDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Allergies from "./pages/Allergies";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route path="/allergies" element={<Allergies />} />
 
                 </Routes>
             </div>

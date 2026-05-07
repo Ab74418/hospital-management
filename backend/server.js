@@ -30,7 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/allergies", allergiesRoutes);
 
 app.get("/", (req, res) => {
-    res.send("API is working 🚀");
+    res.send("API is working ");
 });
 
 app.listen(5000, () => {
