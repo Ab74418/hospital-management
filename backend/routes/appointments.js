@@ -109,6 +109,24 @@ router.put("/:id", async (req, res) => {
             },
         });
 
+        router.delete("/:id", async (req, res) => {
+            try {
+                const { id } = req.params;
+
+                await prisma.appointments.delete({
+                    where: { id: Number(id) }
+                });
+
+                res.json({ message: "Appointment u fshi!" });
+
+            } catch (error) {
+                res.status(500).json({
+                    message: "Gabim gjatë fshirjes",
+                    error: error.message
+                });
+            }
+        });
+
         res.json(updatedAppointment);
     } catch (error) {
         console.log("PUT APPOINTMENT ERROR:", error);
