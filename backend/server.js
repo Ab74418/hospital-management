@@ -13,7 +13,7 @@ import admissionsRoutes from "./routes/admissions.js";
 import invoicesRoutes from "./routes/invoices.js";
 import prescriptionRoutes from "./routes/prescriptions.js";
 import authRoutes from "./routes/auth.js";
-
+import allergiesRoutes from "./routes/allergies.js";
 const app = express();
 
 app.use(cors());
@@ -27,6 +27,7 @@ app.use("/api/admissions", admissionsRoutes);
 app.use("/api/invoices", invoicesRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/allergies", allergiesRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working 🚀");
