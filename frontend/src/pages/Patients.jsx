@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API = "http://localhost:5000/api/patients";
-
 function Patients() {
-    const [patients, setPatients] = useState([]);
-    const [editingId, setEditingId] = useState(null);
 
-    const navigate = useNavigate();
+    const [patients, setPatients] = useState([]);
 
     const [form, setForm] = useState({
         emri: "",
@@ -20,24 +16,39 @@ function Patients() {
         grupa_gjakut: "",
     });
 
+    const [editingId, setEditingId] = useState(null);
+
+    const navigate = useNavigate();
+
     const fetchPatients = async () => {
-        const res = await axios.get(API);
-        setPatients(res.data);
+
+        try {
+
+            const res = await axios.get(
+                "http://localhost:5000/api/patients"
+            );
+
+            setPatients(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
     };
 
     useEffect(() => {
-        const loadPatients = async () => {
-            try {
-                await fetchPatients();
-            } catch (err) {
-                console.log(err);
-            }
+
+        const loadData = async () => {
+
+            await fetchPatients();
         };
 
-        loadPatients();
+        loadData();
+
     }, []);
 
     const handleChange = (e) => {
+
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -45,89 +56,126 @@ function Patients() {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        if (editingId) {
-            await axios.put(`${API}/${editingId}`, form);
-            setEditingId(null);
-        } else {
-            await axios.post(API, form);
+        try {
+
+            if (editingId) {
+
+                await axios.put(
+                    `http://localhost:5000/api/patients/${editingId}`,
+                    form
+                );
+
+                setEditingId(null);
+
+            } else {
+
+                await axios.post(
+                    "http://localhost:5000/api/patients",
+                    form
+                );
+            }
+
+            fetchPatients();
+
+            setForm({
+                emri: "",
+                mbiemri: "",
+                data_lindjes: "",
+                gjinia: "",
+                telefoni: "",
+                adresa: "",
+                grupa_gjakut: "",
+            });
+
+        } catch (err) {
+
+            console.log(err);
         }
-
-        fetchPatients();
-
-        setForm({
-            emri: "",
-            mbiemri: "",
-            data_lindjes: "",
-            gjinia: "",
-            telefoni: "",
-            adresa: "",
-            grupa_gjakut: "",
-        });
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`${API}/${id}`);
-        fetchPatients();
+
+        try {
+
+            await axios.delete(
+                `http://localhost:5000/api/patients/${id}`
+            );
+
+            fetchPatients();
+
+        } catch (err) {
+
+            console.log(err);
+        }
     };
 
-    const handleEdit = (p) => {
-        setForm({
-            emri: p.emri,
-            mbiemri: p.mbiemri,
-            data_lindjes: p.data_lindjes?.split("T")[0],
-            gjinia: p.gjinia,
-            telefoni: p.telefoni,
-            adresa: p.adresa,
-            grupa_gjakut: p.grupa_gjakut,
-        });
+    const handleEdit = (patient) => {
 
-        setEditingId(p.id);
+        setEditingId(patient.id);
+
+        setForm({
+            emri: patient.emri,
+            mbiemri: patient.mbiemri,
+            data_lindjes:
+                patient.data_lindjes?.split("T")[0],
+            gjinia: patient.gjinia,
+            telefoni: patient.telefoni,
+            adresa: patient.adresa,
+            grupa_gjakut: patient.grupa_gjakut,
+        });
     };
 
-    const handleCancel = () => {
-        setEditingId(null);
+    const handleLogout = () => {
 
-        setForm({
-            emri: "",
-            mbiemri: "",
-            data_lindjes: "",
-            gjinia: "",
-            telefoni: "",
-            adresa: "",
-            grupa_gjakut: "",
-        });
+        localStorage.removeItem("token");
+
+        navigate("/login");
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h2>Patients</h2>
 
-            <button
-                onClick={() => {
-                    localStorage.removeItem("token");
-                    window.location.href = "/login";
+        <div style={{ padding: "20px" }}>
+
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "20px",
                 }}
             >
-                Logout
-            </button>
 
-            <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+                <h1>Patients</h1>
+
+                <button onClick={handleLogout}>
+                    Logout
+                </button>
+
+            </div>
+
+            <form
+                className="patient-form"
+                onSubmit={handleSubmit}
+            >
 
                 <input
+                    type="text"
                     name="emri"
+                    placeholder="Emri"
                     value={form.emri}
                     onChange={handleChange}
-                    placeholder="Emri"
                     required
                 />
 
                 <input
+                    type="text"
                     name="mbiemri"
+                    placeholder="Mbiemri"
                     value={form.mbiemri}
                     onChange={handleChange}
-                    placeholder="Mbiemri"
                     required
                 />
 
@@ -140,104 +188,137 @@ function Patients() {
                 />
 
                 <input
+                    type="text"
                     name="gjinia"
+                    placeholder="Gjinia"
                     value={form.gjinia}
                     onChange={handleChange}
-                    placeholder="Gjinia"
+                    required
                 />
 
                 <input
+                    type="text"
                     name="telefoni"
+                    placeholder="Telefoni"
                     value={form.telefoni}
                     onChange={handleChange}
-                    placeholder="Telefoni"
+                    required
                 />
 
                 <input
+                    type="text"
                     name="adresa"
+                    placeholder="Adresa"
                     value={form.adresa}
                     onChange={handleChange}
-                    placeholder="Adresa"
+                    required
                 />
 
                 <input
+                    type="text"
                     name="grupa_gjakut"
+                    placeholder="Grupa e gjakut"
                     value={form.grupa_gjakut}
                     onChange={handleChange}
-                    placeholder="Grupi i gjakut"
+                    required
                 />
 
                 <button type="submit">
-                    {editingId ? "Update Patient" : "Add Patient"}
+
+                    {editingId
+                        ? "Update Patient"
+                        : "Add Patient"}
+
                 </button>
 
-                {editingId && (
-                    <button type="button" onClick={handleCancel}>
-                        Cancel
-                    </button>
-                )}
             </form>
 
-            <table border="1" cellPadding="8">
+            <table>
+
                 <thead>
+
                     <tr>
                         <th>ID</th>
                         <th>Emri</th>
                         <th>Mbiemri</th>
-                        <th>Data Lindjes</th>
-                        <th>Gjinia</th>
-                        <th>Telefoni</th>
-                        <th>Adresa</th>
-                        <th>Grupi</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
-                    {patients.length === 0 ? (
-                        <tr>
-                            <td colSpan="9">No patients</td>
+
+                    {patients.map((p) => (
+
+                        <tr key={p.id}>
+
+                            <td>{p.id}</td>
+
+                            <td>{p.emri}</td>
+
+                            <td>{p.mbiemri}</td>
+
+                            <td>
+
+                                <button
+                                    onClick={() =>
+                                        navigate(
+                                            `/patients/${p.id}`
+                                        )
+                                    }
+                                >
+                                    Details
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        navigate(
+                                            "/medical-records"
+                                        )
+                                    }
+                                >
+                                    Add Diagnosis
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        navigate("/allergies")
+                                    }
+                                >
+                                    Allergies
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        navigate("/prescriptions")
+                                    }
+                                >
+                                    Prescriptions
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleEdit(p)
+                                    }
+                                >
+                                    Update
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDelete(p.id)
+                                    }
+                                >
+                                    Delete
+                                </button>
+
+                            </td>
+
                         </tr>
-                    ) : (
-                        patients.map((p) => (
-                            <tr
-                                key={p.id}
-                                onClick={() => navigate(`/patients/${p.id}`)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <td>{p.id}</td>
-                                <td>{p.emri}</td>
-                                <td>{p.mbiemri}</td>
-                                <td>{new Date(p.data_lindjes).toLocaleDateString()}</td>
-                                <td>{p.gjinia}</td>
-                                <td>{p.telefoni}</td>
-                                <td>{p.adresa}</td>
-                                <td>{p.grupa_gjakut}</td>
+                    ))}
 
-                                <td>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleEdit(p);
-                                        }}
-                                    >
-                                        Edit
-                                    </button>
-
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleDelete(p.id);
-                                        }}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    )}
                 </tbody>
+
             </table>
+
         </div>
     );
 }

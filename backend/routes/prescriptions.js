@@ -8,7 +8,11 @@ router.get("/", async (req, res) => {
     try {
         const data = await prisma.prescriptions.findMany({
             include: {
-                medicalrecords: true,
+                medicalrecords: {
+                    include: {
+                        patients:true,
+                    }
+                },
             },
         });
 

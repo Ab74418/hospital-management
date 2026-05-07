@@ -1,12 +1,11 @@
 import "dotenv/config";
-console.log("Serveri po punon");
-
 import express from "express";
 import cors from "cors";
 
 import db from "./config/db.js";
-import medicalRoutes from "./routes/medicalRecords.js";
+
 import patientsRoutes from "./routes/patients.js";
+import medicalRoutes from "./routes/medicalRecords.js";
 import appointmentsRoutes from "./routes/appointments.js";
 import roomsRoutes from "./routes/rooms.js";
 import admissionsRoutes from "./routes/admissions.js";
@@ -14,6 +13,7 @@ import invoicesRoutes from "./routes/invoices.js";
 import prescriptionRoutes from "./routes/prescriptions.js";
 import authRoutes from "./routes/auth.js";
 import allergiesRoutes from "./routes/allergies.js";
+
 const app = express();
 
 app.use(cors());
@@ -27,12 +27,14 @@ app.use("/api/admissions", admissionsRoutes);
 app.use("/api/invoices", invoicesRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/allergies", allergiesRoutes);
+app.use("/api/allergies", allergiesRoutes);
 
 app.get("/", (req, res) => {
-    res.send("API is working ");
+    res.send("API is working");
 });
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+const PORT = 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
