@@ -178,6 +178,10 @@ export default function Appointments() {
                     <button onClick={() => handleEdit(app)}>
                         Edit
                     </button>
+
+                    <button onClick={() => handleDelete(app.id)}>
+                        Delete
+                    </button>
                 </div>
             ))}
         </div>
