@@ -34,5 +34,61 @@ router.post("/", async (req, res) => {
         res.status(500).json({ message: "Gabim gjatë krijimit të dhomës", error: error.message });
     }
 });
+router.get("/free", async (req, res) => {
+    try {
+        const rooms = await prisma.rooms.findMany({
+            where: {
+                statusi: "free"
+            }
+        });
+
+        res.json(rooms);
+    } catch (error) {
+        res.status(500).json({
+            message: "Gabim gjatë marrjes së dhomave të lira",
+            error: error.message
+        });
+    }
+});
+
+router.get("/occupied", async (req, res) => {
+    try {
+        const rooms = await prisma.rooms.findMany({
+            where: {
+                statusi: "occupied"
+            }
+        });
+
+        res.json(rooms);
+    } catch (error) {
+        res.status(500).json({
+            message: "Gabim gjatë marrjes së dhomave të zëna",
+            error: error.message
+        });
+    }
+});
+
+router.put("/:id/status", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { statusi } = req.body;
+
+        const room = await prisma.rooms.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                statusi
+            }
+        });
+
+        res.json(room);
+    } catch (error) {
+        res.status(500).json({
+            message: "Gabim gjatë ndryshimit të statusit të dhomës",
+            error: error.message
+        });
+    }
+});
 
 export default router;

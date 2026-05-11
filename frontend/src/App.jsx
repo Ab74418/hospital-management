@@ -1,6 +1,7 @@
 import "./App.css";
 import Appointments from "./pages/Appointments";
 import MedicalRecords from "./pages/MedicalRecords";
+import Rooms from "./pages/Rooms";
 
 function App() {
     return (
@@ -12,6 +13,8 @@ function App() {
 
             <h2>Appointments</h2>
             <Appointments />
+            <h2>Rooms</h2>
+            <Rooms />
         </div>
     );
 }

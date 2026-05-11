@@ -1,4 +1,5 @@
 import "dotenv/config";
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 console.log("SERVER FILE RUNNING");
 
 import express from 'express';
@@ -10,7 +11,8 @@ import patientsRoutes from './routes/patients.js';
 import appointmentsRoutes from "./routes/appointments.js";
 import roomsRoutes from "./routes/rooms.js";
 import admissionsRoutes from "./routes/admissions.js";
-import invoicesRoutes from "./routes/invoices.js";
+import invoicesRoutes from "./routes/invoice.js";
+import paymentsRoutes from "./routes/payments.js";
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.use("/appointments", appointmentsRoutes);
 app.use("/api/rooms", roomsRoutes);
 app.use("/api/admissions", admissionsRoutes);
 app.use("/api/invoices", invoicesRoutes);
+app.use("/api/payments", paymentsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working 🚀");
