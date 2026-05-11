@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const API =
+    "http://localhost:5000/api/medical-records";
 
 function MedicalRecords() {
+
+    const navigate = useNavigate();
+
     const [records, setRecords] = useState([]);
+
+    const [patients, setPatients] = useState([]);
+
+    const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
         patient_id: "",
@@ -13,24 +24,51 @@ function MedicalRecords() {
     });
 
     const fetchRecords = async () => {
-        const res = await axios.get("http://localhost:5000/api/medical-records");
-        setRecords(res.data);
+
+        try {
+
+            const res = await axios.get(API);
+
+            setRecords(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const fetchPatients = async () => {
+
+        try {
+
+            const res = await axios.get(
+                "http://localhost:5000/api/patients"
+            );
+
+            setPatients(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
     };
 
     useEffect(() => {
+
         const loadData = async () => {
-            try {
-                const res = await axios.get("http://localhost:5000/api/medical-records");
-                setRecords(res.data);
-            } catch (err) {
-                console.log(err);
-            }
+
+            await Promise.all([
+                fetchRecords(),
+                fetchPatients(),
+            ]);
         };
 
         loadData();
+
     }, []);
 
     const handleChange = (e) => {
+
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -38,55 +76,145 @@ function MedicalRecords() {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        await axios.post(
-            "http://localhost:5000/api/medical-records",
-            form
-        );
+        try {
 
-        fetchRecords();
+            if (editingId) {
+
+                await axios.put(
+                    `${API}/${editingId}`,
+                    form
+                );
+
+                setEditingId(null);
+
+            } else {
+
+                await axios.post(API, form);
+            }
+
+            fetchRecords();
+
+            setForm({
+                patient_id: "",
+                doctor_id: "",
+                diagnoza: "",
+                trajtimi: "",
+                data: "",
+            });
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const handleDelete = async (id) => {
+
+        try {
+
+            await axios.delete(
+                `${API}/${id}`
+            );
+
+            fetchRecords();
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const handleEdit = (r) => {
 
         setForm({
-            patient_id: "",
-            doctor_id: "",
-            diagnoza: "",
-            trajtimi: "",
-            data: "",
+            patient_id: r.patient_id,
+            doctor_id: r.doctor_id,
+            diagnoza: r.diagnoza,
+            trajtimi: r.trajtimi,
+            data: r.data?.split("T")[0],
         });
+
+        setEditingId(r.id);
     };
 
     return (
+
         <div style={{ padding: "20px" }}>
-            <h2>Medical Records</h2>
+
+            <button
+                onClick={() =>
+                    navigate("/patients")
+                }
+            >
+                Back
+            </button>
+
+            <h1>Medical Records</h1>
 
             <form onSubmit={handleSubmit}>
-                <input
+
+                <select
                     name="patient_id"
                     value={form.patient_id}
                     onChange={handleChange}
-                    placeholder="Patient ID"
-                />
+                    required
+                >
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {patients &&
+                        patients.length > 0 ? (
+
+                        patients.map((p) => (
+
+                            <option
+                                key={p.id}
+                                value={p.id}
+                            >
+                                {p.emri}{" "}
+                                {p.mbiemri}
+                            </option>
+                        ))
+
+                    ) : (
+
+                        <option disabled>
+                            No patients found
+                        </option>
+                    )}
+
+                </select>
 
                 <input
+                    type="text"
                     name="doctor_id"
+                    placeholder="Doctor ID"
                     value={form.doctor_id}
                     onChange={handleChange}
-                    placeholder="Doctor ID"
+                    required
                 />
 
                 <input
+                    type="text"
                     name="diagnoza"
+                    placeholder="Diagnoza"
                     value={form.diagnoza}
                     onChange={handleChange}
-                    placeholder="Diagnoza"
+                    required
                 />
 
                 <input
+                    type="text"
                     name="trajtimi"
+                    placeholder="Trajtimi"
                     value={form.trajtimi}
                     onChange={handleChange}
-                    placeholder="Trajtimi"
+                    required
                 />
 
                 <input
@@ -94,13 +222,31 @@ function MedicalRecords() {
                     name="data"
                     value={form.data}
                     onChange={handleChange}
+                    required
                 />
 
-                <button type="submit">Add</button>
+                <button type="submit">
+
+                    {editingId
+                        ? "Update"
+                        : "Add"}
+
+                </button>
+
             </form>
 
-            <table border="1">
+            <table
+                border="1"
+                cellPadding="10"
+                cellSpacing="0"
+                width="100%"
+                style={{
+                    marginTop: "30px",
+                }}
+            >
+
                 <thead>
+
                     <tr>
                         <th>ID</th>
                         <th>Patient</th>
@@ -108,22 +254,84 @@ function MedicalRecords() {
                         <th>Diagnoza</th>
                         <th>Trajtimi</th>
                         <th>Data</th>
+                        <th>Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
+
                     {records.map((r) => (
+
                         <tr key={r.id}>
+
                             <td>{r.id}</td>
-                            <td>{r.patient_id}</td>
-                            <td>{r.doctor_id}</td>
-                            <td>{r.diagnoza}</td>
-                            <td>{r.trajtimi}</td>
-                            <td>{r.data}</td>
+
+                            <td>
+
+                                {
+                                    patients.find(
+                                        (p) =>
+                                            p.id ===
+                                            r.patient_id
+                                    )?.emri
+                                }{" "}
+
+                                {
+                                    patients.find(
+                                        (p) =>
+                                            p.id ===
+                                            r.patient_id
+                                    )?.mbiemri
+                                }
+
+                            </td>
+
+                            <td>
+                                {r.doctor_id}
+                            </td>
+
+                            <td>
+                                {r.diagnoza}
+                            </td>
+
+                            <td>
+                                {r.trajtimi}
+                            </td>
+
+                            <td>
+                                {new Date(
+                                    r.data
+                                ).toLocaleDateString()}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    onClick={() =>
+                                        handleEdit(r)
+                                    }
+                                >
+                                    Update
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDelete(r.id)
+                                    }
+                                >
+                                    Delete
+                                </button>
+
+                            </td>
+
                         </tr>
                     ))}
+
                 </tbody>
+
             </table>
+
         </div>
     );
 }
