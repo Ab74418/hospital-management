@@ -1,0 +1,310 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const API = "http://localhost:5000/api/vitals";
+
+function Vitals() {
+
+    const navigate = useNavigate();
+
+    const [vitals, setVitals] = useState([]);
+
+    const [patients, setPatients] = useState([]);
+
+    const [editingId, setEditingId] = useState(null);
+
+    const [form, setForm] = useState({
+        patient_id: "",
+        temperatura: "",
+        tensioni: "",
+        data: "",
+    });
+
+    const fetchVitals = async () => {
+
+        try {
+
+            const res = await axios.get(API);
+
+            setVitals(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const fetchPatients = async () => {
+
+        try {
+
+            const res = await axios.get(
+                "http://localhost:5000/api/patients"
+            );
+
+            setPatients(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+
+        const loadData = async () => {
+
+            await Promise.all([
+                fetchVitals(),
+                fetchPatients(),
+            ]);
+        };
+
+        loadData();
+
+    }, []);
+
+    const handleChange = (e) => {
+
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        try {
+
+            if (editingId) {
+
+                await axios.put(
+                    `${API}/${editingId}`,
+                    form
+                );
+
+                setEditingId(null);
+
+            } else {
+
+                await axios.post(API, form);
+            }
+
+            fetchVitals();
+
+            setForm({
+                patient_id: "",
+                temperatura: "",
+                tensioni: "",
+                data: "",
+            });
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const handleDelete = async (id) => {
+
+        try {
+
+            await axios.delete(
+                `${API}/${id}`
+            );
+
+            fetchVitals();
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
+    const handleEdit = (v) => {
+
+        setForm({
+            patient_id: v.patient_id,
+            temperatura: v.temperatura,
+            tensioni: v.tensioni,
+            data: v.data?.split("T")[0],
+        });
+
+        setEditingId(v.id);
+    };
+
+    return (
+
+        <div style={{ padding: "20px" }}>
+
+            <button
+                onClick={() =>
+                    navigate("/patients")
+                }
+            >
+                Back
+            </button>
+
+            <h1>Vitals</h1>
+
+            <form onSubmit={handleSubmit}>
+
+                <select
+                    name="patient_id"
+                    value={form.patient_id}
+                    onChange={handleChange}
+                    required
+                >
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {patients.map((p) => (
+
+                        <option
+                            key={p.id}
+                            value={p.id}
+                        >
+                            {p.emri} {p.mbiemri}
+                        </option>
+                    ))}
+
+                </select>
+
+                <input
+                    type="number"
+                    step="0.1"
+                    name="temperatura"
+                    placeholder="Temperatura"
+                    value={form.temperatura}
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    type="text"
+                    name="tensioni"
+                    placeholder="Tensioni"
+                    value={form.tensioni}
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    type="date"
+                    name="data"
+                    value={form.data}
+                    onChange={handleChange}
+                    required
+                />
+
+                <button type="submit">
+
+                    {editingId
+                        ? "Update"
+                        : "Add Vital"}
+
+                </button>
+
+            </form>
+
+            <table
+                border="1"
+                cellPadding="10"
+                style={{
+                    marginTop: "30px",
+                    width: "100%",
+                }}
+            >
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Temperatura</th>
+                        <th>Tensioni</th>
+                        <th>Data</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {vitals.map((v) => (
+
+                        <tr key={v.id}>
+
+                            <td>{v.id}</td>
+
+                            <td>
+
+                                {
+                                    patients.find(
+                                        (p) =>
+                                            p.id ===
+                                            v.patient_id
+                                    )?.emri
+                                }{" "}
+
+                                {
+                                    patients.find(
+                                        (p) =>
+                                            p.id ===
+                                            v.patient_id
+                                    )?.mbiemri
+                                }
+
+                            </td>
+
+                            <td>
+                                {v.temperatura} °C
+                            </td>
+
+                            <td>
+                                {v.tensioni}
+                            </td>
+
+                            <td>
+                                {new Date(
+                                    v.data
+                                ).toLocaleDateString()}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    onClick={() =>
+                                        handleEdit(v)
+                                    }
+                                >
+                                    Update
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDelete(v.id)
+                                    }
+                                >
+                                    Delete
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    ))}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    );
+}
+
+export default Vitals;

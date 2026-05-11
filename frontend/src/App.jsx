@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Allergies from "./pages/Allergies";
 import Prescriptions from "./pages/Prescriptions";
+import Vitals from "./pages/Vitals";
 
 function App() {
 
@@ -77,6 +78,12 @@ function App() {
                     <ProtectedRoute>
                         <Prescriptions />
                     </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/vitals"
+                element={
+                    <Vitals />
                 }
             />
 
