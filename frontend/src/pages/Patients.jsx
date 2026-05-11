@@ -288,6 +288,13 @@ function Patients() {
                                 </button>
                                 <button
                                     onClick={() =>
+                                        navigate("/vitals")
+                                    }
+                                >
+                                    Vitals
+                                </button>
+                                <button
+                                    onClick={() =>
                                         navigate("/prescriptions")
                                     }
                                 >
