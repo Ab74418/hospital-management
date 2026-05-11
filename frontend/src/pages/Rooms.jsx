@@ -9,12 +9,23 @@ export default function Rooms() {
             .then(data => setRooms(data));
     }, []);
 
+    const freeRooms = rooms.filter(
+        r => r.statusi === "free"
+    ).length;
+
+    const occupiedRooms = rooms.filter(
+        r => r.statusi === "occupied"
+    ).length;
+
     return (
         <div>
             <h2>Rooms</h2>
+            <h3>Free Rooms: {freeRooms}</h3>
+
+            <h3>Occupied Rooms: {occupiedRooms}</h3>
             {rooms.map(r => (
                 <div key={r.id}>
-                    {r.room_number} - {r.type} - {r.status}
+                    {r.numri_dhomes} - {r.lloji} - {r.statusi}
                 </div>
             ))}
         </div>

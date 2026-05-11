@@ -15,80 +15,103 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Allergies from "./pages/Allergies";
 import Prescriptions from "./pages/Prescriptions";
 import Vitals from "./pages/Vitals";
+import Rooms from "./pages/Rooms";
+import Payments from "./pages/Payments";
 
 function App() {
-
     return (
+        <div>
+            <Routes>
 
-        <Routes>
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" />}
+                />
 
-            <Route
-                path="/"
-                element={<Navigate to="/login" />}
-            />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-            <Route
-                path="/login"
-                element={<Login />}
-            />
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
-            <Route
-                path="/register"
-                element={<Register />}
-            />
+                <Route
+                    path="/patients"
+                    element={
+                        <ProtectedRoute>
+                            <Patients />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/patients"
-                element={
-                    <ProtectedRoute>
-                        <Patients />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/patients/:id"
+                    element={
+                        <ProtectedRoute>
+                            <PatientDetails />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/patients/:id"
-                element={
-                    <ProtectedRoute>
-                        <PatientDetails />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/medical-records"
+                    element={
+                        <ProtectedRoute>
+                            <MedicalRecords />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/medical-records"
-                element={
-                    <ProtectedRoute>
-                        <MedicalRecords />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/allergies"
+                    element={
+                        <ProtectedRoute>
+                            <Allergies />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/allergies"
-                element={
-                    <ProtectedRoute>
-                        <Allergies />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/prescriptions"
-                element={
-                    <ProtectedRoute>
-                        <Prescriptions />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/vitals"
-                element={
-                    <Vitals />
-                }
-            />
+                <Route
+                    path="/prescriptions"
+                    element={
+                        <ProtectedRoute>
+                            <Prescriptions />
+                        </ProtectedRoute>
+                    }
+                />
 
-        </Routes>
+                <Route
+                    path="/vitals"
+                    element={
+                        <ProtectedRoute>
+                            <Vitals />
+                        </ProtectedRoute>
+                    }
+                />
 
+                <Route
+                    path="/rooms"
+                    element={
+                        <ProtectedRoute>
+                            <Rooms />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/payments"
+                    element={
+                        <ProtectedRoute>
+                            <Payments />
+                        </ProtectedRoute>
+                    }
+                />
+
+            </Routes>
+        </div>
     );
 }
 
