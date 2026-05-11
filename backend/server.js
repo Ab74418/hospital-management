@@ -13,6 +13,7 @@ import invoicesRoutes from "./routes/invoices.js";
 import prescriptionRoutes from "./routes/prescriptions.js";
 import authRoutes from "./routes/auth.js";
 import allergiesRoutes from "./routes/allergies.js";
+import vitalsRoutes from "./routes/vitals.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/invoices", invoicesRoutes);
 app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/allergies", allergiesRoutes);
+app.use("/api/vitals", vitalsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working");
