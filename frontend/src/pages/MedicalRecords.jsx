@@ -15,6 +15,8 @@ function MedicalRecords() {
 
     const [editingId, setEditingId] = useState(null);
 
+    const [data, setData] = useState("");
+
     const [form, setForm] = useState({
         patient_id: "",
         doctor_id: "",
@@ -216,13 +218,10 @@ function MedicalRecords() {
                     onChange={handleChange}
                     required
                 />
-
                 <input
                     type="date"
-                    name="data"
-                    value={form.data}
-                    onChange={handleChange}
-                    required
+                    value={data}
+                    onChange={(e) => setData(e.target.value)}
                 />
 
                 <button type="submit">
