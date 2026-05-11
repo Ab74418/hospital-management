@@ -20,10 +20,18 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/", (req, res) => {
 
-    const sql =
-        "SELECT * FROM allergies WHERE id = ?";
+    const sql = `
+        SELECT
+            allergies.id,
+            allergies.patient_id,
+            patients.emri AS patient_name,
+            allergies.pershkrimi
+        FROM allergies
+        JOIN patients
+        ON allergies.patient_id = patients.id
+    `;
 
     db.query(
         sql,

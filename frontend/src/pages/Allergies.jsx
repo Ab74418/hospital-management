@@ -33,15 +33,14 @@ function Allergies() {
 
     useEffect(() => {
 
-        const getData = async () => {
+        const getAllergies = async () => {
 
             await fetchAllergies();
         };
 
-        getData();
+        getAllergies();
 
     }, []);
-
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -187,7 +186,7 @@ function Allergies() {
 
                     <tr>
                         <th>ID</th>
-                        <th>Patient ID</th>
+                        <th>Patient</th>
                         <th>Description</th>
                         <th>Actions</th>
                     </tr>
@@ -202,13 +201,9 @@ function Allergies() {
 
                             <td>{allergy.id}</td>
 
-                            <td>
-                                {allergy.patient_id}
-                            </td>
+                            <td>{allergy.patient_name}</td>
 
-                            <td>
-                                {allergy.pershkrimi}
-                            </td>
+                            <td>{allergy.pershkrimi}</td>
 
                             <td>
 
@@ -231,6 +226,7 @@ function Allergies() {
                             </td>
 
                         </tr>
+
                     ))}
 
                 </tbody>
