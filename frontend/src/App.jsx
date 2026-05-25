@@ -17,6 +17,8 @@ import Prescriptions from "./pages/Prescriptions";
 import Vitals from "./pages/Vitals";
 import Rooms from "./pages/Rooms";
 import Payments from "./pages/Payments";
+import Doctors from "./pages/Doctors";
+import Appointments from "./pages/Appointments";
 
 function App() {
     return (
@@ -106,6 +108,24 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Payments />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/doctors"
+                    element={
+                        <ProtectedRoute>
+                            <Doctors />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/appointments"
+                    element={
+                        <ProtectedRoute>
+                            <Appointments />
                         </ProtectedRoute>
                     }
                 />
