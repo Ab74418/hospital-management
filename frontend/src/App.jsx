@@ -20,6 +20,8 @@ import Payments from "./pages/Payments";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
 import Departments from "./pages/Departments";
+import RoomTypes from "./pages/RoomTypes";
+import Nurses from "./pages/Nurses";
 
 function App() {
     return (
@@ -31,6 +33,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
 
                 <Route path="/register" element={<Register />} />
+
+                <Route path="/roomtypes" element={<RoomTypes />} />
+
+                <Route path="/nurses" element={<Nurses />} />
 
                 <Route
                     path="/patients"
