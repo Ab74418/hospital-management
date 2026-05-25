@@ -17,6 +17,7 @@ import prescriptionRoutes from "./routes/prescriptions.js";
 import authRoutes from "./routes/auth.js";
 import allergiesRoutes from "./routes/allergies.js";
 import vitalsRoutes from "./routes/vitals.js";
+import doctorsRoutes from "./routes/doctors.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/api/prescriptions", prescriptionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/allergies", allergiesRoutes);
 app.use("/api/vitals", vitalsRoutes);
+app.use("/api/doctors", doctorsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working");
