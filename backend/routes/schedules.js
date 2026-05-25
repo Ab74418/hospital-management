@@ -28,28 +28,6 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/doctor/:doctor_id", async (req, res) => {
-    try {
-        const { doctor_id } = req.params;
-
-        const schedules = await prisma.schedules.findMany({
-            where: {
-                doctor_id: Number(doctor_id),
-            },
-            include: {
-                doctors: true,
-            },
-        });
-
-        res.json(schedules);
-    } catch (error) {
-        res.status(500).json({
-            message: "Gabim",
-            error: error.message,
-        });
-    }
-});
-
 router.post("/", async (req, res) => {
     try {
         const { doctor_id, dita, ora_fillimit, ora_mbarimit } = req.body;
@@ -57,16 +35,16 @@ router.post("/", async (req, res) => {
         const schedule = await prisma.schedules.create({
             data: {
                 doctor_id: Number(doctor_id),
-                dita,
-                ora_fillimit: new Date(`1970-01-01T${ora_fillimit}`),
-                ora_mbarimit: new Date(`1970-01-01T${ora_mbarimit}`),
+                dita: dita,
+                ora_fillimit: ora_fillimit,
+                ora_mbarimit: ora_mbarimit,
             },
         });
 
         res.json(schedule);
     } catch (error) {
         res.status(500).json({
-            message: "Gabim gjatë shtimit",
+            message: "Gabim gjatë shtimit të schedule",
             error: error.message,
         });
     }
@@ -77,22 +55,22 @@ router.put("/:id", async (req, res) => {
         const { id } = req.params;
         const { doctor_id, dita, ora_fillimit, ora_mbarimit } = req.body;
 
-        const updated = await prisma.schedules.update({
+        const updatedSchedule = await prisma.schedules.update({
             where: {
                 id: Number(id),
             },
             data: {
                 doctor_id: Number(doctor_id),
-                dita,
-                ora_fillimit: new Date(`1970-01-01T${ora_fillimit}`),
-                ora_mbarimit: new Date(`1970-01-01T${ora_mbarimit}`),
+                dita: dita,
+                ora_fillimit: ora_fillimit,
+                ora_mbarimit: ora_mbarimit,
             },
         });
 
-        res.json(updated);
+        res.json(updatedSchedule);
     } catch (error) {
         res.status(500).json({
-            message: "Gabim gjatë editimit",
+            message: "Gabim gjatë editimit të schedule",
             error: error.message,
         });
     }
@@ -111,7 +89,7 @@ router.delete("/:id", async (req, res) => {
         res.json({ message: "Schedule u fshi!" });
     } catch (error) {
         res.status(500).json({
-            message: "Gabim gjatë fshirjes",
+            message: "Gabim gjatë fshirjes së schedule",
             error: error.message,
         });
     }
