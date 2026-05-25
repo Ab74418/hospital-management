@@ -3,51 +3,161 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-
 router.get("/", (req, res) => {
-    db.query("SELECT * FROM medicalrecords", (err, results) => {
-        if (err) return res.status(500).json(err);
+
+    const sql = `
+        SELECT
+            medicalrecords.id,
+            medicalrecords.patient_id,
+            medicalrecords.doctor_id,
+            medicalrecords.diagnoza,
+            medicalrecords.trajtimi,
+            medicalrecords.data,
+
+            patients.emri AS patient_name,
+
+            doctors.emri AS doctor_name,
+            doctors.specializimi
+
+        FROM medicalrecords
+
+        JOIN patients
+        ON medicalrecords.patient_id = patients.id
+
+        JOIN doctors
+        ON medicalrecords.doctor_id = doctors.id
+    `;
+
+    db.query(sql, (err, results) => {
+
+        if (err) {
+
+            return res
+                .status(500)
+                .json(err);
+        }
+
         res.json(results);
     });
 });
 
 router.post("/", (req, res) => {
-    const { patient_id, doctor_id, diagnoza, trajtimi, data } = req.body;
+
+    const {
+        patient_id,
+        doctor_id,
+        diagnoza,
+        trajtimi,
+        data
+    } = req.body;
 
     const sql = `
         INSERT INTO medicalrecords 
-        (patient_id, doctor_id, diagnoza, trajtimi, data)
+        (
+            patient_id,
+            doctor_id,
+            diagnoza,
+            trajtimi,
+            data
+        )
         VALUES (?, ?, ?, ?, ?)
     `;
 
-    db.query(sql, [patient_id, doctor_id, diagnoza, trajtimi, data], (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ message: "Medical record added" });
-    });
+    db.query(
+        sql,
+        [
+            patient_id,
+            doctor_id,
+            diagnoza,
+            trajtimi,
+            data
+        ],
+        (err) => {
+
+            if (err) {
+
+                return res
+                    .status(500)
+                    .json(err);
+            }
+
+            res.json({
+                message:
+                    "Medical record added",
+            });
+        }
+    );
 });
 
-router.delete("/:id", (req, res) => {
-    const sql = "DELETE FROM medicalrecords WHERE id = ?";
-    db.query(sql, [req.params.id], (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ message: "Deleted" });
-    });
-});
 router.put("/:id", (req, res) => {
-    const { patient_id, doctor_id, diagnoza, trajtimi, data } = req.body;
+
+    const {
+        patient_id,
+        doctor_id,
+        diagnoza,
+        trajtimi,
+        data
+    } = req.body;
 
     const sql = `
-    UPDATE medicalrecords
-    SET patient_id = ?, doctor_id = ?, diagnoza = ?, trajtimi = ?, data = ?
-    WHERE id = ?
-  `;
+        UPDATE medicalrecords
+        SET
+            patient_id = ?,
+            doctor_id = ?,
+            diagnoza = ?,
+            trajtimi = ?,
+            data = ?
+        WHERE id = ?
+    `;
 
     db.query(
         sql,
-        [patient_id, doctor_id, diagnoza, trajtimi, data, req.params.id],
+        [
+            patient_id,
+            doctor_id,
+            diagnoza,
+            trajtimi,
+            data,
+            req.params.id
+        ],
         (err) => {
-            if (err) return res.status(500).json(err);
-            res.json({ message: "Updated " });
+
+            if (err) {
+
+                return res
+                    .status(500)
+                    .json(err);
+            }
+
+            res.json({
+                message:
+                    "Updated successfully",
+            });
+        }
+    );
+});
+
+router.delete("/:id", (req, res) => {
+
+    const sql =
+        "DELETE FROM medicalrecords WHERE id = ?";
+
+    db.query(
+        sql,
+        [req.params.id],
+        (err) => {
+
+            if (err) {
+
+                return res
+                    .status(500)
+                    .json(err);
+            }
+
+            res.json({
+                message:
+                    "Deleted successfully",
+            });
         }
     );
 });

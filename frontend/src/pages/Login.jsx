@@ -34,7 +34,27 @@ function Login() {
                 res.data.token
             );
 
-            navigate("/patients");
+            localStorage.setItem(
+                "role",
+                res.data.role
+            );
+
+            if (
+                res.data.role === "admin"
+            ) {
+
+                navigate("/patients");
+
+            } else if (
+                res.data.role === "doctor"
+            ) {
+
+                navigate("/doctors");
+
+            } else {
+
+                navigate("/");
+            }
 
         } catch (err) {
 

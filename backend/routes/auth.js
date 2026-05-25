@@ -13,33 +13,25 @@ router.post("/register", async (req, res) => {
 
     try {
 
+        console.log(req.body);
+
         const { username, password } = req.body;
-
-        const existingUser =
-            await prisma.user.findUnique({
-                where: { username },
-            });
-
-        if (existingUser) {
-
-            return res.status(400).json({
-                message: "Username already exists",
-            });
-        }
 
         const hashedPassword =
             await bcrypt.hash(password, 10);
 
-        const user = await prisma.user.create({
-            data: {
-                username,
-                password: hashedPassword,
-            },
-        });
+        const user =
+            await prisma.users.create({
+                data: {
+                    username,
+                    password: hashedPassword,
+                },
+            });
 
         res.json({
             message:
-                "User registered successfully",
+                "Registered successfully",
+            user,
         });
 
     } catch (err) {
@@ -59,7 +51,7 @@ router.post("/login", async (req, res) => {
         const { username, password } = req.body;
 
         const user =
-            await prisma.user.findUnique({
+            await prisma.users.findUnique({
                 where: { username },
             });
 
@@ -89,7 +81,11 @@ router.post("/login", async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        res.json({ token });
+        res.json({
+            token,
+            role: user.role,
+            username: user.username,
+        });
 
     } catch (err) {
 
