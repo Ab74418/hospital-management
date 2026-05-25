@@ -22,6 +22,7 @@ import Appointments from "./pages/Appointments";
 import Departments from "./pages/Departments";
 import Schedules from "./pages/Schedules";
 import Specializations from "./pages/Specializations";
+import DoctorSpecializations from "./pages/DoctorSpecializations";
 
 function App() {
     return (
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
                 <Route path="/schedules" element={<ProtectedRoute><Schedules /></ProtectedRoute>} />
                 <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
+                <Route path="/doctor-specializations" element={<ProtectedRoute><DoctorSpecializations /></ProtectedRoute>} />
             </Routes>
         </div>
     );
