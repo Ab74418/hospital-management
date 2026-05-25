@@ -18,6 +18,7 @@ import authRoutes from "./routes/auth.js";
 import allergiesRoutes from "./routes/allergies.js";
 import vitalsRoutes from "./routes/vitals.js";
 import doctorsRoutes from "./routes/doctors.js";
+import departamentsRoutes from "./routes/departaments.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/allergies", allergiesRoutes);
 app.use("/api/vitals", vitalsRoutes);
 app.use("/api/doctors", doctorsRoutes);
+app.use("/api/departments", departamentsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working");
