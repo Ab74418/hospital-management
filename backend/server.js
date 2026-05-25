@@ -19,6 +19,8 @@ import allergiesRoutes from "./routes/allergies.js";
 import vitalsRoutes from "./routes/vitals.js";
 import doctorsRoutes from "./routes/doctors.js";
 import departmentsRoutes from "./routes/departments.js";
+import schedulesRoutes from "./routes/schedules.js";
+import specializationsRoutes from "./routes/specializations.js";
 
 const app = express();
 
@@ -38,6 +40,8 @@ app.use("/api/allergies", allergiesRoutes);
 app.use("/api/vitals", vitalsRoutes);
 app.use("/api/doctors", doctorsRoutes);
 app.use("/api/departments", departmentsRoutes);
+app.use("/api/schedules", schedulesRoutes);
+app.use("/api/specializations", specializationsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working");
