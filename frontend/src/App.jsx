@@ -19,26 +19,18 @@ import Rooms from "./pages/Rooms";
 import Payments from "./pages/Payments";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
+import Departments from "./pages/Departments";
 
 function App() {
     return (
         <div>
             <Routes>
 
-                <Route
-                    path="/"
-                    element={<Navigate to="/login" />}
-                />
+                <Route path="/" element={<Navigate to="/login" />} />
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+                <Route path="/login" element={<Login />} />
 
-                <Route
-                    path="/register"
-                    element={<Register />}
-                />
+                <Route path="/register" element={<Register />} />
 
                 <Route
                     path="/patients"
@@ -126,6 +118,15 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <Appointments />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/departments"
+                    element={
+                        <ProtectedRoute>
+                            <Departments />
                         </ProtectedRoute>
                     }
                 />
