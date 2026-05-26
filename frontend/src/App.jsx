@@ -25,6 +25,8 @@ import Nurses from "./pages/Nurses";
 import Schedules from "./pages/Schedules";
 import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
+import Admissions from "./pages/Admissions";
+import Invoices from "./pages/Invoices";
 
 function App() {
     return (
@@ -152,6 +154,9 @@ function App() {
                 <Route path="/schedules" element={<ProtectedRoute><Schedules /></ProtectedRoute>} />
                 <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
                 <Route path="/doctor-specializations" element={<ProtectedRoute><DoctorSpecializations /></ProtectedRoute>} />
+                <Route path="/admissions" element={<Admissions />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/nurses" element={<Nurses />} />
             </Routes>
         </div>
     );
