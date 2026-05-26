@@ -172,8 +172,9 @@ function Prescriptions() {
                             key={r.id}
                             value={r.id}
                         >
-                            {r.diagnoza}
+                            {r.patient_name} - {r.diagnoza}
                         </option>
+
                     ))}
 
                 </select>

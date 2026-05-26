@@ -8,6 +8,8 @@ function Allergies() {
 
     const [allergies, setAllergies] = useState([]);
 
+    const [patients, setPatients] = useState([]);
+
     const [formData, setFormData] = useState({
         patient_id: "",
         pershkrimi: "",
@@ -31,16 +33,36 @@ function Allergies() {
         }
     };
 
+    const fetchPatients = async () => {
+
+        try {
+
+            const res = await axios.get(
+                "http://localhost:5000/api/patients"
+            );
+
+            setPatients(res.data);
+
+        } catch (error) {
+
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
 
-        const getAllergies = async () => {
+        const getData = async () => {
 
-            await fetchAllergies();
+            await Promise.all([
+                fetchAllergies(),
+                fetchPatients(),
+            ]);
         };
 
-        getAllergies();
+        getData();
 
     }, []);
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -144,9 +166,7 @@ function Allergies() {
                 onSubmit={handleSubmit}
             >
 
-                <input
-                    type="number"
-                    placeholder="Patient ID"
+                <select
                     value={formData.patient_id}
                     onChange={(e) =>
                         setFormData({
@@ -155,7 +175,25 @@ function Allergies() {
                         })
                     }
                     required
-                />
+                >
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {patients.map((patient) => (
+
+                        <option
+                            key={patient.id}
+                            value={patient.id}
+                        >
+                            {patient.emri}{" "}
+                            {patient.mbiemri}
+                        </option>
+
+                    ))}
+
+                </select>
 
                 <input
                     type="text"
@@ -201,9 +239,13 @@ function Allergies() {
 
                             <td>{allergy.id}</td>
 
-                            <td>{allergy.patient_name}</td>
+                            <td>
+                                {allergy.patient_name}
+                            </td>
 
-                            <td>{allergy.pershkrimi}</td>
+                            <td>
+                                {allergy.pershkrimi}
+                            </td>
 
                             <td>
 

@@ -4,46 +4,75 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
+
 const prisma = new PrismaClient();
 
 const SECRET = "mysecretkey";
 
 router.post("/register", async (req, res) => {
+
     try {
+
+        console.log(req.body);
+
         const { username, password } = req.body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword =
+            await bcrypt.hash(password, 10);
 
-        const user = await prisma.users.create({
-            data: {
-                username,
-                password: hashedPassword,
-            },
+        const user =
+            await prisma.users.create({
+                data: {
+                    username,
+                    password: hashedPassword,
+                },
+            });
+
+        res.json({
+            message:
+                "Registered successfully",
+            user,
         });
 
-        res.json(user);
-
     } catch (err) {
-        res.status(500).json({ error: err.message });
+
+        console.log(err);
+
+        res.status(500).json({
+            error: err.message,
+        });
     }
 });
 
 router.post("/login", async (req, res) => {
+
     try {
+
         const { username, password } = req.body;
 
-        const user = await prisma.users.findUnique({
-            where: { username },
-        });
+        const user =
+            await prisma.users.findUnique({
+                where: { username },
+            });
 
         if (!user) {
-            return res.status(400).json({ message: "User not found" });
+
+            return res.status(400).json({
+                message: "User not found",
+            });
         }
 
-        const valid = await bcrypt.compare(password, user.password);
+        const valid =
+            await bcrypt.compare(
+                password,
+                user.password
+            );
 
         if (!valid) {
-            return res.status(400).json({ message: "Wrong password" });
+
+            return res.status(400).json({
+                message: "Wrong password",
+            });
         }
 
         const token = jwt.sign(
@@ -52,10 +81,19 @@ router.post("/login", async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        res.json({ token });
+        res.json({
+            token,
+            role: user.role,
+            username: user.username,
+        });
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+
+        console.log(err);
+
+        res.status(500).json({
+            error: err.message,
+        });
     }
 });
 

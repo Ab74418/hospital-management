@@ -5,7 +5,18 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
 
-    const sql = "SELECT * FROM allergies";
+    const sql = `
+        SELECT
+            allergies.id,
+            allergies.patient_id,
+            patients.emri AS patient_name,
+            allergies.pershkrimi
+
+        FROM allergies
+
+        JOIN patients
+        ON allergies.patient_id = patients.id
+    `;
 
     db.query(sql, (err, result) => {
 
@@ -20,7 +31,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
+router.get("/:id", (req, res) => {
 
     const sql = `
         SELECT
@@ -28,9 +39,13 @@ router.get("/", (req, res) => {
             allergies.patient_id,
             patients.emri AS patient_name,
             allergies.pershkrimi
+
         FROM allergies
+
         JOIN patients
         ON allergies.patient_id = patients.id
+
+        WHERE allergies.id = ?
     `;
 
     db.query(
@@ -169,4 +184,4 @@ router.delete("/:id", (req, res) => {
     );
 });
 
-export default router; 
+export default router;

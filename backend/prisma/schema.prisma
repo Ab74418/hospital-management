@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+    url      = env("DATABASE_URL")
+
 }
 
 model admissions {
@@ -72,9 +73,9 @@ model departments {
 model doctors {
   id                    Int                     @id @default(autoincrement())
   user_id               Int?
-  name                  String?                 @db.VarChar(50)
-  surname               String?                 @db.VarChar(50)
-  specialization        String?                 @db.VarChar(100)
+  emri                  String?                 @db.VarChar(50)
+  mbiemri               String?                 @db.VarChar(50)
+  specializimi          String?                 @db.VarChar(100)
   department_id         Int?
   telefoni              String?                 @db.VarChar(20)
   appointments          appointments[]

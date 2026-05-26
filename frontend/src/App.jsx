@@ -20,17 +20,24 @@ import Payments from "./pages/Payments";
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
 import Departments from "./pages/Departments";
+import RoomTypes from "./pages/RoomTypes";
+import Nurses from "./pages/Nurses";
+import Schedules from "./pages/Schedules";
+import Specializations from "./pages/Specializations";
+import DoctorSpecializations from "./pages/DoctorSpecializations";
 
 function App() {
     return (
         <div>
             <Routes>
-
                 <Route path="/" element={<Navigate to="/login" />} />
-
                 <Route path="/login" element={<Login />} />
-
                 <Route path="/register" element={<Register />} />
+
+
+                <Route path="/roomtypes" element={<RoomTypes />} />
+
+                <Route path="/nurses" element={<Nurses />} />
 
                 <Route
                     path="/patients"
@@ -131,6 +138,20 @@ function App() {
                     }
                 />
 
+                <Route path="/patients" element={<ProtectedRoute><Patients /></ProtectedRoute>} />
+                <Route path="/patients/:id" element={<ProtectedRoute><PatientDetails /></ProtectedRoute>} />
+                <Route path="/medical-records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
+                <Route path="/allergies" element={<ProtectedRoute><Allergies /></ProtectedRoute>} />
+                <Route path="/prescriptions" element={<ProtectedRoute><Prescriptions /></ProtectedRoute>} />
+                <Route path="/vitals" element={<ProtectedRoute><Vitals /></ProtectedRoute>} />
+                <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
+                <Route path="/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
+                <Route path="/doctors" element={<ProtectedRoute><Doctors /></ProtectedRoute>} />
+                <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
+                <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
+                <Route path="/schedules" element={<ProtectedRoute><Schedules /></ProtectedRoute>} />
+                <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
+                <Route path="/doctor-specializations" element={<ProtectedRoute><DoctorSpecializations /></ProtectedRoute>} />
             </Routes>
         </div>
     );

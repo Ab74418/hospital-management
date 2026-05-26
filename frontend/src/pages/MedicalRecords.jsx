@@ -13,9 +13,9 @@ function MedicalRecords() {
 
     const [patients, setPatients] = useState([]);
 
-    const [editingId, setEditingId] = useState(null);
+    const [doctors, setDoctors] = useState([]);
 
-    const [data, setData] = useState("");
+    const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
         patient_id: "",
@@ -55,6 +55,22 @@ function MedicalRecords() {
         }
     };
 
+    const fetchDoctors = async () => {
+
+        try {
+
+            const res = await axios.get(
+                "http://localhost:5000/api/doctors"
+            );
+
+            setDoctors(res.data);
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
 
         const loadData = async () => {
@@ -62,6 +78,7 @@ function MedicalRecords() {
             await Promise.all([
                 fetchRecords(),
                 fetchPatients(),
+                fetchDoctors(),
             ]);
         };
 
@@ -169,37 +186,42 @@ function MedicalRecords() {
                         Select Patient
                     </option>
 
-                    {patients &&
-                        patients.length > 0 ? (
+                    {patients.map((p) => (
 
-                        patients.map((p) => (
-
-                            <option
-                                key={p.id}
-                                value={p.id}
-                            >
-                                {p.emri}{" "}
-                                {p.mbiemri}
-                            </option>
-                        ))
-
-                    ) : (
-
-                        <option disabled>
-                            No patients found
+                        <option
+                            key={p.id}
+                            value={p.id}
+                        >
+                            {p.emri} {p.mbiemri}
                         </option>
-                    )}
+
+                    ))}
 
                 </select>
 
-                <input
-                    type="text"
+                <select
                     name="doctor_id"
-                    placeholder="Doctor ID"
                     value={form.doctor_id}
                     onChange={handleChange}
                     required
-                />
+                >
+
+                    <option value="">
+                        Select Doctor
+                    </option>
+
+                    {doctors.map((d) => (
+
+                        <option
+                            key={d.id}
+                            value={d.id}
+                        >
+                            {d.emri} {d.mbiemri}
+                        </option>
+
+                    ))}
+
+                </select>
 
                 <input
                     type="text"
@@ -218,10 +240,13 @@ function MedicalRecords() {
                     onChange={handleChange}
                     required
                 />
+
                 <input
                     type="date"
-                    value={data}
-                    onChange={(e) => setData(e.target.value)}
+                    name="data"
+                    value={form.data}
+                    onChange={handleChange}
+                    required
                 />
 
                 <button type="submit">
@@ -267,27 +292,11 @@ function MedicalRecords() {
                             <td>{r.id}</td>
 
                             <td>
-
-                                {
-                                    patients.find(
-                                        (p) =>
-                                            p.id ===
-                                            r.patient_id
-                                    )?.emri
-                                }{" "}
-
-                                {
-                                    patients.find(
-                                        (p) =>
-                                            p.id ===
-                                            r.patient_id
-                                    )?.mbiemri
-                                }
-
+                                {r.patient_name}
                             </td>
 
                             <td>
-                                {r.doctor_id}
+                                {r.doctor_name}
                             </td>
 
                             <td>
