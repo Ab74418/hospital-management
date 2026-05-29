@@ -132,6 +132,8 @@ function Patients() {
 
         localStorage.removeItem("token");
 
+        localStorage.removeItem("role");
+
         navigate("/login");
     };
 
@@ -152,6 +154,73 @@ function Patients() {
 
                 <button onClick={handleLogout}>
                     Logout
+                </button>
+
+            </div>
+
+            <div
+                style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginBottom: "20px",
+                    flexWrap: "wrap",
+                }}
+            >
+
+                <button
+                    onClick={() =>
+                        navigate("/patients")
+                    }
+                >
+                    Patients
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/doctors")
+                    }
+                >
+                    Doctors
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/departments")
+                    }
+                >
+                    Departments
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/rooms")
+                    }
+                >
+                    Rooms
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/nurses")
+                    }
+                >
+                    Nurses
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/appointments")
+                    }
+                >
+                    Appointments
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/medical-records")
+                    }
+                >
+                    Medical Records
                 </button>
 
             </div>
@@ -279,6 +348,7 @@ function Patients() {
                                 >
                                     Add Diagnosis
                                 </button>
+
                                 <button
                                     onClick={() =>
                                         navigate("/allergies")
@@ -286,6 +356,7 @@ function Patients() {
                                 >
                                     Allergies
                                 </button>
+
                                 <button
                                     onClick={() =>
                                         navigate("/vitals")
@@ -293,6 +364,7 @@ function Patients() {
                                 >
                                     Vitals
                                 </button>
+
                                 <button
                                     onClick={() =>
                                         navigate("/prescriptions")

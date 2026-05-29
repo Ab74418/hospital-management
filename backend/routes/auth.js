@@ -13,9 +13,46 @@ router.post("/register", async (req, res) => {
 
     try {
 
-        console.log(req.body);
+        const {
+            username,
+            password,
+            role,
+            secretCode
+        } = req.body;
 
-        const { username, password } = req.body;
+        const existingUser =
+            await prisma.users.findUnique({
+                where: {
+                    username,
+                },
+            });
+
+        if (existingUser) {
+
+            return res.status(400).json({
+                message: "User already exists",
+            });
+        }
+
+        if (
+            role === "admin" &&
+            secretCode !== "ADMIN2026"
+        ) {
+
+            return res.status(403).json({
+                message: "Admin code gabim",
+            });
+        }
+
+        if (
+            role === "doctor" &&
+            secretCode !== "MED2026"
+        ) {
+
+            return res.status(403).json({
+                message: "Doctor code gabim",
+            });
+        }
 
         const hashedPassword =
             await bcrypt.hash(password, 10);
@@ -25,12 +62,12 @@ router.post("/register", async (req, res) => {
                 data: {
                     username,
                     password: hashedPassword,
+                    role,
                 },
             });
 
         res.json({
-            message:
-                "Registered successfully",
+            message: "Registered successfully",
             user,
         });
 
@@ -48,11 +85,16 @@ router.post("/login", async (req, res) => {
 
     try {
 
-        const { username, password } = req.body;
+        const {
+            username,
+            password
+        } = req.body;
 
         const user =
             await prisma.users.findUnique({
-                where: { username },
+                where: {
+                    username,
+                },
             });
 
         if (!user) {
@@ -76,9 +118,14 @@ router.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id },
+            {
+                id: user.id,
+                role: user.role,
+            },
             SECRET,
-            { expiresIn: "1h" }
+            {
+                expiresIn: "1h",
+            }
         );
 
         res.json({

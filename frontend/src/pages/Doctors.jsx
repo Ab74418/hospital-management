@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Doctors() {
 
-    const [doctors, setDoctors] = useState([]);
+    const [doctors, setDoctors] =
+        useState([]);
+
+    const [departments, setDepartments] =
+        useState([]);
+
+    const navigate = useNavigate();
 
     const [form, setForm] = useState({
         emri: "",
@@ -12,15 +19,37 @@ function Doctors() {
 
     const fetchDoctors = () => {
 
-        fetch("http://localhost:5000/api/doctors")
+        fetch(
+            "http://localhost:5000/api/doctors"
+        )
             .then((res) => res.json())
-            .then((data) => setDoctors(data))
-            .catch((err) => console.log(err));
+            .then((data) =>
+                setDoctors(data)
+            )
+            .catch((err) =>
+                console.log(err)
+            );
+    };
+
+    const fetchDepartments = () => {
+
+        fetch(
+            "http://localhost:5000/api/departments"
+        )
+            .then((res) => res.json())
+            .then((data) =>
+                setDepartments(data)
+            )
+            .catch((err) =>
+                console.log(err)
+            );
     };
 
     useEffect(() => {
 
         fetchDoctors();
+
+        fetchDepartments();
 
     }, []);
 
@@ -28,7 +57,8 @@ function Doctors() {
 
         setForm({
             ...form,
-            [e.target.name]: e.target.value,
+            [e.target.name]:
+                e.target.value,
         });
     };
 
@@ -52,11 +82,14 @@ function Doctors() {
                 }
             );
 
-            const result = await res.json();
+            const result =
+                await res.json();
 
             if (!res.ok) {
 
-                alert(result.message);
+                alert(
+                    result.message
+                );
 
                 return;
             }
@@ -81,18 +114,60 @@ function Doctors() {
 
     return (
 
-        <div style={{ padding: "20px" }}>
+        <div
+            style={{
+                padding: "20px",
+            }}
+        >
 
-            <h2>Doctors</h2>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent:
+                        "space-between",
+                    alignItems:
+                        "center",
+                    marginBottom:
+                        "20px",
+                }}
+            >
 
-            <form onSubmit={handleSubmit}>
+                <button
+                    onClick={() =>
+                        navigate(
+                            "/patients"
+                        )
+                    }
+                >
+                    Back
+                </button>
+
+                <h1>Doctors</h1>
+
+                <div></div>
+
+            </div>
+
+            <form
+                onSubmit={
+                    handleSubmit
+                }
+                style={{
+                    display: "grid",
+                    gap: "15px",
+                    marginBottom:
+                        "30px",
+                }}
+            >
 
                 <input
                     type="text"
                     name="emri"
                     placeholder="Emri"
                     value={form.emri}
-                    onChange={handleChange}
+                    onChange={
+                        handleChange
+                    }
                     required
                 />
 
@@ -101,58 +176,100 @@ function Doctors() {
                     name="mbiemri"
                     placeholder="Mbiemri"
                     value={form.mbiemri}
-                    onChange={handleChange}
+                    onChange={
+                        handleChange
+                    }
                     required
                 />
 
-                <input
-                    type="number"
+                <select
                     name="department_id"
-                    placeholder="Department ID"
-                    value={form.department_id}
-                    onChange={handleChange}
+                    value={
+                        form.department_id
+                    }
+                    onChange={
+                        handleChange
+                    }
                     required
-                />
+                >
 
-                <button type="submit">
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    {departments.map(
+                        (d) => (
+
+                            <option
+                                key={d.id}
+                                value={d.id}
+                            >
+                                {d.emertimi}
+                            </option>
+
+                        )
+                    )}
+
+                </select>
+
+                <button
+                    type="submit"
+                >
                     Add Doctor
                 </button>
 
             </form>
 
-            <hr />
+            <div
+                style={{
+                    display: "grid",
+                    gap: "15px",
+                }}
+            >
 
-            {doctors.map((doctor) => (
+                {doctors.map(
+                    (doctor) => (
 
-                <div
-                    key={doctor.id}
-                    style={{
-                        border: "1px solid #ccc",
-                        padding: "12px",
-                        marginBottom: "10px",
-                    }}
-                >
+                        <div
+                            key={
+                                doctor.id
+                            }
+                            style={{
+                                border:
+                                    "1px solid #ccc",
+                                padding:
+                                    "20px",
+                                borderRadius:
+                                    "10px",
+                                background:
+                                    "#fff",
+                            }}
+                        >
 
-                    <p>
-                        <b>ID:</b> {doctor.id}
-                    </p>
+                            <h3>
+                                {
+                                    doctor.emri
+                                }{" "}
+                                {
+                                    doctor.mbiemri
+                                }
+                            </h3>
 
-                    <p>
-                        <b>Emri:</b> {doctor.emri}
-                    </p>
+                            <p>
+                                <b>
+                                    Department:
+                                </b>{" "}
+                                {
+                                    doctor.departments?.emertimi
+                                }
+                            </p>
 
-                    <p>
-                        <b>Mbiemri:</b>{" "}
-                        {doctor.mbiemri}
-                    </p>
+                        </div>
 
-                    <p>
-                        <b>Department ID:</b>{" "}
-                        {doctor.department_id}
-                    </p>
+                    )
+                )}
 
-                </div>
-            ))}
+            </div>
 
         </div>
     );

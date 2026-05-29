@@ -22,6 +22,7 @@ function MedicalRecords() {
         doctor_id: "",
         diagnoza: "",
         trajtimi: "",
+        prescriptions: "",
         data: "",
     });
 
@@ -121,6 +122,7 @@ function MedicalRecords() {
                 doctor_id: "",
                 diagnoza: "",
                 trajtimi: "",
+                prescriptions: "",
                 data: "",
             });
 
@@ -153,6 +155,7 @@ function MedicalRecords() {
             doctor_id: r.doctor_id,
             diagnoza: r.diagnoza,
             trajtimi: r.trajtimi,
+            prescriptions: r.prescriptions,
             data: r.data?.split("T")[0],
         });
 
@@ -165,7 +168,7 @@ function MedicalRecords() {
 
             <button
                 onClick={() =>
-                    navigate("/patients")
+                    navigate("/login")
                 }
             >
                 Back
@@ -242,6 +245,15 @@ function MedicalRecords() {
                 />
 
                 <input
+                    type="text"
+                    name="prescriptions"
+                    placeholder="Barnat"
+                    value={form.prescriptions}
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
                     type="date"
                     name="data"
                     value={form.data}
@@ -277,6 +289,7 @@ function MedicalRecords() {
                         <th>Doctor</th>
                         <th>Diagnoza</th>
                         <th>Trajtimi</th>
+                        <th>Barnat</th>
                         <th>Data</th>
                         <th>Actions</th>
                     </tr>
@@ -305,6 +318,10 @@ function MedicalRecords() {
 
                             <td>
                                 {r.trajtimi}
+                            </td>
+
+                            <td>
+                                {r.prescriptions}
                             </td>
 
                             <td>
