@@ -1,37 +1,36 @@
-import "./App.css";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import {
-    Routes,
-    Route,
-    Navigate,
-} from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/PatientDetails";
+
 import MedicalRecords from "./pages/MedicalRecords";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Allergies from "./pages/Allergies";
 import Prescriptions from "./pages/Prescriptions";
 import Vitals from "./pages/Vitals";
+
 import Rooms from "./pages/Rooms";
 import Payments from "./pages/Payments";
+import Admissions from "./pages/Admissions";
+import Invoices from "./pages/Invoices";
+import Nurses from "./pages/Nurses";
+
 import Doctors from "./pages/Doctors";
 import Appointments from "./pages/Appointments";
 import Departments from "./pages/Departments";
-import RoomTypes from "./pages/RoomTypes";
-import Nurses from "./pages/Nurses";
 import Schedules from "./pages/Schedules";
+
 import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
+import RoomTypes from "./pages/RoomTypes";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-
     return (
-
         <div>
-
             <Routes>
 
                 <Route
@@ -140,6 +139,24 @@ function App() {
                 />
 
                 <Route
+                    path="/admissions"
+                    element={
+                        <ProtectedRoute>
+                            <Admissions />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/invoices"
+                    element={
+                        <ProtectedRoute>
+                            <Invoices />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
                     path="/doctors"
                     element={
                         <ProtectedRoute allowedRole="admin">
@@ -194,7 +211,6 @@ function App() {
                 />
 
             </Routes>
-
         </div>
     );
 }
