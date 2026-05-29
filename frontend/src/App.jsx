@@ -27,17 +27,45 @@ import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 
 function App() {
+
     return (
+
         <div>
+
             <Routes>
-                <Route path="/" element={<Navigate to="/login" />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
 
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" />}
+                />
 
-                <Route path="/roomtypes" element={<RoomTypes />} />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-                <Route path="/nurses" element={<Nurses />} />
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
+
+                <Route
+                    path="/roomtypes"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <RoomTypes />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/nurses"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <Nurses />
+                        </ProtectedRoute>
+                    }
+                />
 
                 <Route
                     path="/patients"
@@ -60,7 +88,7 @@ function App() {
                 <Route
                     path="/medical-records"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="doctor">
                             <MedicalRecords />
                         </ProtectedRoute>
                     }
@@ -69,7 +97,7 @@ function App() {
                 <Route
                     path="/allergies"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="doctor">
                             <Allergies />
                         </ProtectedRoute>
                     }
@@ -78,7 +106,7 @@ function App() {
                 <Route
                     path="/prescriptions"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="doctor">
                             <Prescriptions />
                         </ProtectedRoute>
                     }
@@ -87,7 +115,7 @@ function App() {
                 <Route
                     path="/vitals"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="doctor">
                             <Vitals />
                         </ProtectedRoute>
                     }
@@ -96,7 +124,7 @@ function App() {
                 <Route
                     path="/rooms"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="admin">
                             <Rooms />
                         </ProtectedRoute>
                     }
@@ -105,7 +133,7 @@ function App() {
                 <Route
                     path="/payments"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="admin">
                             <Payments />
                         </ProtectedRoute>
                     }
@@ -114,7 +142,7 @@ function App() {
                 <Route
                     path="/doctors"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="admin">
                             <Doctors />
                         </ProtectedRoute>
                     }
@@ -132,27 +160,41 @@ function App() {
                 <Route
                     path="/departments"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute allowedRole="admin">
                             <Departments />
                         </ProtectedRoute>
                     }
                 />
 
-                <Route path="/patients" element={<ProtectedRoute><Patients /></ProtectedRoute>} />
-                <Route path="/patients/:id" element={<ProtectedRoute><PatientDetails /></ProtectedRoute>} />
-                <Route path="/medical-records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
-                <Route path="/allergies" element={<ProtectedRoute><Allergies /></ProtectedRoute>} />
-                <Route path="/prescriptions" element={<ProtectedRoute><Prescriptions /></ProtectedRoute>} />
-                <Route path="/vitals" element={<ProtectedRoute><Vitals /></ProtectedRoute>} />
-                <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
-                <Route path="/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
-                <Route path="/doctors" element={<ProtectedRoute><Doctors /></ProtectedRoute>} />
-                <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
-                <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
-                <Route path="/schedules" element={<ProtectedRoute><Schedules /></ProtectedRoute>} />
-                <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
-                <Route path="/doctor-specializations" element={<ProtectedRoute><DoctorSpecializations /></ProtectedRoute>} />
+                <Route
+                    path="/schedules"
+                    element={
+                        <ProtectedRoute allowedRole="doctor">
+                            <Schedules />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/specializations"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <Specializations />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/doctor-specializations"
+                    element={
+                        <ProtectedRoute allowedRole="admin">
+                            <DoctorSpecializations />
+                        </ProtectedRoute>
+                    }
+                />
+
             </Routes>
+
         </div>
     );
 }
