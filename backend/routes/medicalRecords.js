@@ -13,7 +13,6 @@ router.get("/", (req, res) => {
             medicalrecords.diagnoza,
             medicalrecords.trajtimi,
             medicalrecords.prescriptions,
-            medicalrecords.notes,
             medicalrecords.data,
 
             patients.emri AS patient_name,
@@ -51,7 +50,6 @@ router.post("/", (req, res) => {
         diagnoza,
         trajtimi,
         prescriptions,
-        notes,
         data
     } = req.body;
 
@@ -63,10 +61,9 @@ router.post("/", (req, res) => {
             diagnoza,
             trajtimi,
             prescriptions,
-            notes,
             data
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -77,7 +74,6 @@ router.post("/", (req, res) => {
             diagnoza,
             trajtimi,
             prescriptions,
-            notes,
             data
         ],
         (err) => {
@@ -105,7 +101,6 @@ router.put("/:id", (req, res) => {
         diagnoza,
         trajtimi,
         prescriptions,
-        notes,
         data
     } = req.body;
 
@@ -117,7 +112,6 @@ router.put("/:id", (req, res) => {
             diagnoza = ?,
             trajtimi = ?,
             prescriptions = ?,
-            notes = ?,
             data = ?
         WHERE id = ?
     `;
@@ -130,7 +124,6 @@ router.put("/:id", (req, res) => {
             diagnoza,
             trajtimi,
             prescriptions,
-            notes,
             data,
             req.params.id
         ],

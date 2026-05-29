@@ -204,7 +204,7 @@ function Doctors() {
                                 key={d.id}
                                 value={d.id}
                             >
-                                {d.emri}
+                                {d.emertimi}
                             </option>
 
                         )
@@ -260,7 +260,7 @@ function Doctors() {
                                     Department:
                                 </b>{" "}
                                 {
-                                    doctor.department_id
+                                    doctor.departments?.emertimi
                                 }
                             </p>
 

@@ -16,7 +16,11 @@ router.get("/", async (req, res) => {
     try {
 
         const doctors =
-            await prisma.doctors.findMany();
+            await prisma.doctors.findMany({
+                include: {
+                    departments: true,
+                },
+            });
 
         res.json(doctors);
 
@@ -45,6 +49,10 @@ router.get("/:id", async (req, res) => {
             await prisma.doctors.findUnique({
                 where: {
                     id: Number(id),
+                },
+
+                include: {
+                    departments: true,
                 },
             });
 
