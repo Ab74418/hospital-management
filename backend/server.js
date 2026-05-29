@@ -24,6 +24,7 @@ import nursesRoutes from "./routes/nurses.js";
 import schedulesRoutes from "./routes/schedules.js";
 import specializationsRoutes from "./routes/specializations.js";
 import doctorSpecializationsRoutes from "./routes/doctorSpecializations.js";
+import patientVisitsRoutes from "./routes/patientVisits.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/nurses", nursesRoutes);
 app.use("/api/schedules", schedulesRoutes);
 app.use("/api/specializations", specializationsRoutes);
 app.use("/api/doctor-specializations", doctorSpecializationsRoutes);
+app.use("/api/patient-visits", patientVisitsRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is working");
