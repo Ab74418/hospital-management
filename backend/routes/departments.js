@@ -30,6 +30,27 @@ router.get("/", async (req, res) => {
         });
     }
 });
+router.get("/", async (req, res) => {
+    try {
+        const departments = await prisma.departments.findMany({
+            select: {
+                id: true,
+                emri: true,
+                pershkrimi: true,
+                lokacioni: true,
+            },
+        });
+
+        res.json(departments);
+    } catch (error) {
+        console.log("GET DEPARTMENTS ERROR:", error);
+
+        res.status(500).json({
+            message: "Gabim gjatë marrjes së departments",
+            error: error.message,
+        });
+    }
+});
 
 router.get("/:id", async (req, res) => {
     try {
