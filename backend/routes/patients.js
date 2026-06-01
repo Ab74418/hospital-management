@@ -3,32 +3,61 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+console.log("PATIENTS ROUTE FILE LOADED");
 
-    const sql = "SELECT * FROM patients";
+// GET all patients + doctor name
+router.get("/", (req, res) => {
+    console.log("NEW PATIENTS ROUTE IS WORKING");
+
+    const sql = `
+        SELECT 
+            p.*,
+            d.emri AS doctor_emri,
+            d.mbiemri AS doctor_mbiemri
+        FROM patients p
+        LEFT JOIN doctors d
+        ON p.doctor_id = d.id
+    `;
 
     db.query(sql, (err, results) => {
-
         if (err) {
             console.log("GET /patients ERROR:", err);
+            return res.status(500).json(err);
+        }
 
-            return res
-                .status(500)
-                .json(err);
+        res.json(results);
+    });
+}); 
+// GET patients by doctor
+router.get("/doctor/:doctor_id", (req, res) => {
+    const { doctor_id } = req.params;
+
+    const sql = `
+        SELECT 
+            p.*,
+            d.emri AS doctor_emri,
+            d.mbiemri AS doctor_mbiemri
+        FROM patients p
+        LEFT JOIN doctors d
+        ON p.doctor_id = d.id
+    `;
+
+    db.query(sql, [doctor_id], (err, results) => {
+        if (err) {
+            console.log("GET /patients/doctor ERROR:", err);
+            return res.status(500).json(err);
         }
 
         res.json(results);
     });
 });
 
+// GET patient details
 router.get("/:id/details", (req, res) => {
-
     const id = req.params.id;
 
     const sql = `
-    
         SELECT 
-
             p.id AS patient_id,
             p.emri,
             p.mbiemri,
@@ -37,12 +66,16 @@ router.get("/:id/details", (req, res) => {
             p.telefoni,
             p.adresa,
             p.grupa_gjakut,
+            p.doctor_id,
+
+            d.emri AS doctor_emri,
+            d.mbiemri AS doctor_mbiemri,
 
             mr.id AS record_id,
             mr.diagnoza,
             mr.trajtimi,
             mr.data,
-            mr.doctor_id,
+            mr.doctor_id AS record_doctor_id,
 
             pr.id AS prescription_id,
             pr.bari,
@@ -51,6 +84,9 @@ router.get("/:id/details", (req, res) => {
             pr.udhezime
 
         FROM patients p
+
+        LEFT JOIN doctors d
+        ON p.doctor_id = d.id
 
         LEFT JOIN medicalrecords mr
         ON p.id = mr.patient_id
@@ -62,21 +98,12 @@ router.get("/:id/details", (req, res) => {
     `;
 
     db.query(sql, [id], (err, results) => {
-
         if (err) {
-
-            console.log(
-                "GET /patients/:id/details ERROR:",
-                err
-            );
-
-            return res
-                .status(500)
-                .json(err);
+            console.log("GET /patients/:id/details ERROR:", err);
+            return res.status(500).json(err);
         }
 
         if (results.length === 0) {
-
             return res.status(404).json({
                 message: "Patient not found",
             });
@@ -86,29 +113,28 @@ router.get("/:id/details", (req, res) => {
     });
 });
 
+// GET patient by id
 router.get("/:id", (req, res) => {
-
     const id = req.params.id;
 
-    const sql =
-        "SELECT * FROM patients WHERE id = ?";
+    const sql = `
+        SELECT 
+            p.*,
+            d.emri AS doctor_emri,
+            d.mbiemri AS doctor_mbiemri
+        FROM patients p
+        LEFT JOIN doctors d
+        ON p.doctor_id = d.id
+        WHERE p.id = ?
+    `;
 
     db.query(sql, [id], (err, result) => {
-
         if (err) {
-
-            console.log(
-                "GET /patients/:id ERROR:",
-                err
-            );
-
-            return res
-                .status(500)
-                .json(err);
+            console.log("GET /patients/:id ERROR:", err);
+            return res.status(500).json(err);
         }
 
         if (result.length === 0) {
-
             return res.status(404).json({
                 message: "Patient not found",
             });
@@ -118,8 +144,8 @@ router.get("/:id", (req, res) => {
     });
 });
 
+// ADD patient
 router.post("/", (req, res) => {
-
     const {
         emri,
         mbiemri,
@@ -128,18 +154,16 @@ router.post("/", (req, res) => {
         telefoni,
         adresa,
         grupa_gjakut,
+        doctor_id,
     } = req.body;
 
     if (!emri || !mbiemri) {
-
         return res.status(400).json({
-            message:
-                "Emri dhe mbiemri jane required",
+            message: "Emri dhe mbiemri jane required",
         });
     }
 
     const sql = `
-
         INSERT INTO patients
         (
             emri,
@@ -148,10 +172,10 @@ router.post("/", (req, res) => {
             gjinia,
             telefoni,
             adresa,
-            grupa_gjakut
+            grupa_gjakut,
+            doctor_id
         )
-
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
@@ -164,33 +188,24 @@ router.post("/", (req, res) => {
             telefoni,
             adresa,
             grupa_gjakut,
+            doctor_id || null,
         ],
         (err, result) => {
-
             if (err) {
-
-                console.log(
-                    "POST /patients ERROR:",
-                    err
-                );
-
-                return res
-                    .status(500)
-                    .json(err);
+                console.log("POST /patients ERROR:", err);
+                return res.status(500).json(err);
             }
 
             res.json({
-                message:
-                    "Patient added successfully",
-
+                message: "Patient added successfully",
                 id: result.insertId,
             });
         }
     );
 });
 
+// UPDATE patient
 router.put("/:id", (req, res) => {
-
     const id = req.params.id;
 
     const {
@@ -201,12 +216,11 @@ router.put("/:id", (req, res) => {
         telefoni,
         adresa,
         grupa_gjakut,
+        doctor_id,
     } = req.body;
 
     const sql = `
-
         UPDATE patients
-
         SET
             emri = ?,
             mbiemri = ?,
@@ -214,8 +228,8 @@ router.put("/:id", (req, res) => {
             gjinia = ?,
             telefoni = ?,
             adresa = ?,
-            grupa_gjakut = ?
-
+            grupa_gjakut = ?,
+            doctor_id = ?
         WHERE id = ?
     `;
 
@@ -229,54 +243,36 @@ router.put("/:id", (req, res) => {
             telefoni,
             adresa,
             grupa_gjakut,
+            doctor_id || null,
             id,
         ],
         (err) => {
-
             if (err) {
-
-                console.log(
-                    "PUT /patients ERROR:",
-                    err
-                );
-
-                return res
-                    .status(500)
-                    .json(err);
+                console.log("PUT /patients ERROR:", err);
+                return res.status(500).json(err);
             }
 
             res.json({
-                message:
-                    "Patient updated successfully",
+                message: "Patient updated successfully",
             });
         }
     );
 });
 
+// DELETE patient
 router.delete("/:id", (req, res) => {
-
     const id = req.params.id;
 
-    const sql =
-        "DELETE FROM patients WHERE id = ?";
+    const sql = "DELETE FROM patients WHERE id = ?";
 
     db.query(sql, [id], (err) => {
-
         if (err) {
-
-            console.log(
-                "DELETE /patients ERROR:",
-                err
-            );
-
-            return res
-                .status(500)
-                .json(err);
+            console.log("DELETE /patients ERROR:", err);
+            return res.status(500).json(err);
         }
 
         res.json({
-            message:
-                "Patient deleted successfully",
+            message: "Patient deleted successfully",
         });
     });
 });

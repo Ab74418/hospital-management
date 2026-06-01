@@ -89,6 +89,16 @@ function Register() {
                         Admin
                     </option>
 
+                    <option value="nurse">
+                        Nurse
+                    </option>
+
+                    <option value="receptionist">
+                        Receptionist
+                    </option>
+
+
+
                 </select>
 
                 <input

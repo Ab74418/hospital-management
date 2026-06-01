@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Payments() {
+export default function Payments() {
     const [payments, setPayments] = useState([]);
 
     useEffect(() => {
@@ -10,23 +10,15 @@ function Payments() {
             .catch((err) => console.log(err));
     }, []);
 
-    const totalPagesa = payments.reduce(
-        (sum, p) => sum + Number(p.shuma || 0),
-        0
-    );
-
     return (
         <div>
-            <h2>Payments</h2>
-            <h3>Total Pagesa: {totalPagesa} €</h3>
+            <h1>Payments</h1>
 
             {payments.map((p) => (
-                <p key={p.id}>
-                    Invoice: {p.invoice_id} | Shuma: {p.shuma} € | Metoda: {p.metoda}
-                </p>
+                <div key={p.id}>
+                    {JSON.stringify(p)}
+                </div>
             ))}
         </div>
     );
 }
-
-export default Payments;

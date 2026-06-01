@@ -3,8 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Patients() {
-
     const [patients, setPatients] = useState([]);
+    const [doctors, setDoctors] = useState([]);
 
     const [form, setForm] = useState({
         emri: "",
@@ -14,6 +14,7 @@ function Patients() {
         telefoni: "",
         adresa: "",
         grupa_gjakut: "",
+        doctor_id: "",
     });
 
     const [editingId, setEditingId] = useState(null);
@@ -21,34 +22,35 @@ function Patients() {
     const navigate = useNavigate();
 
     const fetchPatients = async () => {
-
         try {
-
             const res = await axios.get(
                 "http://localhost:5000/api/patients"
             );
 
             setPatients(res.data);
-
         } catch (err) {
+            console.log(err);
+        }
+    };
 
+    const fetchDoctors = async () => {
+        try {
+            const res = await axios.get(
+                "http://localhost:5000/api/doctors"
+            );
+
+            setDoctors(res.data);
+        } catch (err) {
             console.log(err);
         }
     };
 
     useEffect(() => {
-
-        const loadData = async () => {
-
-            await fetchPatients();
-        };
-
-        loadData();
-
+        fetchPatients();
+        fetchDoctors();
     }, []);
 
     const handleChange = (e) => {
-
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -56,22 +58,17 @@ function Patients() {
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
         try {
-
             if (editingId) {
-
                 await axios.put(
                     `http://localhost:5000/api/patients/${editingId}`,
                     form
                 );
 
                 setEditingId(null);
-
             } else {
-
                 await axios.post(
                     "http://localhost:5000/api/patients",
                     form
@@ -88,59 +85,70 @@ function Patients() {
                 telefoni: "",
                 adresa: "",
                 grupa_gjakut: "",
+                doctor_id: "",
             });
-
         } catch (err) {
+            console.log(err);
+        }
+    };
 
+    const filterByDoctor = async (doctorId) => {
+        try {
+            if (!doctorId) {
+                fetchPatients();
+                return;
+            }
+
+            const res = await axios.get(
+                `http://localhost:5000/api/patients/doctor/${doctorId}`
+            );
+
+            setPatients(res.data);
+        } catch (err) {
             console.log(err);
         }
     };
 
     const handleDelete = async (id) => {
-
         try {
-
             await axios.delete(
                 `http://localhost:5000/api/patients/${id}`
             );
 
             fetchPatients();
-
         } catch (err) {
-
             console.log(err);
         }
     };
 
     const handleEdit = (patient) => {
-
         setEditingId(patient.id);
 
         setForm({
-            emri: patient.emri,
-            mbiemri: patient.mbiemri,
+            emri: patient.emri || "",
+            mbiemri: patient.mbiemri || "",
             data_lindjes:
-                patient.data_lindjes?.split("T")[0],
-            gjinia: patient.gjinia,
-            telefoni: patient.telefoni,
-            adresa: patient.adresa,
-            grupa_gjakut: patient.grupa_gjakut,
+                patient.data_lindjes?.split("T")[0] || "",
+            gjinia: patient.gjinia || "",
+            telefoni: patient.telefoni || "",
+            adresa: patient.adresa || "",
+            grupa_gjakut: patient.grupa_gjakut || "",
+            doctor_id: patient.doctor_id || "",
         });
     };
 
     const handleLogout = () => {
-
         localStorage.removeItem("token");
 
+
         localStorage.removeItem("role");
+
 
         navigate("/login");
     };
 
     return (
-
         <div style={{ padding: "20px" }}>
-
             <div
                 style={{
                     display: "flex",
@@ -149,13 +157,11 @@ function Patients() {
                     marginBottom: "20px",
                 }}
             >
-
                 <h1>Patients</h1>
 
                 <button onClick={handleLogout}>
                     Logout
                 </button>
-
             </div>
 
             <div
@@ -229,7 +235,6 @@ function Patients() {
                 className="patient-form"
                 onSubmit={handleSubmit}
             >
-
                 <input
                     type="text"
                     name="emri"
@@ -292,35 +297,69 @@ function Patients() {
                     required
                 />
 
-                <button type="submit">
+                <select
+                    name="doctor_id"
+                    value={form.doctor_id}
+                    onChange={handleChange}
+                >
+                    <option value="">
+                        Select Doctor
+                    </option>
 
+                    {doctors.map((doctor) => (
+                        <option
+                            key={doctor.id}
+                            value={doctor.id}
+                        >
+                            {doctor.emri} {doctor.mbiemri}
+                        </option>
+                    ))}
+                </select>
+
+                <button type="submit">
                     {editingId
                         ? "Update Patient"
                         : "Add Patient"}
-
                 </button>
-
             </form>
 
+            <div style={{ margin: "20px 0" }}>
+                <label>Filter by Doctor: </label>
+
+                <select
+                    onChange={(e) =>
+                        filterByDoctor(e.target.value)
+                    }
+                >
+                    <option value="">
+                        All Patients
+                    </option>
+
+                    {doctors.map((doctor) => (
+                        <option
+                            key={doctor.id}
+                            value={doctor.id}
+                        >
+                            {doctor.emri} {doctor.mbiemri}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             <table>
-
                 <thead>
-
                     <tr>
                         <th>ID</th>
                         <th>Emri</th>
                         <th>Mbiemri</th>
+                        <th>Doctor</th>
                         <th>Actions</th>
                     </tr>
-
                 </thead>
 
                 <tbody>
-
                     {patients.map((p) => (
-
                         <tr key={p.id}>
-
                             <td>{p.id}</td>
 
                             <td>{p.emri}</td>
@@ -328,7 +367,12 @@ function Patients() {
                             <td>{p.mbiemri}</td>
 
                             <td>
+                                {p.doctor_emri
+                                    ? `${p.doctor_emri} ${p.doctor_mbiemri}`
+                                    : "No Doctor"}
+                            </td>
 
+                            <td>
                                 <button
                                     onClick={() =>
                                         navigate(
@@ -388,16 +432,11 @@ function Patients() {
                                 >
                                     Delete
                                 </button>
-
                             </td>
-
                         </tr>
                     ))}
-
                 </tbody>
-
             </table>
-
         </div>
     );
 }
