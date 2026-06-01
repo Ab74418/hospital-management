@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
     const sql = `
         SELECT 
             id,
-            emertimi,
+            emri,
             pershkrimi,
             lokacioni
         FROM departments
@@ -37,7 +37,7 @@ router.get("/:id", (req, res) => {
     const sql = `
         SELECT 
             id,
-            emertimi,
+            emri,
             pershkrimi,
             lokacioni
         FROM departments
@@ -70,7 +70,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
 
     const {
-        emertimi,
+        emri,
         pershkrimi,
         lokacioni
     } = req.body;
@@ -78,7 +78,7 @@ router.post("/", (req, res) => {
     const sql = `
         INSERT INTO departments
         (
-            emertimi,
+            emri,
             pershkrimi,
             lokacioni
         )
@@ -88,7 +88,7 @@ router.post("/", (req, res) => {
     db.query(
         sql,
         [
-            emertimi,
+            emri,
             pershkrimi,
             lokacioni
         ],
@@ -117,7 +117,7 @@ router.put("/:id", (req, res) => {
     const { id } = req.params;
 
     const {
-        emertimi,
+        emri,
         pershkrimi,
         lokacioni
     } = req.body;
@@ -125,7 +125,7 @@ router.put("/:id", (req, res) => {
     const sql = `
         UPDATE departments
         SET
-            emertimi = ?,
+            emri = ?,
             pershkrimi = ?,
             lokacioni = ?
         WHERE id = ?
@@ -134,7 +134,7 @@ router.put("/:id", (req, res) => {
     db.query(
         sql,
         [
-            emertimi,
+            emri
             pershkrimi,
             lokacioni,
             id
