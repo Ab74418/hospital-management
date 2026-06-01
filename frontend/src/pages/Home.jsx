@@ -29,8 +29,6 @@ function Home() {
 
                 <Link to="/payments">Payments</Link>
 
-                <Link to="/billing">Billing</Link>
-
                 <Link to="/prescriptions">Prescriptions</Link>
 
                 <Link to="/allergies">Allergies</Link>
