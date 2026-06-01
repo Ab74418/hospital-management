@@ -16,7 +16,14 @@ router.get("/", async (req, res) => {
     try {
 
         const departments =
-            await prisma.departments.findMany();
+            await prisma.departments.findMany({
+                select: {
+                    id: true,
+                    emri: true,
+                    pershkrimi: true,
+                    lokacioni: true,
+                },
+            });
 
         res.json(departments);
 
@@ -125,6 +132,7 @@ router.put("/:id", async (req, res) => {
                 where: {
                     id: Number(id),
                 },
+
                 data: {
                     emri,
                     pershkrimi,
