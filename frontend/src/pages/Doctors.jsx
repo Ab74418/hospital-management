@@ -87,7 +87,7 @@ function Doctors() {
             >
                 <button
                     onClick={() =>
-                        navigate("/patients")
+                        navigate("/home")
                     }
                 >
                     Back

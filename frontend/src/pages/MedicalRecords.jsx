@@ -168,7 +168,7 @@ function MedicalRecords() {
 
             <button
                 onClick={() =>
-                    navigate("/login")
+                    navigate("/patients")
                 }
             >
                 Back

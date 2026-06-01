@@ -8,7 +8,7 @@ function PatientDetails() {
 
     const navigate = useNavigate();
 
-    const [data, setData] = useState([]);
+    const [data, setData] = useState(null);
 
 
     const [loading, setLoading] = useState(true);
@@ -108,135 +108,123 @@ function PatientDetails() {
             </h1>
 
 
-
-            {data.length === 0 ? (
+            {!data ? (
 
                 <p>No data found</p>
 
             ) : (
 
-                data.map((item, index) => (
+                <div
+                    style={{
+                        backgroundColor: "white",
+                        padding: "25px",
+                        borderRadius: "15px",
+                        marginBottom: "25px",
+                        boxShadow:
+                            "0 4px 15px rgba(0,0,0,0.1)",
+                    }}
+                >
 
-                    <div
-                        key={index}
+                    <h2
                         style={{
-                            backgroundColor: "white",
-                            padding: "25px",
-                            borderRadius: "15px",
-                            marginBottom: "25px",
-                            boxShadow:
-                                "0 4px 15px rgba(0,0,0,0.1)",
+                            marginBottom: "20px",
+                            color: "#2563eb",
                         }}
                     >
+                        Patient Information
+                    </h2>
 
-                        <h2
-                            style={{
-                                marginBottom: "20px",
-                                color: "#2563eb",
-                            }}
-                        >
-                            Patient Information
-                        </h2>
+                    <p>
+                        <strong>Emri:</strong>{" "}
+                        {data.emri} {data.mbiemri}
+                    </p>
 
-                        <p>
-                            <strong>Emri:</strong>{" "}
-                            {item.emri} {item.mbiemri}
-                        </p>
+                    <p>
+                        <strong>Data Lindjes:</strong>{" "}
+                        {data.data_lindjes?.split("T")[0]}
+                    </p>
 
-                        <p>
-                            <strong>Data Lindjes:</strong>{" "}
-                            {item.data_lindjes?.split("T")[0]}
-                        </p>
+                    <p>
+                        <strong>Gjinia:</strong>{" "}
+                        {data.gjinia}
+                    </p>
 
-                        <p>
-                            <strong>Gjinia:</strong>{" "}
-                            {item.gjinia}
-                        </p>
+                    <p>
+                        <strong>Telefoni:</strong>{" "}
+                        {data.telefoni}
+                    </p>
 
-                        <p>
-                            <strong>Telefoni:</strong>{" "}
-                            {item.telefoni}
-                        </p>
+                    <p>
+                        <strong>Adresa:</strong>{" "}
+                        {data.adresa}
+                    </p>
 
-                        <p>
-                            <strong>Adresa:</strong>{" "}
-                            {item.adresa}
-                        </p>
+                    <p>
+                        <strong>Grupi i gjakut:</strong>{" "}
+                        {data.grupa_gjakut}
+                    </p>
 
-                        <p>
-                            <strong>Grupi i gjakut:</strong>{" "}
-                            {item.grupa_gjakut}
-                        </p>
+                    <hr
+                        style={{
+                            margin: "25px 0",
+                        }}
+                    />
 
+                    <h2
+                        style={{
+                            marginBottom: "20px",
+                            color: "#dc2626",
+                        }}
+                    >
+                        Medical Record
+                    </h2>
 
+                    <p>
+                        <strong>Diagnoza:</strong>{" "}
+                        {data.diagnoza || "N/A"}
+                    </p>
 
-                        <hr
-                            style={{
-                                margin: "25px 0",
-                            }}
-                        />
+                    <p>
+                        <strong>Trajtimi:</strong>{" "}
+                        {data.trajtimi || "N/A"}
+                    </p>
 
+                    <hr
+                        style={{
+                            margin: "25px 0",
+                        }}
+                    />
 
-                        <h2
-                            style={{
-                                marginBottom: "20px",
-                                color: "#dc2626",
-                            }}
-                        >
-                            Medical Record
-                        </h2>
+                    <h2
+                        style={{
+                            marginBottom: "20px",
+                            color: "#16a34a",
+                        }}
+                    >
+                        Prescription
+                    </h2>
 
-                        <p>
-                            <strong>Diagnoza:</strong>{" "}
-                            {item.diagnoza || "N/A"}
-                        </p>
+                    <p>
+                        <strong>Bari:</strong>{" "}
+                        {data.bari || "N/A"}
+                    </p>
 
-                        <p>
-                            <strong>Trajtimi:</strong>{" "}
-                            {item.trajtimi || "N/A"}
-                        </p>
+                    <p>
+                        <strong>Dozimi:</strong>{" "}
+                        {data.dozimi || "N/A"}
+                    </p>
 
+                    <p>
+                        <strong>Kohezgjatja:</strong>{" "}
+                        {data.kohezgjatja || "N/A"}
+                    </p>
 
+                    <p>
+                        <strong>Udhezime:</strong>{" "}
+                        {data.udhezime || "N/A"}
+                    </p>
 
-                        <hr
-                            style={{
-                                margin: "25px 0",
-                            }}
-                        />
-
-
-
-                        <h2
-                            style={{
-                                marginBottom: "20px",
-                                color: "#16a34a",
-                            }}
-                        >
-                            Prescription
-                        </h2>
-
-                        <p>
-                            <strong>Bari:</strong>{" "}
-                            {item.bari || "N/A"}
-                        </p>
-
-                        <p>
-                            <strong>Dozimi:</strong>{" "}
-                            {item.dozimi || "N/A"}
-                        </p>
-
-                        <p>
-                            <strong>Kohezgjatja:</strong>{" "}
-                            {item.kohezgjatja || "N/A"}
-                        </p>
-
-                        <p>
-                            <strong>Udhezime:</strong>{" "}
-                            {item.udhezime || "N/A"}
-                        </p>
-
-                    </div>
-                ))
+                </div>
             )}
         </div>
     );

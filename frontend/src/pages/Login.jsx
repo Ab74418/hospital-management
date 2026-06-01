@@ -1,10 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
+
 import {
     Link,
+    useNavigate,
 } from "react-router-dom";
 
 function Login() {
+
+    const navigate = useNavigate();
 
     const [username, setUsername] =
         useState("");
@@ -28,6 +32,8 @@ function Login() {
 
             console.log(res.data);
 
+            // Save token and role
+
             localStorage.setItem(
                 "token",
                 res.data.token
@@ -38,24 +44,9 @@ function Login() {
                 res.data.role
             );
 
-            if (
-                res.data.role === "admin"
-            ) {
+            // Redirect to Home
 
-                window.location.href =
-                    "/patients";
-
-            } else if (
-                res.data.role === "doctor"
-            ) {
-
-                window.location.href =
-                    "/medical-records";
-
-            } else {
-
-                window.location.href = "/";
-            }
+            navigate("/home");
 
         } catch (err) {
 

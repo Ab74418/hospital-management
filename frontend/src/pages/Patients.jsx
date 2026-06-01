@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Patients() {
+
     const [patients, setPatients] = useState([]);
     const [doctors, setDoctors] = useState([]);
 
@@ -22,35 +23,46 @@ function Patients() {
     const navigate = useNavigate();
 
     const fetchPatients = async () => {
+
         try {
+
             const res = await axios.get(
                 "http://localhost:5000/api/patients"
             );
 
             setPatients(res.data);
+
         } catch (err) {
+
             console.log(err);
         }
     };
 
     const fetchDoctors = async () => {
+
         try {
+
             const res = await axios.get(
                 "http://localhost:5000/api/doctors"
             );
 
             setDoctors(res.data);
+
         } catch (err) {
+
             console.log(err);
         }
     };
 
     useEffect(() => {
+
         fetchPatients();
         fetchDoctors();
+
     }, []);
 
     const handleChange = (e) => {
+
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -58,17 +70,22 @@ function Patients() {
     };
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         try {
+
             if (editingId) {
+
                 await axios.put(
                     `http://localhost:5000/api/patients/${editingId}`,
                     form
                 );
 
                 setEditingId(null);
+
             } else {
+
                 await axios.post(
                     "http://localhost:5000/api/patients",
                     form
@@ -87,14 +104,19 @@ function Patients() {
                 grupa_gjakut: "",
                 doctor_id: "",
             });
+
         } catch (err) {
+
             console.log(err);
         }
     };
 
     const filterByDoctor = async (doctorId) => {
+
         try {
+
             if (!doctorId) {
+
                 fetchPatients();
                 return;
             }
@@ -104,24 +126,31 @@ function Patients() {
             );
 
             setPatients(res.data);
+
         } catch (err) {
+
             console.log(err);
         }
     };
 
     const handleDelete = async (id) => {
+
         try {
+
             await axios.delete(
                 `http://localhost:5000/api/patients/${id}`
             );
 
             fetchPatients();
+
         } catch (err) {
+
             console.log(err);
         }
     };
 
     const handleEdit = (patient) => {
+
         setEditingId(patient.id);
 
         setForm({
@@ -138,17 +167,17 @@ function Patients() {
     };
 
     const handleLogout = () => {
+
         localStorage.removeItem("token");
-
-
         localStorage.removeItem("role");
-
 
         navigate("/login");
     };
 
     return (
+
         <div style={{ padding: "20px" }}>
+
             <div
                 style={{
                     display: "flex",
@@ -157,76 +186,11 @@ function Patients() {
                     marginBottom: "20px",
                 }}
             >
+
                 <h1>Patients</h1>
 
                 <button onClick={handleLogout}>
                     Logout
-                </button>
-            </div>
-
-            <div
-                style={{
-                    display: "flex",
-                    gap: "10px",
-                    marginBottom: "20px",
-                    flexWrap: "wrap",
-                }}
-            >
-
-                <button
-                    onClick={() =>
-                        navigate("/patients")
-                    }
-                >
-                    Patients
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/doctors")
-                    }
-                >
-                    Doctors
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/departments")
-                    }
-                >
-                    Departments
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/rooms")
-                    }
-                >
-                    Rooms
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/nurses")
-                    }
-                >
-                    Nurses
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/appointments")
-                    }
-                >
-                    Appointments
-                </button>
-
-                <button
-                    onClick={() =>
-                        navigate("/medical-records")
-                    }
-                >
-                    Medical Records
                 </button>
 
             </div>
@@ -235,6 +199,7 @@ function Patients() {
                 className="patient-form"
                 onSubmit={handleSubmit}
             >
+
                 <input
                     type="text"
                     name="emri"
@@ -302,52 +267,69 @@ function Patients() {
                     value={form.doctor_id}
                     onChange={handleChange}
                 >
+
                     <option value="">
                         Select Doctor
                     </option>
 
                     {doctors.map((doctor) => (
+
                         <option
                             key={doctor.id}
                             value={doctor.id}
                         >
                             {doctor.emri} {doctor.mbiemri}
                         </option>
+
                     ))}
+
                 </select>
 
                 <button type="submit">
+
                     {editingId
                         ? "Update Patient"
                         : "Add Patient"}
+
                 </button>
+
             </form>
 
             <div style={{ margin: "20px 0" }}>
-                <label>Filter by Doctor: </label>
+
+                <label>
+                    Filter by Doctor:
+                </label>
 
                 <select
                     onChange={(e) =>
                         filterByDoctor(e.target.value)
                     }
                 >
+
                     <option value="">
                         All Patients
                     </option>
 
                     {doctors.map((doctor) => (
+
                         <option
                             key={doctor.id}
                             value={doctor.id}
                         >
                             {doctor.emri} {doctor.mbiemri}
                         </option>
+
                     ))}
+
                 </select>
+
             </div>
 
             <table>
+
                 <thead>
+
                     <tr>
                         <th>ID</th>
                         <th>Emri</th>
@@ -355,11 +337,15 @@ function Patients() {
                         <th>Doctor</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
+
                     {patients.map((p) => (
+
                         <tr key={p.id}>
+
                             <td>{p.id}</td>
 
                             <td>{p.emri}</td>
@@ -367,17 +353,25 @@ function Patients() {
                             <td>{p.mbiemri}</td>
 
                             <td>
+
                                 {p.doctor_emri
                                     ? `${p.doctor_emri} ${p.doctor_mbiemri}`
                                     : "No Doctor"}
+
                             </td>
 
-                            <td>
+                            <td
+                                style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    flexWrap: "wrap",
+                                    justifyContent: "center",
+                                }}
+                            >
+
                                 <button
                                     onClick={() =>
-                                        navigate(
-                                            `/patients/${p.id}`
-                                        )
+                                        navigate(`/patients/${p.id}`)
                                     }
                                 >
                                     Details
@@ -385,36 +379,10 @@ function Patients() {
 
                                 <button
                                     onClick={() =>
-                                        navigate(
-                                            "/medical-records"
-                                        )
+                                        navigate("/medicalrecords")
                                     }
                                 >
-                                    Add Diagnosis
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        navigate("/allergies")
-                                    }
-                                >
-                                    Allergies
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        navigate("/vitals")
-                                    }
-                                >
-                                    Vitals
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        navigate("/prescriptions")
-                                    }
-                                >
-                                    Prescriptions
+                                    Medical Record
                                 </button>
 
                                 <button
@@ -432,11 +400,17 @@ function Patients() {
                                 >
                                     Delete
                                 </button>
+
                             </td>
+
                         </tr>
+
                     ))}
+
                 </tbody>
+
             </table>
+
         </div>
     );
 }

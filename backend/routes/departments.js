@@ -12,62 +12,59 @@ const prisma = new PrismaClient({
 });
 
 router.get("/", async (req, res) => {
+
     try {
-        const departments = await prisma.departments.findMany({
-            select: {
-                id: true,
-                emri: true,
-                pershkrimi: true,
-                lokacioni: true,
-            },
-        });
+
+        const departments =
+            await prisma.departments.findMany();
 
         res.json(departments);
-    } catch (error) {
-        res.status(500).json({
-            message: "Gabim gjatë marrjes së departments",
-            error: error.message,
-        });
-    }
-});
-router.get("/", async (req, res) => {
-    try {
-        const departments = await prisma.departments.findMany({
-            select: {
-                id: true,
-                emri: true,
-                pershkrimi: true,
-                lokacioni: true,
-            },
-        });
 
-        res.json(departments);
     } catch (error) {
-        console.log("GET DEPARTMENTS ERROR:", error);
+
+        console.log(
+            "GET DEPARTMENTS ERROR:",
+            error
+        );
 
         res.status(500).json({
-            message: "Gabim gjatë marrjes së departments",
+            message:
+                "Gabim gjatë marrjes së departments",
             error: error.message,
         });
     }
 });
 
 router.get("/:id", async (req, res) => {
+
     try {
+
         const { id } = req.params;
 
-        const department = await prisma.departments.findUnique({
-            where: { id: Number(id) },
-        });
+        const department =
+            await prisma.departments.findUnique({
+                where: {
+                    id: Number(id),
+                },
+            });
 
         if (!department) {
+
             return res.status(404).json({
-                message: "Department nuk u gjet!",
+                message:
+                    "Department nuk u gjet!",
             });
         }
 
         res.json(department);
+
     } catch (error) {
+
+        console.log(
+            "GET DEPARTMENT ERROR:",
+            error
+        );
+
         res.status(500).json({
             message: "Gabim",
             error: error.message,
@@ -76,59 +73,109 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    try {
-        const { emertimi } = req.body;
 
-        const department = await prisma.departments.create({
-            data: {
-                emertimi,
-            },
-        });
+    try {
+
+        const {
+            emri,
+            pershkrimi,
+            lokacioni
+        } = req.body;
+
+        const department =
+            await prisma.departments.create({
+                data: {
+                    emri,
+                    pershkrimi,
+                    lokacioni,
+                },
+            });
 
         res.json(department);
+
     } catch (error) {
-        console.log("POST DEPARTMENT ERROR:", error);
+
+        console.log(
+            "POST DEPARTMENT ERROR:",
+            error
+        );
 
         res.status(500).json({
-            message: "Gabim gjatë shtimit të department",
+            message:
+                "Gabim gjatë shtimit të department",
             error: error.message,
         });
     }
 });
 
 router.put("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { emri } = req.body;
 
-        const updated = await prisma.departments.update({
-            where: { id: Number(id) },
-            data: {
-                emri,
-            },
-        });
+    try {
+
+        const { id } = req.params;
+
+        const {
+            emri,
+            pershkrimi,
+            lokacioni
+        } = req.body;
+
+        const updated =
+            await prisma.departments.update({
+                where: {
+                    id: Number(id),
+                },
+                data: {
+                    emri,
+                    pershkrimi,
+                    lokacioni,
+                },
+            });
 
         res.json(updated);
+
     } catch (error) {
+
+        console.log(
+            "UPDATE DEPARTMENT ERROR:",
+            error
+        );
+
         res.status(500).json({
-            message: "Gabim gjatë editimit",
+            message:
+                "Gabim gjatë editimit",
             error: error.message,
         });
     }
 });
 
 router.delete("/:id", async (req, res) => {
+
     try {
+
         const { id } = req.params;
 
         await prisma.departments.delete({
-            where: { id: Number(id) },
+            where: {
+                id: Number(id),
+            },
         });
 
-        res.json({ message: "Department u fshi!" });
+        res.json({
+            message:
+                "Department u fshi!",
+        });
+
     } catch (error) {
+
+        console.log(
+            "DELETE DEPARTMENT ERROR:",
+            error
+        );
+
         res.status(500).json({
-            message: "Gabim gjatë fshirjes",
+            message:
+                "Gabim gjatë fshirjes",
             error: error.message,
         });
     }
