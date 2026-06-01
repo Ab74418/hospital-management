@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import {
-    useNavigate,
     Link,
 } from "react-router-dom";
 
@@ -12,8 +11,6 @@ function Login() {
 
     const [password, setPassword] =
         useState("");
-
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
 
@@ -29,6 +26,8 @@ function Login() {
                 }
             );
 
+            console.log(res.data);
+
             localStorage.setItem(
                 "token",
                 res.data.token
@@ -43,17 +42,19 @@ function Login() {
                 res.data.role === "admin"
             ) {
 
-                navigate("/patients");
+                window.location.href =
+                    "/patients";
 
             } else if (
                 res.data.role === "doctor"
             ) {
 
-                navigate("/doctors");
+                window.location.href =
+                    "/medical-records";
 
             } else {
 
-                navigate("/");
+                window.location.href = "/";
             }
 
         } catch (err) {

@@ -3,54 +3,108 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+
+    const [form, setForm] = useState({
+        username: "",
+        password: "",
+        role: "user",
+        secretCode: "",
+    });
 
     const navigate = useNavigate();
 
+    const handleChange = (e) => {
+
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value,
+        });
+    };
+
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
         try {
+
             await axios.post(
                 "http://localhost:5000/api/auth/register",
-                {
-                    username,
-                    password,
-                }
+                form
             );
 
             alert("Registered successfully!");
+
             navigate("/login");
 
         } catch (err) {
+
             console.log(err);
-            alert("Register failed!");
+
+            alert(
+                err.response?.data?.message ||
+                "Register failed!"
+            );
         }
     };
 
     return (
+
         <div>
+
             <h2>Register</h2>
 
             <form onSubmit={handleSubmit}>
+
                 <input
+                    type="text"
+                    name="username"
                     placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={form.username}
+                    onChange={handleChange}
                 />
 
                 <input
                     type="password"
+                    name="password"
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={form.password}
+                    onChange={handleChange}
+                />
+
+                <select
+                    name="role"
+                    value={form.role}
+                    onChange={handleChange}
+                >
+
+                    <option value="user">
+                        User
+                    </option>
+
+                    <option value="doctor">
+                        Doctor
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                </select>
+
+                <input
+                    type="text"
+                    name="secretCode"
+                    placeholder="Secret Code"
+                    value={form.secretCode}
+                    onChange={handleChange}
                 />
 
                 <button type="submit">
                     Register
                 </button>
+
             </form>
+
         </div>
     );
 }
