@@ -53,6 +53,25 @@ router.post("/register", async (req, res) => {
                 message: "Doctor code gabim",
             });
         }
+        if (
+            role === "nurse" &&
+            secretCode !== "NURSE2026"
+        ) {
+
+            return res.status(403).json({
+                message: "Nurse code gabim",
+            });
+        }
+
+        if (
+            role === "receptionist" &&
+            secretCode !== "REC2026"
+        ) {
+
+            return res.status(403).json({
+                message: "Receptionist code gabim",
+            });
+        }
 
         const hashedPassword =
             await bcrypt.hash(password, 10);
