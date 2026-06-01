@@ -51,11 +51,11 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const { emri } = req.body;
+        const { emertimi } = req.body;
 
         const department = await prisma.departments.create({
             data: {
-                emri,
+                emertimi,
             },
         });
 

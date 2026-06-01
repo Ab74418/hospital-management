@@ -4,24 +4,20 @@ import { useParams, useNavigate, } from "react-router-dom";
 
 function PatientDetails() {
 
-    // Merr ID prej URL
     const { id } = useParams();
 
-    // Per navigim
     const navigate = useNavigate();
 
-    // State per patient details
     const [data, setData] = useState([]);
 
-    // Loading state
+
     const [loading, setLoading] = useState(true);
 
-    // Error state
+
     const [error, setError] = useState("");
 
 
 
-    // Merr te dhenat e pacientit
     useEffect(() => {
 
         const getDetails = async () => {
@@ -52,7 +48,7 @@ function PatientDetails() {
 
 
 
-    // Loading message
+
     if (loading) {
         return (
             <div style={{ padding: "20px" }}>
@@ -63,7 +59,7 @@ function PatientDetails() {
 
 
 
-    // Error message
+
     if (error) {
         return (
             <div style={{ padding: "20px" }}>
@@ -84,7 +80,6 @@ function PatientDetails() {
             }}
         >
 
-            {/* Back button */}
             <button
                 type="button"
                 onClick={() => navigate("/patients")}
@@ -134,7 +129,6 @@ function PatientDetails() {
                         }}
                     >
 
-                        {/* Patient Info */}
                         <h2
                             style={{
                                 marginBottom: "20px",
@@ -183,8 +177,6 @@ function PatientDetails() {
                         />
 
 
-
-                        {/* Medical Record */}
                         <h2
                             style={{
                                 marginBottom: "20px",
@@ -214,7 +206,6 @@ function PatientDetails() {
 
 
 
-                        {/* Prescription */}
                         <h2
                             style={{
                                 marginBottom: "20px",
