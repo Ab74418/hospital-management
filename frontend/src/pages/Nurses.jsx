@@ -4,6 +4,9 @@ export default function Nurses() {
 
     const [nurses, setNurses] = useState([]);
 
+    const [departments, setDepartments] =
+        useState([]);
+
     const [form, setForm] = useState({
         emri: "",
         mbiemri: "",
@@ -14,63 +17,53 @@ export default function Nurses() {
     const [editingId, setEditingId] =
         useState(null);
 
-    const fetchNurses = async () => {
-
-        try {
-
-            const res = await fetch(
-                "http://localhost:5000/api/nurses"
-            );
-
-            const data = await res.json();
-
-            if (Array.isArray(data)) {
-
-                setNurses(data);
-
-            } else {
-
-                setNurses([]);
-            }
-
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
-
     useEffect(() => {
 
-        const fetchNurses = async () => {
+        async function loadData() {
 
             try {
 
-                const res = await fetch(
-                    "http://localhost:5000/api/nurses"
+               
+                const nursesRes =
+                    await fetch(
+                        "http://localhost:5000/api/nurses"
+                    );
+
+                const nursesData =
+                    await nursesRes.json();
+
+                setNurses(
+                    Array.isArray(nursesData)
+                        ? nursesData
+                        : []
                 );
 
-                const data =
-                    await res.json();
+                
+                const departmentsRes =
+                    await fetch(
+                        "http://localhost:5000/api/departments"
+                    );
 
-                if (Array.isArray(data)) {
+                const departmentsData =
+                    await departmentsRes.json();
 
-                    setNurses(data);
-
-                } else {
-
-                    setNurses([]);
-                }
+                setDepartments(
+                    Array.isArray(departmentsData)
+                        ? departmentsData
+                        : []
+                );
 
             } catch (err) {
 
                 console.log(err);
             }
-        };
+        }
 
-        fetchNurses();
+        loadData();
 
     }, []);
 
+  
     const handleChange = (e) => {
 
         setForm({
@@ -80,89 +73,143 @@ export default function Nurses() {
         });
     };
 
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        try {
-
-            if (editingId) {
-
-                await fetch(
-                    `http://localhost:5000/api/nurses/${editingId}`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type":
-                                "application/json",
-                        },
-                        body: JSON.stringify(form),
-                    }
-                );
-
-            } else {
-
-                await fetch(
-                    "http://localhost:5000/api/nurses",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json",
-                        },
-                        body: JSON.stringify(form),
-                    }
-                );
-            }
-
-            setForm({
-                emri: "",
-                mbiemri: "",
-                department_id: "",
-                turni: "",
-            });
-
-            setEditingId(null);
-
-            fetchNurses();
-
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    const handleDelete = async (id) => {
+   
+    const fetchNurses = async () => {
 
         try {
 
-            await fetch(
-                `http://localhost:5000/api/nurses/${id}`,
-                {
-                    method: "DELETE",
-                }
+            const res =
+                await fetch(
+                    "http://localhost:5000/api/nurses"
+                );
+
+            const data =
+                await res.json();
+
+            setNurses(
+                Array.isArray(data)
+                    ? data
+                    : []
             );
 
-            fetchNurses();
-
         } catch (err) {
 
             console.log(err);
         }
     };
 
-    const handleEdit = (nurse) => {
 
-        setEditingId(nurse.id);
+    const handleSubmit =
+        async (e) => {
 
-        setForm({
-            emri: nurse.emri,
-            mbiemri: nurse.mbiemri,
-            department_id:
-                nurse.department_id,
-            turni: nurse.turni,
-        });
-    };
+            e.preventDefault();
+
+            try {
+
+                if (editingId) {
+
+                    await fetch(
+                        `http://localhost:5000/api/nurses/${editingId}`,
+                        {
+                            method:
+                                "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    form
+                                ),
+                        }
+                    );
+
+                } else {
+
+                    await fetch(
+                        "http://localhost:5000/api/nurses",
+                        {
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    form
+                                ),
+                        }
+                    );
+                }
+
+                setForm({
+                    emri: "",
+                    mbiemri: "",
+                    department_id:
+                        "",
+                    turni: "",
+                });
+
+                setEditingId(
+                    null
+                );
+
+                fetchNurses();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+ 
+    const handleDelete =
+        async (id) => {
+
+            try {
+
+                await fetch(
+                    `http://localhost:5000/api/nurses/${id}`,
+                    {
+                        method:
+                            "DELETE",
+                    }
+                );
+
+                fetchNurses();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleEdit =
+        (nurse) => {
+
+            setEditingId(
+                nurse.id
+            );
+
+            setForm({
+                emri:
+                    nurse.emri,
+
+                mbiemri:
+                    nurse.mbiemri,
+
+                department_id:
+                    nurse.department_id,
+
+                turni:
+                    nurse.turni,
+            });
+        };
 
     return (
 
@@ -175,13 +222,21 @@ export default function Nurses() {
             <h1>Nurses</h1>
 
             <form
-                onSubmit={handleSubmit}
+                onSubmit={
+                    handleSubmit
+                }
                 style={{
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection:
+                        "column",
+
                     gap: "10px",
-                    maxWidth: "400px",
-                    marginBottom: "30px",
+
+                    maxWidth:
+                        "400px",
+
+                    marginBottom:
+                        "30px",
                 }}
             >
 
@@ -189,35 +244,81 @@ export default function Nurses() {
                     type="text"
                     name="emri"
                     placeholder="Emri"
-                    value={form.emri}
-                    onChange={handleChange}
+                    value={
+                        form.emri
+                    }
+                    onChange={
+                        handleChange
+                    }
                 />
 
                 <input
                     type="text"
                     name="mbiemri"
                     placeholder="Mbiemri"
-                    value={form.mbiemri}
-                    onChange={handleChange}
+                    value={
+                        form.mbiemri
+                    }
+                    onChange={
+                        handleChange
+                    }
                 />
 
-                <input
-                    type="number"
+                <select
                     name="department_id"
-                    placeholder="Department ID"
-                    value={form.department_id}
-                    onChange={handleChange}
-                />
+                    value={
+                        form.department_id
+                    }
+                    onChange={
+                        handleChange
+                    }
+                >
+
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    {departments.map(
+                        (
+                            department
+                        ) => (
+
+                            <option
+                                key={
+                                    department.id
+                                }
+
+                                value={
+                                    department.id
+                                }
+                            >
+
+                                {
+                                    department.emertimi
+                                }
+
+                            </option>
+
+                        )
+                    )}
+
+                </select>
 
                 <input
                     type="text"
                     name="turni"
                     placeholder="Turni"
-                    value={form.turni}
-                    onChange={handleChange}
+                    value={
+                        form.turni
+                    }
+                    onChange={
+                        handleChange
+                    }
                 />
 
-                <button type="submit">
+                <button
+                    type="submit"
+                >
 
                     {editingId
                         ? "Update Nurse"
@@ -227,62 +328,96 @@ export default function Nurses() {
 
             </form>
 
-            {nurses.length === 0 ? (
+            {nurses.length ===
+                0 ? (
 
-                <p>No nurses found</p>
+                <p>
+                    No nurses found
+                </p>
 
             ) : (
 
-                nurses.map((nurse) => (
+                nurses.map(
+                    (nurse) => (
 
-                    <div
-                        key={nurse.id}
-                        style={{
-                            background: "white",
-                            padding: "15px",
-                            marginBottom: "10px",
-                            borderRadius: "10px",
-                        }}
-                    >
-
-                        <h3>
-                            {nurse.emri}{" "}
-                            {nurse.mbiemri}
-                        </h3>
-
-                        <p>
-                            Department ID:
-                            {" "}
-                            {nurse.department_id}
-                        </p>
-
-                        <p>
-                            Turni:
-                            {" "}
-                            {nurse.turni}
-                        </p>
-
-                        <button
-                            onClick={() =>
-                                handleEdit(nurse)
+                        <div
+                            key={
+                                nurse.id
                             }
+
+                            style={{
+                                background:
+                                    "white",
+
+                                padding:
+                                    "15px",
+
+                                marginBottom:
+                                    "10px",
+
+                                borderRadius:
+                                    "10px",
+                            }}
                         >
-                            Edit
-                        </button>
 
-                        <button
-                            onClick={() =>
-                                handleDelete(
-                                    nurse.id
-                                )
-                            }
-                        >
-                            Delete
-                        </button>
+                            <h3>
 
-                    </div>
+                                {
+                                    nurse.emri
+                                }{" "}
 
-                ))
+                                {
+                                    nurse.mbiemri
+                                }
+
+                            </h3>
+
+                            <p>
+
+                                Department:
+                                {" "}
+
+                                {
+                                    nurse.department_name
+                                }
+
+                            </p>
+
+                            <p>
+
+                                Turni:
+                                {" "}
+
+                                {
+                                    nurse.turni
+                                }
+
+                            </p>
+
+                            <button
+                                onClick={() =>
+                                    handleEdit(
+                                        nurse
+                                    )
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                onClick={() =>
+                                    handleDelete(
+                                        nurse.id
+                                    )
+                                }
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+
+                    )
+                )
 
             )}
 

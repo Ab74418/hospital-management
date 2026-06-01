@@ -1,192 +1,188 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import db from "../config/db.js";
 
 const router = express.Router();
 
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: "mysql://root:@127.0.0.1:3306/hospital_management",
-        },
-    },
-});
+router.get("/", (req, res) => {
 
-router.get("/", async (req, res) => {
+    const sql = `
+        SELECT 
+            id,
+            emertimi,
+            pershkrimi,
+            lokacioni
+        FROM departments
+    `;
 
-    try {
+    db.query(sql, (err, results) => {
 
-        const departments =
-            await prisma.departments.findMany({
-                select: {
-                    id: true,
-                    emri: true,
-                    pershkrimi: true,
-                    lokacioni: true,
-                },
-            });
+        if (err) {
 
-        res.json(departments);
+            console.log("GET DEPARTMENTS ERROR:", err);
 
-    } catch (error) {
-
-        console.log(
-            "GET DEPARTMENTS ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Gabim gjatë marrjes së departments",
-            error: error.message,
-        });
-    }
-});
-
-router.get("/:id", async (req, res) => {
-
-    try {
-
-        const { id } = req.params;
-
-        const department =
-            await prisma.departments.findUnique({
-                where: {
-                    id: Number(id),
-                },
-            });
-
-        if (!department) {
-
-            return res.status(404).json({
-                message:
-                    "Department nuk u gjet!",
+            return res.status(500).json({
+                message: "Error getting departments",
+                error: err,
             });
         }
 
-        res.json(department);
-
-    } catch (error) {
-
-        console.log(
-            "GET DEPARTMENT ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            message: "Gabim",
-            error: error.message,
-        });
-    }
+        res.json(results);
+    });
 });
 
-router.post("/", async (req, res) => {
+router.get("/:id", (req, res) => {
 
-    try {
+    const { id } = req.params;
 
-        const {
-            emri,
+    const sql = `
+        SELECT 
+            id,
+            emertimi,
             pershkrimi,
             lokacioni
-        } = req.body;
+        FROM departments
+        WHERE id = ?
+    `;
 
-        const department =
-            await prisma.departments.create({
-                data: {
-                    emri,
-                    pershkrimi,
-                    lokacioni,
-                },
+    db.query(sql, [id], (err, results) => {
+
+        if (err) {
+
+            console.log("GET DEPARTMENT ERROR:", err);
+
+            return res.status(500).json({
+                message: "Error getting department",
+                error: err,
             });
+        }
 
-        res.json(department);
+        if (results.length === 0) {
 
-    } catch (error) {
+            return res.status(404).json({
+                message: "Department not found",
+            });
+        }
 
-        console.log(
-            "POST DEPARTMENT ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Gabim gjatë shtimit të department",
-            error: error.message,
-        });
-    }
+        res.json(results[0]);
+    });
 });
 
-router.put("/:id", async (req, res) => {
+router.post("/", (req, res) => {
 
-    try {
+    const {
+        emertimi,
+        pershkrimi,
+        lokacioni
+    } = req.body;
 
-        const { id } = req.params;
-
-        const {
-            emri,
+    const sql = `
+        INSERT INTO departments
+        (
+            emertimi,
             pershkrimi,
             lokacioni
-        } = req.body;
+        )
+        VALUES (?, ?, ?)
+    `;
 
-        const updated =
-            await prisma.departments.update({
-                where: {
-                    id: Number(id),
-                },
+    db.query(
+        sql,
+        [
+            emertimi,
+            pershkrimi,
+            lokacioni
+        ],
+        (err, result) => {
 
-                data: {
-                    emri,
-                    pershkrimi,
-                    lokacioni,
-                },
+            if (err) {
+
+                console.log("ADD DEPARTMENT ERROR:", err);
+
+                return res.status(500).json({
+                    message: "Error adding department",
+                    error: err,
+                });
+            }
+
+            res.json({
+                message: "Department added successfully",
+                id: result.insertId,
             });
-
-        res.json(updated);
-
-    } catch (error) {
-
-        console.log(
-            "UPDATE DEPARTMENT ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Gabim gjatë editimit",
-            error: error.message,
-        });
-    }
+        }
+    );
 });
 
-router.delete("/:id", async (req, res) => {
+router.put("/:id", (req, res) => {
 
-    try {
+    const { id } = req.params;
 
-        const { id } = req.params;
+    const {
+        emertimi,
+        pershkrimi,
+        lokacioni
+    } = req.body;
 
-        await prisma.departments.delete({
-            where: {
-                id: Number(id),
-            },
-        });
+    const sql = `
+        UPDATE departments
+        SET
+            emertimi = ?,
+            pershkrimi = ?,
+            lokacioni = ?
+        WHERE id = ?
+    `;
+
+    db.query(
+        sql,
+        [
+            emertimi,
+            pershkrimi,
+            lokacioni,
+            id
+        ],
+        (err) => {
+
+            if (err) {
+
+                console.log("UPDATE DEPARTMENT ERROR:", err);
+
+                return res.status(500).json({
+                    message: "Error updating department",
+                    error: err,
+                });
+            }
+
+            res.json({
+                message: "Department updated successfully",
+            });
+        }
+    );
+});
+
+router.delete("/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const sql = `
+        DELETE FROM departments
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err) => {
+
+        if (err) {
+
+            console.log("DELETE DEPARTMENT ERROR:", err);
+
+            return res.status(500).json({
+                message: "Error deleting department",
+                error: err,
+            });
+        }
 
         res.json({
-            message:
-                "Department u fshi!",
+            message: "Department deleted successfully",
         });
-
-    } catch (error) {
-
-        console.log(
-            "DELETE DEPARTMENT ERROR:",
-            error
-        );
-
-        res.status(500).json({
-            message:
-                "Gabim gjatë fshirjes",
-            error: error.message,
-        });
-    }
+    });
 });
 
 export default router;
