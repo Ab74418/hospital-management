@@ -250,8 +250,7 @@ export default function Departments() {
                                     ID:
                                 </b>{" "}
                                 {
-                                    dep.id
-                                }
+                                    dep.id * 100}D
                             </p>
 
                             <p>
