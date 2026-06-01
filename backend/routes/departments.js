@@ -134,7 +134,7 @@ router.put("/:id", (req, res) => {
     db.query(
         sql,
         [
-            emri
+            emri,
             pershkrimi,
             lokacioni,
             id
