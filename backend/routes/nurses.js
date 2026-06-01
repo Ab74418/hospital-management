@@ -6,7 +6,16 @@ const router = express.Router();
 router.get("/", (req, res) => {
 
     const sql = `
-        SELECT * FROM nurses
+        SELECT
+            nurses.id,
+            nurses.emri,
+            nurses.mbiemri,
+            nurses.department_id,
+            nurses.turni,
+            departments.emertimi AS department_name
+        FROM nurses
+        LEFT JOIN departments
+        ON nurses.department_id = departments.id
     `;
 
     db.query(sql, (err, results) => {
@@ -28,8 +37,17 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
 
     const sql = `
-        SELECT * FROM nurses
-        WHERE id = ?
+        SELECT
+            nurses.id,
+            nurses.emri,
+            nurses.mbiemri,
+            nurses.department_id,
+            nurses.turni,
+            departments.emertimi AS department_name
+        FROM nurses
+        LEFT JOIN departments
+        ON nurses.department_id = departments.id
+        WHERE nurses.id = ?
     `;
 
     db.query(

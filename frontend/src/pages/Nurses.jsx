@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Nurses() {
+
+    const navigate = useNavigate();
 
     const [nurses, setNurses] = useState([]);
 
@@ -23,7 +26,6 @@ export default function Nurses() {
 
             try {
 
-               
                 const nursesRes =
                     await fetch(
                         "http://localhost:5000/api/nurses"
@@ -38,7 +40,6 @@ export default function Nurses() {
                         : []
                 );
 
-                
                 const departmentsRes =
                     await fetch(
                         "http://localhost:5000/api/departments"
@@ -63,17 +64,6 @@ export default function Nurses() {
 
     }, []);
 
-  
-    const handleChange = (e) => {
-
-        setForm({
-            ...form,
-            [e.target.name]:
-                e.target.value,
-        });
-    };
-
-   
     const fetchNurses = async () => {
 
         try {
@@ -98,6 +88,14 @@ export default function Nurses() {
         }
     };
 
+    const handleChange = (e) => {
+
+        setForm({
+            ...form,
+            [e.target.name]:
+                e.target.value,
+        });
+    };
 
     const handleSubmit =
         async (e) => {
@@ -167,7 +165,6 @@ export default function Nurses() {
             }
         };
 
- 
     const handleDelete =
         async (id) => {
 
@@ -218,6 +215,33 @@ export default function Nurses() {
                 padding: "30px",
             }}
         >
+
+            <button
+                onClick={() =>
+                    navigate("/home")
+                }
+                style={{
+                    background:
+                        "#1ea5e7",
+
+                    color: "white",
+
+                    border: "none",
+
+                    padding:
+                        "10px 20px",
+
+                    borderRadius:
+                        "10px",
+
+                    cursor: "pointer",
+
+                    marginBottom:
+                        "20px",
+                }}
+            >
+                Back
+            </button>
 
             <h1>Nurses</h1>
 
