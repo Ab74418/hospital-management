@@ -2,34 +2,8 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 
 const router = express.Router();
+const prisma = new PrismaClient();
 
-const prisma = new PrismaClient({
-    datasources: {
-        db: {
-            url: "mysql://root:@127.0.0.1:3306/hospital_management",
-        },
-    },
-});
-
-router.get("/", async (req, res) => {
-    try {
-        const departments = await prisma.departments.findMany({
-            select: {
-                id: true,
-                emri: true,
-                pershkrimi: true,
-                lokacioni: true,
-            },
-        });
-
-        res.json(departments);
-    } catch (error) {
-        res.status(500).json({
-            message: "Gabim gjatë marrjes së departments",
-            error: error.message,
-        });
-    }
-});
 router.get("/", async (req, res) => {
     try {
         const departments = await prisma.departments.findMany({
@@ -44,7 +18,6 @@ router.get("/", async (req, res) => {
         res.json(departments);
     } catch (error) {
         console.log("GET DEPARTMENTS ERROR:", error);
-
         res.status(500).json({
             message: "Gabim gjatë marrjes së departments",
             error: error.message,
@@ -77,18 +50,19 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const { emertimi } = req.body;
+        const { emri, pershkrimi, lokacioni } = req.body;
 
         const department = await prisma.departments.create({
             data: {
-                emertimi,
+                emri,
+                pershkrimi,
+                lokacioni,
             },
         });
 
         res.json(department);
     } catch (error) {
         console.log("POST DEPARTMENT ERROR:", error);
-
         res.status(500).json({
             message: "Gabim gjatë shtimit të department",
             error: error.message,
@@ -99,12 +73,14 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { emri } = req.body;
+        const { emri, pershkrimi, lokacioni } = req.body;
 
         const updated = await prisma.departments.update({
             where: { id: Number(id) },
             data: {
                 emri,
+                pershkrimi,
+                lokacioni,
             },
         });
 
