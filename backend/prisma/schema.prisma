@@ -84,6 +84,7 @@ model doctors {
   doctorspecializations doctorspecializations[]
   medicalrecords        medicalrecords[]
   schedules             schedules[]
+  patients patients[]
 
   @@index([department_id], map: "department_id")
   @@index([user_id], map: "user_id")
@@ -149,12 +150,19 @@ model patients {
   telefoni       String?          @db.VarChar(20)
   adresa         String?          @db.VarChar(100)
   grupa_gjakut   String?          @db.VarChar(5)
+
+  doctor_id Int?
+doctors doctors? @relation(fields: [doctor_id], references: [id])
+
   admissions     admissions[]
   allergies      allergies[]
   appointments   appointments[]
   invoices       invoices[]
   medicalrecords medicalrecords[]
   vitals         vitals[]
+
+  @@index([doctor_id])
+
 }
 
 model payments {

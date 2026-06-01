@@ -1,159 +1,32 @@
-import "./App.css";
-
-import {
-    Routes,
-    Route,
-    Navigate,
-} from "react-router-dom";
-
-import Patients from "./pages/Patients";
-import PatientDetails from "./pages/PatientDetails";
-import MedicalRecords from "./pages/MedicalRecords";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Allergies from "./pages/Allergies";
-import Prescriptions from "./pages/Prescriptions";
-import Vitals from "./pages/Vitals";
-import Rooms from "./pages/Rooms";
-import Payments from "./pages/Payments";
-import Doctors from "./pages/Doctors";
-import Appointments from "./pages/Appointments";
-import Departments from "./pages/Departments";
-import RoomTypes from "./pages/RoomTypes";
 import Nurses from "./pages/Nurses";
-import Schedules from "./pages/Schedules";
+import RoomTypes from "./pages/RoomTypes";
+import Departments from "./pages/Departments";
+import Doctors from "./pages/Doctors";
+import Payments from "./pages/Payments";
+import Rooms from "./pages/Rooms";
 import Specializations from "./pages/Specializations";
-import DoctorSpecializations from "./pages/DoctorSpecializations";
+import Schedules from "./pages/Schedules";
+import Patients from "./pages/Patients";
 
 function App() {
     return (
-        <div>
-            <Routes>
-                <Route path="/" element={<Navigate to="/login" />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-
-
-                <Route path="/roomtypes" element={<RoomTypes />} />
-
-                <Route path="/nurses" element={<Nurses />} />
-
-                <Route
-                    path="/patients"
-                    element={
-                        <ProtectedRoute>
-                            <Patients />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/patients/:id"
-                    element={
-                        <ProtectedRoute>
-                            <PatientDetails />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/medical-records"
-                    element={
-                        <ProtectedRoute>
-                            <MedicalRecords />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/allergies"
-                    element={
-                        <ProtectedRoute>
-                            <Allergies />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/prescriptions"
-                    element={
-                        <ProtectedRoute>
-                            <Prescriptions />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/vitals"
-                    element={
-                        <ProtectedRoute>
-                            <Vitals />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/rooms"
-                    element={
-                        <ProtectedRoute>
-                            <Rooms />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/payments"
-                    element={
-                        <ProtectedRoute>
-                            <Payments />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/doctors"
-                    element={
-                        <ProtectedRoute>
-                            <Doctors />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/appointments"
-                    element={
-                        <ProtectedRoute>
-                            <Appointments />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route
-                    path="/departments"
-                    element={
-                        <ProtectedRoute>
-                            <Departments />
-                        </ProtectedRoute>
-                    }
-                />
-
-                <Route path="/patients" element={<ProtectedRoute><Patients /></ProtectedRoute>} />
-                <Route path="/patients/:id" element={<ProtectedRoute><PatientDetails /></ProtectedRoute>} />
-                <Route path="/medical-records" element={<ProtectedRoute><MedicalRecords /></ProtectedRoute>} />
-                <Route path="/allergies" element={<ProtectedRoute><Allergies /></ProtectedRoute>} />
-                <Route path="/prescriptions" element={<ProtectedRoute><Prescriptions /></ProtectedRoute>} />
-                <Route path="/vitals" element={<ProtectedRoute><Vitals /></ProtectedRoute>} />
-                <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
-                <Route path="/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
-                <Route path="/doctors" element={<ProtectedRoute><Doctors /></ProtectedRoute>} />
-                <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
-                <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
-                <Route path="/schedules" element={<ProtectedRoute><Schedules /></ProtectedRoute>} />
-                <Route path="/specializations" element={<ProtectedRoute><Specializations /></ProtectedRoute>} />
-                <Route path="/doctor-specializations" element={<ProtectedRoute><DoctorSpecializations /></ProtectedRoute>} />
-            </Routes>
-        </div>
+        <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/nurses" element={<Nurses />} />
+            <Route path="/roomtypes" element={<RoomTypes />} />
+            <Route path="/departments" element={<Departments />} />
+            <Route path="/doctors" element={<Doctors />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/rooms" element={<Rooms />} />
+            <Route path="/specializations" element={<Specializations />} />
+            <Route path="/schedules" element={<Schedules />} />
+            <Route path="/patients" element={<Patients />} />
+        </Routes>
     );
 }
 
