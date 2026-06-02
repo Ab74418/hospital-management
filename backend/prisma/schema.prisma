@@ -188,23 +188,28 @@ model roles {
 }
 
 model rooms {
-  id            Int          @id @default(autoincrement())
-  numri_dhomes  String?      @db.VarChar(10)
-  department_id Int?
-  lloji         String?      @db.VarChar(50)
-  statusi       String?      @db.VarChar(50)
-  kapaciteti    Int?
-  admissions    admissions[]
-  beds          beds[]
-  departments   departments? @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "rooms_ibfk_1")
+  id Int @id @default(autoincrement())
 
-  @@index([department_id], map: "department_id")
+  numri_dhomes  String
+  department_id Int?
+  roomtype_id   Int?
+  statusi       String
+  kapaciteti    Int?
+
+  departments departments? @relation(fields: [department_id], references: [id])
+
+  roomtypes roomtypes? @relation(fields: [roomtype_id], references: [id])
+
+  beds       beds[]
+  admissions admissions[]
 }
 
 model roomtypes {
   id    Int      @id @default(autoincrement())
   emri  String?  @db.VarChar(50)
   cmimi Decimal? @db.Decimal(10, 2)
+
+  rooms rooms[]
 }
 
 model schedules {
