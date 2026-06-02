@@ -76,7 +76,7 @@ model doctors {
   surname               String?                 @db.VarChar(50)
   specialization          String?                 @db.VarChar(100)
   department_id         Int?
-  number              String?                 @db.VarChar(20)
+  telefoni              String?                 @db.VarChar(20)
   appointments          appointments[]
   users                 users?                  @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "doctors_ibfk_1")
   departments           departments?            @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "doctors_ibfk_2")
