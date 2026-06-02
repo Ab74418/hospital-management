@@ -5,68 +5,48 @@ import { useNavigate } from "react-router-dom";
 const API = "http://localhost:5000/api/vitals";
 
 function Vitals() {
-
     const navigate = useNavigate();
 
     const [vitals, setVitals] = useState([]);
-
     const [patients, setPatients] = useState([]);
+    const [nurses, setNurses] = useState([]);
 
     const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
         patient_id: "",
+        nurse_id: "",
         temperatura: "",
         tensioni: "",
         data: "",
     });
 
     const fetchVitals = async () => {
-
-        try {
-
-            const res = await axios.get(API);
-
-            setVitals(res.data);
-
-        } catch (err) {
-
-            console.log(err);
-        }
+        const res = await axios.get(API);
+        setVitals(res.data);
     };
 
     const fetchPatients = async () => {
+        const res = await axios.get("http://localhost:5000/api/patients");
+        setPatients(res.data);
+    };
 
-        try {
-
-            const res = await axios.get(
-                "http://localhost:5000/api/patients"
-            );
-
-            setPatients(res.data);
-
-        } catch (err) {
-
-            console.log(err);
-        }
+    const fetchNurses = async () => {
+        const res = await axios.get("http://localhost:5000/api/nurses");
+        setNurses(res.data);
     };
 
     useEffect(() => {
-
         const loadData = async () => {
-
-            await Promise.all([
-                fetchVitals(),
-                fetchPatients(),
-            ]);
+            await fetchVitals();
+            await fetchPatients();
+            await fetchNurses();
         };
 
         loadData();
-
     }, []);
 
     const handleChange = (e) => {
-
         setForm({
             ...form,
             [e.target.name]: e.target.value,
@@ -74,105 +54,80 @@ function Vitals() {
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
-        try {
-
-            if (editingId) {
-
-                await axios.put(
-                    `${API}/${editingId}`,
-                    form
-                );
-
-                setEditingId(null);
-
-            } else {
-
-                await axios.post(API, form);
-            }
-
-            fetchVitals();
-
-            setForm({
-                patient_id: "",
-                temperatura: "",
-                tensioni: "",
-                data: "",
-            });
-
-        } catch (err) {
-
-            console.log(err);
+        if (editingId) {
+            await axios.put(`${API}/${editingId}`, form);
+            setEditingId(null);
+        } else {
+            await axios.post(API, form);
         }
+
+        fetchVitals();
+
+        setForm({
+            patient_id: "",
+            nurse_id: "",
+            temperatura: "",
+            tensioni: "",
+            data: "",
+        });
     };
 
     const handleDelete = async (id) => {
-
-        try {
-
-            await axios.delete(
-                `${API}/${id}`
-            );
-
-            fetchVitals();
-
-        } catch (err) {
-
-            console.log(err);
-        }
+        await axios.delete(`${API}/${id}`);
+        fetchVitals();
     };
 
     const handleEdit = (v) => {
-
         setForm({
-            patient_id: v.patient_id,
-            temperatura: v.temperatura,
-            tensioni: v.tensioni,
-            data: v.data?.split("T")[0],
+            patient_id: v.patient_id || "",
+            nurse_id: v.nurse_id || "",
+            temperatura: v.temperatura || "",
+            tensioni: v.tensioni || "",
+            data: v.data?.split("T")[0] || "",
         });
 
         setEditingId(v.id);
     };
 
     return (
-
         <div style={{ padding: "20px" }}>
-
-            <button
-                onClick={() =>
-                    navigate("/patients")
-                }
-            >
+            <button onClick={() => navigate("/patients")}>
                 Back
             </button>
 
             <h1>Vitals</h1>
 
             <form onSubmit={handleSubmit}>
-
                 <select
                     name="patient_id"
                     value={form.patient_id}
                     onChange={handleChange}
                     required
                 >
-
-                    <option value="">
-                        Select Patient
-                    </option>
+                    <option value="">Select Patient</option>
 
                     {patients.map((p) => (
-
-                        <option
-                            key={p.id}
-                            value={p.id}
-                        >
-                            {p.emri} {p.mbiemri}
+                        <option key={p.id} value={p.id}>
+                            {p.emri || p.name} {p.mbiemri}
                         </option>
                     ))}
+                </select>
 
+                <select
+                    name="nurse_id"
+                    value={form.nurse_id}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select Nurse</option>
+
+                    {nurses.map((n) => (
+                        <option key={n.id} value={n.id}>
+                            {n.emri} {n.mbiemri}
+                        </option>
+                    ))}
                 </select>
 
                 <input
@@ -203,13 +158,8 @@ function Vitals() {
                 />
 
                 <button type="submit">
-
-                    {editingId
-                        ? "Update"
-                        : "Add Vital"}
-
+                    {editingId ? "Update" : "Add Vital"}
                 </button>
-
             </form>
 
             <table
@@ -220,89 +170,56 @@ function Vitals() {
                     width: "100%",
                 }}
             >
-
                 <thead>
-
                     <tr>
                         <th>ID</th>
                         <th>Patient</th>
+                        <th>Nurse</th>
                         <th>Temperatura</th>
                         <th>Tensioni</th>
                         <th>Data</th>
                         <th>Actions</th>
                     </tr>
-
                 </thead>
 
                 <tbody>
-
                     {vitals.map((v) => (
-
                         <tr key={v.id}>
-
                             <td>{v.id}</td>
 
                             <td>
-
-                                {
-                                    patients.find(
-                                        (p) =>
-                                            p.id ===
-                                            v.patient_id
-                                    )?.emri
-                                }{" "}
-
-                                {
-                                    patients.find(
-                                        (p) =>
-                                            p.id ===
-                                            v.patient_id
-                                    )?.mbiemri
-                                }
-
+                                {v.patient_emri || "No Patient"}{" "}
+                                {v.patient_mbiemri || ""}
                             </td>
 
                             <td>
-                                {v.temperatura} °C
+                                {v.nurse_emri || "No Nurse"}{" "}
+                                {v.nurse_mbiemri || ""}
+                            </td>
+
+                            <td>{v.temperatura} °C</td>
+
+                            <td>{v.tensioni}</td>
+
+                            <td>
+                                {v.data
+                                    ? new Date(v.data).toLocaleDateString()
+                                    : ""}
                             </td>
 
                             <td>
-                                {v.tensioni}
-                            </td>
-
-                            <td>
-                                {new Date(
-                                    v.data
-                                ).toLocaleDateString()}
-                            </td>
-
-                            <td>
-
-                                <button
-                                    onClick={() =>
-                                        handleEdit(v)
-                                    }
-                                >
+                                <button onClick={() => handleEdit(v)}>
                                     Update
                                 </button>
 
-                                <button
-                                    onClick={() =>
-                                        handleDelete(v.id)
-                                    }
-                                >
+                                <button onClick={() => handleDelete(v.id)}>
                                     Delete
                                 </button>
-
                             </td>
-
                         </tr>
                     ))}
-
                 </tbody>
-
             </table>
-
         </div>
     );
 }
