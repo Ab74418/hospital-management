@@ -10,8 +10,10 @@ body {
     color: #0f172a;
 }
 
-<<<<<<< HEAD
 .dashboard {
+    display: flex;
+    min-height: 100vh;
+}
 
 h1 {
     text-align: center;
@@ -34,12 +36,6 @@ h2 {
     max-width: 1400px;
     margin: auto;
     padding: 20px;
-}
-
-.top-bar {
-
-    display: flex;
-    min-height: 100vh;
 }
 
 .sidebar {

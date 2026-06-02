@@ -6,26 +6,6 @@ export default function Rooms() {
     useEffect(() => {
         fetch("http://localhost:5000/api/rooms")
             .then((res) => res.json())
-            .then((data) => setRooms(data))
-            .catch((err) => console.log(err));
-    }, []);
-
-    const freeRooms = rooms.filter((r) => r.statusi === "free").length;
-    const occupiedRooms = rooms.filter((r) => r.statusi === "occupied").length;
-
-    return (
-        <div className="page-container">
-            <h1>Rooms Management</h1>
-
-            <div className="stats">
-                <div className="stat-card">
-                    <h2>Free Rooms</h2>
-                    <p>{freeRooms}</p>
-                </div>
-
-                <div className="stat-card">
-                    <h2>Occupied Rooms</h2>
-                    <p>{occupiedRooms}</p>
             .then((data) => {
                 const validRooms = data.filter(
                     (room) => room.numri_dhomes && room.lloji && room.statusi
@@ -51,7 +31,6 @@ export default function Rooms() {
                 <div className="stat-card">
                     <div className="stat-title">Occupied Rooms</div>
                     <div className="stat-number">{occupiedRooms}</div>
-
                 </div>
             </div>
 

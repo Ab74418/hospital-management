@@ -6,14 +6,12 @@ export default function RoomTypes() {
     useEffect(() => {
         fetch("http://localhost:5000/api/roomtypes")
             .then((res) => res.json())
-            .then((data) => {
-                setRoomTypes(data);
-            })
+            .then((data) => setRoomTypes(data))
             .catch((err) => console.log(err));
     }, []);
 
     return (
-        <div className="main-content">
+        <div className="page-container">
             <h1>Room Types</h1>
             <p>Manage hospital room categories</p>
 
