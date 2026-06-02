@@ -167,8 +167,8 @@ function Doctors() {
                         }}
                     >
                         <h3>
-                            {doctor.emri}{" "}
-                            {doctor.mbiemri}
+                            {doctor.name}
+                            {doctor.surname}
                         </h3>
 
                         <p>
