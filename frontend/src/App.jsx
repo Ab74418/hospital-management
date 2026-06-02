@@ -1,13 +1,15 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import {
+    Routes,
+    Route,
+    Navigate
+} from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-<<<<<<< HEAD
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
-=======
->>>>>>> 6473c043bc68877f9443a7461d9a21d7479d7abe
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/PatientDetails";
 import Doctors from "./pages/Doctors";
@@ -26,19 +28,11 @@ import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 import Vitals from "./pages/Vitals";
 
-<<<<<<< HEAD
-=======
-import ProtectedRoute from "./components/ProtectedRoute";
-
->>>>>>> 6473c043bc68877f9443a7461d9a21d7479d7abe
 function App() {
+
     return (
+
         <Routes>
-<<<<<<< HEAD
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-=======
 
             <Route
                 path="/"
@@ -54,7 +48,6 @@ function App() {
                 path="/register"
                 element={<Register />}
             />
->>>>>>> 6473c043bc68877f9443a7461d9a21d7479d7abe
 
             <Route
                 path="/home"
@@ -218,15 +211,11 @@ function App() {
                 }
             />
 
-<<<<<<< HEAD
-            <Route path="*" element={<Navigate to="/" />} />
-=======
             <Route
                 path="*"
                 element={<Navigate to="/" />}
             />
 
->>>>>>> 6473c043bc68877f9443a7461d9a21d7479d7abe
         </Routes>
     );
 }
