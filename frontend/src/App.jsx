@@ -3,17 +3,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import Nurses from "./pages/Nurses";
-import RoomTypes from "./pages/RoomTypes";
-import Departments from "./pages/Departments";
-import Doctors from "./pages/Doctors";
-import Payments from "./pages/Payments";
-import Rooms from "./pages/Rooms";
-import Specializations from "./pages/Specializations";
-import Schedules from "./pages/Schedules";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Patients from "./pages/Patients";
-import Vitals from "./pages/Vitals";
-import Patients from "./pages/Patients";
+import PatientDetails from "./pages/PatientDetails";
 import Doctors from "./pages/Doctors";
 import Nurses from "./pages/Nurses";
 import Departments from "./pages/Departments";
@@ -29,16 +22,12 @@ import Schedules from "./pages/Schedules";
 import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 import Vitals from "./pages/Vitals";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PatientDetails from "./pages/PatientDetails";
+
 function App() {
-
     return (
-
         <Routes>
-
             <Route path="/" element={<Login />} />
-
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             <Route
@@ -58,6 +47,7 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+
             <Route
                 path="/patients/:id"
                 element={
@@ -129,8 +119,6 @@ function App() {
                     </ProtectedRoute>
                 }
             />
-
-           
 
             <Route
                 path="/prescriptions"
@@ -205,20 +193,6 @@ function App() {
             />
 
             <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/" element={<Navigate to="/vitals" />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/nurses" element={<Nurses />} />
-            <Route path="/roomtypes" element={<RoomTypes />} />
-            <Route path="/departments" element={<Departments />} />
-            <Route path="/doctors" element={<Doctors />} />
-            <Route path="/payments" element={<Payments />} />
-            <Route path="/rooms" element={<Rooms />} />
-            <Route path="/specializations" element={<Specializations />} />
-            <Route path="/schedules" element={<Schedules />} />
-            <Route path="/patients" element={<Patients />} />
-            <Route path="/vitals" element={<Vitals />} />
-
         </Routes>
     );
 }
