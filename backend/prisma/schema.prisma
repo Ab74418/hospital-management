@@ -30,7 +30,7 @@ model allergies {
   pershkrimi String?   @db.Text
   patients   patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "allergies_ibfk_1")
 
-  @@index([patient_id], map: "fk_allergy_patient")
+  @@index([patient_id], map: "patient_id")
 }
 
 model appointments {
@@ -61,7 +61,7 @@ model beds {
 
 model departments {
   id         Int       @id @default(autoincrement())
-  emertimi   String?   @db.VarChar(100)
+  emri       String?   @db.VarChar(100)
   pershkrimi String?   @db.Text
   lokacioni  String?   @db.VarChar(100)
   doctors    doctors[]
@@ -74,7 +74,7 @@ model doctors {
   user_id               Int?
   name                  String?                 @db.VarChar(50)
   surname               String?                 @db.VarChar(50)
-  specialization          String?                 @db.VarChar(100)
+  specialization        String?                 @db.VarChar(100)
   department_id         Int?
   telefoni              String?                 @db.VarChar(20)
   appointments          appointments[]
@@ -82,8 +82,8 @@ model doctors {
   departments           departments?            @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "doctors_ibfk_2")
   doctorspecializations doctorspecializations[]
   medicalrecords        medicalrecords[]
+  patient_visits        patient_visits[]
   schedules             schedules[]
-  patients patients[]
 
   @@index([department_id], map: "department_id")
   @@index([user_id], map: "user_id")
@@ -119,14 +119,14 @@ model medicalrecords {
   doctor_id     Int?
   diagnoza      String?         @db.Text
   trajtimi      String?         @db.Text
-   pershkrimi_recetes String?         @db.Text
+  recetat       String?         @db.Text
   data          DateTime?       @db.Date
-  doctors       doctors?        @relation(fields: [doctor_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "medicalrecords_ibfk_2")
   patients      patients?       @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "medicalrecords_ibfk_1")
+  doctors       doctors?        @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "medicalrecords_ibfk_2")
   prescriptions prescriptions[]
 
-  @@index([doctor_id], map: "fk_medical_doctor")
-  @@index([patient_id], map: "fk_medical_patient")
+  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id], map: "patient_id")
 }
 
 model nurses {
@@ -149,19 +149,13 @@ model patients {
   telefoni       String?          @db.VarChar(20)
   adresa         String?          @db.VarChar(100)
   grupa_gjakut   String?          @db.VarChar(5)
-
-  doctor_id Int?
-doctors doctors? @relation(fields: [doctor_id], references: [id])
-
   admissions     admissions[]
   allergies      allergies[]
   appointments   appointments[]
   invoices       invoices[]
   medicalrecords medicalrecords[]
+  patient_visits patient_visits[]
   vitals         vitals[]
-
-  @@index([doctor_id])
-
 }
 
 model payments {
@@ -184,7 +178,7 @@ model prescriptions {
   udhezime          String?         @db.Text
   medicalrecords    medicalrecords? @relation(fields: [medical_record_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "prescriptions_ibfk_1")
 
-  @@index([medical_record_id], map: "fk_prescription_record")
+  @@index([medical_record_id], map: "medical_record_id")
 }
 
 model roles {
@@ -258,5 +252,20 @@ model vitals {
   data        DateTime? @db.DateTime(0)
   patients    patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "vitals_ibfk_1")
 
-  @@index([patient_id], map: "fk_vitals_patient")
+  @@index([patient_id], map: "patient_id")
+}
+
+model patient_visits {
+  id           Int      @id @default(autoincrement())
+  patient_id   Int
+  doctor_id    Int
+  diagnoza     String   @db.Text
+  trajtimi     String   @db.Text
+  data_vizites DateTime @db.Date
+  ora_vizites  DateTime @db.Time(0)
+  patients     patients @relation(fields: [patient_id], references: [id], onUpdate: Restrict, map: "patient_visits_ibfk_1")
+  doctors      doctors  @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "patient_visits_ibfk_2")
+
+  @@index([doctor_id], map: "doctor_id")
+  @@index([patient_id], map: "patient_id")
 }
