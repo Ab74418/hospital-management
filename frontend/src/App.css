@@ -15,6 +15,32 @@ body {
     min-height: 100vh;
 }
 
+<<<<<<< HEAD
+h1 {
+    text-align: center;
+    color: #0f4c81;
+    font-size: 40px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+h2 {
+    text-align: center;
+    color: #0f4c81;
+    margin-bottom: 25px;
+    font-size: 34px;
+}
+
+.page-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: auto;
+    padding: 20px;
+}
+
+=======
+>>>>>>> ce331e9cee3ee489b68a6fb3d24dd58f3f2cec0b
 .sidebar {
     width: 270px;
     background: #0f172a;

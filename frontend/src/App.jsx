@@ -7,6 +7,18 @@ import {
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+<<<<<<< HEAD
+import Nurses from "./pages/Nurses";
+import RoomTypes from "./pages/RoomTypes";
+import Departments from "./pages/Departments";
+import Doctors from "./pages/Doctors";
+import Payments from "./pages/Payments";
+import Rooms from "./pages/Rooms";
+import Specializations from "./pages/Specializations";
+import Schedules from "./pages/Schedules";
+import Patients from "./pages/Patients";
+import Vitals from "./pages/Vitals";
+=======
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -15,19 +27,20 @@ import PatientDetails from "./pages/PatientDetails";
 import Doctors from "./pages/Doctors";
 import Nurses from "./pages/Nurses";
 import Departments from "./pages/Departments";
+>>>>>>> ce331e9cee3ee489b68a6fb3d24dd58f3f2cec0b
 import Appointments from "./pages/Appointments";
-import Rooms from "./pages/Rooms";
-import RoomTypes from "./pages/RoomTypes";
-import Payments from "./pages/Payments";
 import Prescriptions from "./pages/Prescriptions";
 import Allergies from "./pages/Allergies";
 import MedicalRecords from "./pages/MedicalRecords";
 import PatientVisits from "./pages/PatientVisits";
-import Schedules from "./pages/Schedules";
-import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
+<<<<<<< HEAD
+import ProtectedRoute from "./components/ProtectedRoute";
+import PatientDetails from "./pages/PatientDetails";
+=======
 import Vitals from "./pages/Vitals";
 
+>>>>>>> ce331e9cee3ee489b68a6fb3d24dd58f3f2cec0b
 function App() {
 
     return (
