@@ -1,141 +1,306 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 function Doctors() {
-    const [doctors, setDoctors] = useState([]);
-    const [departments, setDepartments] = useState([]);
 
-    const navigate = useNavigate();
+    const [doctors, setDoctors] =
+        useState([]);
 
-    const [form, setForm] = useState({
-        name: "",
-        surname: "",
-        specialization: "",
-        telefoni: "",
-        department_id: "",
-    });
+    const [departments, setDepartments] =
+        useState([]);
+
+    const [editId, setEditId] =
+        useState(null);
+
+    const navigate =
+        useNavigate();
+
+    const [form, setForm] =
+        useState({
+            emri: "",
+            mbiemri: "",
+            specializimi: "",
+            telefoni: "",
+            department_id: "",
+        });
 
     const fetchDoctors = () => {
-        fetch("http://localhost:5000/api/doctors")
+
+        fetch(
+            "http://localhost:5000/api/doctors"
+        )
             .then((res) => res.json())
             .then((data) => {
-                if (Array.isArray(data)) {
+
+                if (
+                    Array.isArray(data)
+                ) {
+
                     setDoctors(data);
+
                 } else {
+
                     setDoctors([]);
                 }
             })
-            .catch((err) => console.log(err));
+
+            .catch((err) =>
+                console.log(err)
+            );
     };
 
     const fetchDepartments = () => {
-        fetch("http://localhost:5000/api/departments")
+
+        fetch(
+            "http://localhost:5000/api/departments"
+        )
             .then((res) => res.json())
             .then((data) => {
-                if (Array.isArray(data)) {
+
+                if (
+                    Array.isArray(data)
+                ) {
+
                     setDepartments(data);
+
                 } else {
+
                     setDepartments([]);
                 }
             })
-            .catch((err) => console.log(err));
+
+            .catch((err) =>
+                console.log(err)
+            );
     };
 
     useEffect(() => {
+
         fetchDoctors();
+
         fetchDepartments();
+
     }, []);
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const res = await fetch("http://localhost:5000/api/doctors", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form),
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                alert(result.message || "Gabim!");
-                return;
-            }
-
-            alert("Doctor u shtua me sukses!");
+    const handleChange =
+        (e) => {
 
             setForm({
-                name: "",
-                surname: "",
-                specialization: "",
-                telefoni: "",
-                department_id: "",
+                ...form,
+                [e.target.name]:
+                    e.target.value,
             });
+        };
 
-            fetchDoctors();
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const handleSubmit =
+        async (e) => {
+
+            e.preventDefault();
+
+            try {
+
+                const url =
+
+                    editId
+
+                        ?
+
+                        `http://localhost:5000/api/doctors/${editId}`
+
+                        :
+
+                        "http://localhost:5000/api/doctors";
+
+                const method =
+
+                    editId
+                        ? "PUT"
+                        : "POST";
+
+                const res =
+                    await fetch(url, {
+
+                        method,
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+
+                        body:
+                            JSON.stringify(form),
+                    });
+
+                const result =
+                    await res.json();
+
+                if (!res.ok) {
+
+                    alert(
+                        result.message
+                        || "Gabim!"
+                    );
+
+                    return;
+                }
+
+                alert(
+
+                    editId
+
+                        ?
+
+                        "Doctor updated!"
+
+                        :
+
+                        "Doctor u shtua!"
+                );
+
+                setForm({
+                    emri: "",
+                    mbiemri: "",
+                    specializimi: "",
+                    telefoni: "",
+                    department_id: "",
+                });
+
+                setEditId(null);
+
+                fetchDoctors();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleDelete =
+        async (id) => {
+
+            const confirmDelete =
+                window.confirm(
+                    "A je e sigurt?"
+                );
+
+            if (!confirmDelete)
+                return;
+
+            try {
+
+                await fetch(
+                    `http://localhost:5000/api/doctors/${id}`,
+                    {
+                        method:
+                            "DELETE",
+                    }
+                );
+
+                fetchDoctors();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleEdit =
+        (doctor) => {
+
+            setEditId(
+                doctor.id
+            );
+
+            setForm({
+
+                emri:
+                    doctor.emri,
+
+                mbiemri:
+                    doctor.mbiemri,
+
+                specializimi:
+                    doctor.specializimi,
+
+                telefoni:
+                    doctor.telefoni,
+
+                department_id:
+                    doctor.department_id || "",
+            });
+        };
 
     return (
-        <div style={{ padding: "20px" }}>
+
+        <div
+            className="page-card"
+        >
+
             <div
                 style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "20px",
+
+                    justifyContent:
+                        "space-between",
+
+                    alignItems:
+                        "center",
+
+                    marginBottom:
+                        "20px",
                 }}
             >
-                <button onClick={() => navigate("/home")}>Back</button>
 
-                <h1>Doctors</h1>
+                <button
+                    onClick={() =>
+                        navigate("/home")
+                    }
+                >
+                    Back
+                </button>
+
+                <h1>
+                    Doctors
+                </h1>
 
                 <div></div>
+
             </div>
 
             <form
-                onSubmit={handleSubmit}
-                style={{
-                    display: "grid",
-                    gap: "15px",
-                    marginBottom: "30px",
-                }}
+                onSubmit={
+                    handleSubmit
+                }
+
+                className="patient-form"
             >
+
                 <input
                     type="text"
-                    name="name"
+                    name="emri"
                     placeholder="Emri"
-                    value={form.name}
+                    value={form.emri}
                     onChange={handleChange}
                     required
                 />
 
                 <input
                     type="text"
-                    name="surname"
+                    name="mbiemri"
                     placeholder="Mbiemri"
-                    value={form.surname}
+                    value={form.mbiemri}
                     onChange={handleChange}
                     required
                 />
 
                 <input
                     type="text"
-                    name="specialization"
+                    name="specializimi"
                     placeholder="Specializimi"
-                    value={form.specialization}
+                    value={form.specializimi}
                     onChange={handleChange}
                     required
                 />
@@ -151,57 +316,166 @@ function Doctors() {
 
                 <select
                     name="department_id"
-                    value={form.department_id}
-                    onChange={handleChange}
+                    value={
+                        form.department_id
+                    }
+                    onChange={
+                        handleChange
+                    }
                     required
                 >
-                    <option value="">Select Department</option>
 
-                    {departments.map((d) => (
-                        <option key={d.id} value={d.id}>
-                            {d.emri}
-                        </option>
-                    ))}
+                    <option value="">
+                        Select Department
+                    </option>
+
+                    {departments.map(
+                        (d) => (
+
+                            <option
+                                key={d.id}
+                                value={d.id}
+                            >
+
+                                {d.emri}
+
+                            </option>
+
+                        )
+                    )}
+
                 </select>
 
-                <button type="submit">Add Doctor</button>
+                <button
+                    type="submit"
+                >
+
+                    {editId
+
+                        ?
+
+                        "Update Doctor"
+
+                        :
+
+                        "Add Doctor"}
+
+                </button>
+
             </form>
 
             <div
-                style={{
-                    display: "grid",
-                    gap: "15px",
-                }}
+                className="cards"
             >
-                {doctors.map((doctor) => (
-                    <div
-                        key={doctor.id}
-                        style={{
-                            border: "1px solid #ccc",
-                            padding: "20px",
-                            borderRadius: "10px",
-                            background: "#fff",
-                        }}
-                    >
-                        <h3>
-                            {doctor.name} {doctor.surname}
-                        </h3>
 
-                        <p>
-                            <b>Specializimi:</b> {doctor.specialization}
-                        </p>
+                {doctors.map(
+                    (doctor) => (
 
-                        <p>
-                            <b>Telefoni:</b> {doctor.telefoni}
-                        </p>
+                        <div
+                            className="card"
 
-                        <p>
-                            <b>Department:</b>{" "}
-                            {doctor.departments?.emri || "Pa department"}
-                        </p>
-                    </div>
-                ))}
+                            key={
+                                doctor.id
+                            }
+                        >
+
+                            <h2>
+
+                                {
+                                    doctor.emri
+                                }
+                                {" "}
+                                {
+                                    doctor.mbiemri
+                                }
+
+                            </h2>
+
+                            <p>
+
+                                <strong>
+                                    Specializimi:
+                                </strong>
+
+                                {" "}
+
+                                {
+                                    doctor.specializimi
+                                }
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    Telefoni:
+                                </strong>
+
+                                {" "}
+
+                                {
+                                    doctor.telefoni
+                                }
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    Department:
+                                </strong>
+
+                                {" "}
+
+                                {
+                                    departments.find(
+                                        (d) =>
+                                            d.id
+                                            ===
+                                            doctor.department_id
+                                    )?.emri
+
+                                    ||
+
+                                    "Pa department"
+                                }
+
+                            </p>
+
+                            <button
+                                onClick={() =>
+                                    handleEdit(
+                                        doctor
+                                    )
+                                }
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                onClick={() =>
+                                    handleDelete(
+                                        doctor.id
+                                    )
+                                }
+
+                                style={{
+                                    marginLeft:
+                                        "10px",
+
+                                    background:
+                                        "crimson",
+                                }}
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+                    )
+                )}
+
             </div>
+
         </div>
     );
 }

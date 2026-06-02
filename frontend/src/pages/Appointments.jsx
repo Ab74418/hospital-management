@@ -8,16 +8,19 @@ export default function Appointments() {
     const [doctors, setDoctors] =
         useState([]);
 
-    const [patients, setPatients] =
-        useState([]);
-
     const [form, setForm] =
         useState({
-            patient_id: "",
+
+            patient_name: "",
+
             doctor_id: "",
+
             data: "",
+
             ora: "",
+
             statusi: "",
+
             shenime: "",
         });
 
@@ -74,22 +77,6 @@ export default function Appointments() {
                         ? doctorsData
                         : []
                 );
-
-                const patientsRes =
-                    await fetch(
-                        "http://localhost:5000/api/patients"
-                    );
-
-                const patientsData =
-                    await patientsRes.json();
-
-                setPatients(
-                    Array.isArray(
-                        patientsData
-                    )
-                        ? patientsData
-                        : []
-                );
             };
 
         loadData();
@@ -112,8 +99,9 @@ export default function Appointments() {
             setEditId(app.id);
 
             setForm({
-                patient_id:
-                    app.patient_id,
+
+                patient_name:
+                    app.patient_name,
 
                 doctor_id:
                     app.doctor_id,
@@ -228,11 +216,17 @@ export default function Appointments() {
                 );
 
                 setForm({
-                    patient_id: "",
+
+                    patient_name: "",
+
                     doctor_id: "",
+
                     data: "",
+
                     ora: "",
+
                     statusi: "",
+
                     shenime: "",
                 });
 
@@ -295,76 +289,64 @@ export default function Appointments() {
 
     return (
 
-        <div
-            style={{
-                padding: "20px",
-            }}
-        >
+        <div className="page-card">
+
+            <button
+                onClick={() =>
+                    window.history.back()
+                }
+
+                style={{
+                    marginBottom:
+                        "20px",
+
+                    background:
+                        "#0f172a",
+                }}
+            >
+                ← Back
+            </button>
 
             <h2>
                 Appointments
             </h2>
 
             <form
+                className="patient-form"
                 onSubmit={
                     handleSubmit
                 }
             >
 
-                <select
-                    name="patient_id"
+                <input
+                    type="text"
+
+                    name="patient_name"
+
+                    placeholder="Shkruaj pacientin"
+
                     value={
-                        form.patient_id
+                        form.patient_name
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
-                >
-
-                    <option value="">
-                        Select Patient
-                    </option>
-
-                    {patients.map(
-                        (patient) => (
-
-                            <option
-                                key={
-                                    patient.id
-                                }
-                                value={
-                                    patient.id
-                                }
-                            >
-
-                                {
-                                    patient.id
-                                }
-                                {" - "}
-                                {
-                                    patient.emri
-                                }
-                                {" "}
-                                {
-                                    patient.mbiemri
-                                }
-
-                            </option>
-
-                        )
-                    )}
-
-                </select>
+                />
 
                 <select
                     name="doctor_id"
+
                     value={
                         form.doctor_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -379,6 +361,7 @@ export default function Appointments() {
                                 key={
                                     doctor.id
                                 }
+
                                 value={
                                     doctor.id
                                 }
@@ -387,11 +370,15 @@ export default function Appointments() {
                                 {
                                     doctor.id
                                 }
+
                                 {" - "}
+
                                 {
                                     doctor.emri
                                 }
+
                                 {" "}
+
                                 {
                                     doctor.mbiemri
                                 }
@@ -452,9 +439,7 @@ export default function Appointments() {
                     }
                 />
 
-                <button
-                    type="submit"
-                >
+                <button type="submit">
 
                     {editId
 
@@ -480,6 +465,7 @@ export default function Appointments() {
                 value={
                     selectedDoctor
                 }
+
                 onChange={(e) =>
                     setSelectedDoctor(
                         e.target.value
@@ -498,6 +484,7 @@ export default function Appointments() {
                             key={
                                 doctor.id
                             }
+
                             value={
                                 doctor.id
                             }
@@ -506,11 +493,15 @@ export default function Appointments() {
                             {
                                 doctor.id
                             }
+
                             {" - "}
+
                             {
                                 doctor.emri
                             }
+
                             {" "}
+
                             {
                                 doctor.mbiemri
                             }
@@ -538,63 +529,103 @@ export default function Appointments() {
 
                                 marginTop:
                                     "10px",
+
+                                borderRadius:
+                                    "10px",
+
+                                background:
+                                    "white",
                             }}
                         >
 
                             <p>
-                                Pacienti:
+
+                                <strong>
+                                    Pacienti:
+                                </strong>
+
                                 {" "}
+
                                 {
-                                    app.patients?.emri
+                                    app.patient_name
                                 }
-                                {" "}
-                                {
-                                    app.patients?.mbiemri
-                                }
+
                             </p>
 
                             <p>
-                                Doktori:
+
+                                <strong>
+                                    Doktori:
+                                </strong>
+
                                 {" "}
+
                                 {
                                     app.doctors?.emri
                                 }
+
                                 {" "}
+
                                 {
                                     app.doctors?.mbiemri
                                 }
+
                             </p>
 
                             <p>
-                                Data:
+
+                                <strong>
+                                    Data:
+                                </strong>
+
                                 {" "}
+
                                 {
                                     app.data?.slice(0, 10)
                                 }
+
                             </p>
 
                             <p>
-                                Ora:
+
+                                <strong>
+                                    Ora:
+                                </strong>
+
                                 {" "}
+
                                 {
                                     app.ora?.slice(11, 16)
                                 }
+
                             </p>
 
                             <p>
-                                Statusi:
+
+                                <strong>
+                                    Statusi:
+                                </strong>
+
                                 {" "}
+
                                 {
                                     app.statusi
                                 }
+
                             </p>
 
                             <p>
-                                Shënime:
+
+                                <strong>
+                                    Shënime:
+                                </strong>
+
                                 {" "}
+
                                 {
                                     app.shenime
                                 }
+
                             </p>
 
                             <button
