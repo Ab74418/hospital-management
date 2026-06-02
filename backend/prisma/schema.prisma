@@ -125,19 +125,13 @@ model medicalrecords {
 
   trajtimi      String?         @db.Text
 
-  pershkrimi    String?         @db.Text
-
   data          DateTime?       @db.Date
 
-  doctors       doctors? @relation(fields: [doctor_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "medicalrecords_ibfk_2")
+  doctors       doctors? @relation(fields: [doctor_id], references: [id])
 
-  patients      patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "medicalrecords_ibfk_1")
+  patients      patients? @relation(fields: [patient_id], references: [id])
 
   prescriptions prescriptions[]
-
-  @@index([doctor_id], map: "fk_medical_doctor")
-
-  @@index([patient_id], map: "fk_medical_patient")
 }
 model nurses {
   id            Int          @id @default(autoincrement())
