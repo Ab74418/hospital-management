@@ -26,6 +26,32 @@ export default function Rooms() {
                 <div className="stat-card">
                     <h2>Occupied Rooms</h2>
                     <p>{occupiedRooms}</p>
+            .then((data) => {
+                const validRooms = data.filter(
+                    (room) => room.numri_dhomes && room.lloji && room.statusi
+                );
+                setRooms(validRooms);
+            })
+            .catch((err) => console.log(err));
+    }, []);
+
+    const freeRooms = rooms.filter((room) => room.statusi === "free").length;
+    const occupiedRooms = rooms.filter((room) => room.statusi === "occupied").length;
+
+    return (
+        <div className="page-container">
+            <h1>Rooms</h1>
+
+            <div className="stats">
+                <div className="stat-card">
+                    <div className="stat-title">Free Rooms</div>
+                    <div className="stat-number">{freeRooms}</div>
+                </div>
+
+                <div className="stat-card">
+                    <div className="stat-title">Occupied Rooms</div>
+                    <div className="stat-number">{occupiedRooms}</div>
+
                 </div>
             </div>
 

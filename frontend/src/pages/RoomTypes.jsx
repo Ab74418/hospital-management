@@ -7,21 +7,37 @@ export default function RoomTypes() {
         fetch("http://localhost:5000/api/roomtypes")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setRoomTypes(data);
             })
             .catch((err) => console.log(err));
     }, []);
 
     return (
-        <div>
+        <div className="main-content">
             <h1>Room Types</h1>
+            <p>Manage hospital room categories</p>
 
-            {roomtypes.map((room) => (
-                <div key={room.id}>
-                    {room.emri} - {room.cmimi}
-                </div>
-            ))}
+            <div className="page-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Room Type</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {roomtypes.map((room) => (
+                            <tr key={room.id}>
+                                <td>{room.id}</td>
+                                <td>{room.emri}</td>
+                                <td>{room.cmimi} €</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
