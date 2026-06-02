@@ -8,6 +8,9 @@ export default function Appointments() {
     const [doctors, setDoctors] =
         useState([]);
 
+    const [patients, setPatients] =
+        useState([]);
+
     const [form, setForm] =
         useState({
             patient_id: "",
@@ -69,6 +72,22 @@ export default function Appointments() {
                         doctorsData
                     )
                         ? doctorsData
+                        : []
+                );
+
+                const patientsRes =
+                    await fetch(
+                        "http://localhost:5000/api/patients"
+                    );
+
+                const patientsData =
+                    await patientsRes.json();
+
+                setPatients(
+                    Array.isArray(
+                        patientsData
+                    )
+                        ? patientsData
                         : []
                 );
             };
@@ -292,10 +311,8 @@ export default function Appointments() {
                 }
             >
 
-                <input
-                    type="number"
+                <select
                     name="patient_id"
-                    placeholder="Patient ID"
                     value={
                         form.patient_id
                     }
@@ -303,7 +320,42 @@ export default function Appointments() {
                         handleChange
                     }
                     required
-                />
+                >
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {patients.map(
+                        (patient) => (
+
+                            <option
+                                key={
+                                    patient.id
+                                }
+                                value={
+                                    patient.id
+                                }
+                            >
+
+                                {
+                                    patient.id
+                                }
+                                {" - "}
+                                {
+                                    patient.emri
+                                }
+                                {" "}
+                                {
+                                    patient.mbiemri
+                                }
+
+                            </option>
+
+                        )
+                    )}
+
+                </select>
 
                 <select
                     name="doctor_id"
@@ -424,9 +476,7 @@ export default function Appointments() {
                 Schedule View për doktor
             </h3>
 
-            <input
-                type="number"
-                placeholder="Shfaq terminet për Doctor ID"
+            <select
                 value={
                     selectedDoctor
                 }
@@ -435,20 +485,42 @@ export default function Appointments() {
                         e.target.value
                     )
                 }
-            />
-
-            <button
-                onClick={() =>
-                    setSelectedDoctor("")
-                }
-
-                style={{
-                    marginLeft:
-                        "10px",
-                }}
             >
-                Shfaq të gjitha
-            </button>
+
+                <option value="">
+                    Shfaq të gjitha
+                </option>
+
+                {doctors.map(
+                    (doctor) => (
+
+                        <option
+                            key={
+                                doctor.id
+                            }
+                            value={
+                                doctor.id
+                            }
+                        >
+
+                            {
+                                doctor.id
+                            }
+                            {" - "}
+                            {
+                                doctor.emri
+                            }
+                            {" "}
+                            {
+                                doctor.mbiemri
+                            }
+
+                        </option>
+
+                    )
+                )}
+
+            </select>
 
             {
                 filteredAppointments.map(
