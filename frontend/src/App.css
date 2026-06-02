@@ -15,6 +15,7 @@ body {
     min-height: 100vh;
 }
 
+<<<<<<< HEAD
 h1 {
     text-align: center;
     color: #0f4c81;
@@ -38,6 +39,8 @@ h2 {
     padding: 20px;
 }
 
+=======
+>>>>>>> ce331e9cee3ee489b68a6fb3d24dd58f3f2cec0b
 .sidebar {
     width: 270px;
     background: #0f172a;
@@ -140,8 +143,7 @@ h2 {
     }
 
 .patient-form,
-.auth-form,
-.card {
+.auth-form {
     background: white;
     border-radius: 18px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -279,6 +281,45 @@ a {
     border-radius: 10px;
 }
 
+.stats {
+    display: flex;
+    gap: 20px;
+    margin: 20px auto 30px auto;
+    width: 95%;
+}
+
+.stat-card {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.stat-title {
+    color: #0ea5e9;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.stat-number {
+    color: #0f172a;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.page-card {
+    width: 95%;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
 @media (max-width: 900px) {
 
     .sidebar {
@@ -327,42 +368,8 @@ a {
     h1 {
         font-size: 32px;
     }
-}
-.stats {
-    display: flex;
-    gap: 20px;
-    margin: 20px auto 30px auto;
-    width: 95%;
-}
 
-.stat-card {
-    flex: 1;
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-    text-align: center;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-}
-
-.stat-title {
-    color: #0ea5e9;
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 12px;
-}
-
-.stat-number {
-    color: #0f172a;
-    font-size: 42px;
-    font-weight: bold;
-}
-
-.page-card {
-    width: 95%;
-    margin: 20px auto;
-    background: white;
-    padding: 0;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    .stats {
+        flex-direction: column;
+    }
 }
