@@ -5,6 +5,9 @@ export default function Appointments() {
     const [appointments, setAppointments] =
         useState([]);
 
+    const [doctors, setDoctors] =
+        useState([]);
+
     const [form, setForm] =
         useState({
             patient_id: "",
@@ -52,6 +55,22 @@ export default function Appointments() {
             async () => {
 
                 await fetchAppointments();
+
+                const doctorsRes =
+                    await fetch(
+                        "http://localhost:5000/api/doctors"
+                    );
+
+                const doctorsData =
+                    await doctorsRes.json();
+
+                setDoctors(
+                    Array.isArray(
+                        doctorsData
+                    )
+                        ? doctorsData
+                        : []
+                );
             };
 
         loadData();
@@ -286,10 +305,8 @@ export default function Appointments() {
                     required
                 />
 
-                <input
-                    type="number"
+                <select
                     name="doctor_id"
-                    placeholder="Doctor ID"
                     value={
                         form.doctor_id
                     }
@@ -297,7 +314,42 @@ export default function Appointments() {
                         handleChange
                     }
                     required
-                />
+                >
+
+                    <option value="">
+                        Select Doctor
+                    </option>
+
+                    {doctors.map(
+                        (doctor) => (
+
+                            <option
+                                key={
+                                    doctor.id
+                                }
+                                value={
+                                    doctor.id
+                                }
+                            >
+
+                                {
+                                    doctor.id
+                                }
+                                {" - "}
+                                {
+                                    doctor.emri
+                                }
+                                {" "}
+                                {
+                                    doctor.mbiemri
+                                }
+
+                            </option>
+
+                        )
+                    )}
+
+                </select>
 
                 <input
                     type="date"
