@@ -27,49 +27,65 @@ function Doctors() {
             department_id: "",
         });
 
-    const fetchDoctors = async () => {
+    const fetchDoctors =
+        async () => {
 
-        try {
+            try {
 
-            const res = await fetch(
-                "http://localhost:5000/api/doctors"
-            );
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/doctors"
+                    );
 
-            const data = await res.json();
+                const data =
+                    await res.json();
 
-            setDoctors(
-                Array.isArray(data)
-                    ? data
-                    : []
-            );
+                if (
+                    Array.isArray(data)
+                ) {
 
-        } catch (err) {
+                    setDoctors(data);
 
-            console.log(err);
-        }
-    };
+                } else {
 
-    const fetchDepartments = async () => {
+                    setDoctors([]);
+                }
 
-        try {
+            } catch (err) {
 
-            const res = await fetch(
-                "http://localhost:5000/api/departments"
-            );
+                console.log(err);
+            }
+        };
 
-            const data = await res.json();
+    const fetchDepartments =
+        async () => {
 
-            setDepartments(
-                Array.isArray(data)
-                    ? data
-                    : []
-            );
+            try {
 
-        } catch (err) {
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/departments"
+                    );
 
-            console.log(err);
-        }
-    };
+                const data =
+                    await res.json();
+
+                if (
+                    Array.isArray(data)
+                ) {
+
+                    setDepartments(data);
+
+                } else {
+
+                    setDepartments([]);
+                }
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
 
     useEffect(() => {
 
@@ -79,16 +95,17 @@ function Doctors() {
 
     }, []);
 
-    const handleChange = (e) => {
+    const handleChange =
+        (e) => {
 
-        setForm({
+            setForm({
 
-            ...form,
+                ...form,
 
-            [e.target.name]:
-                e.target.value,
-        });
-    };
+                [e.target.name]:
+                    e.target.value,
+            });
+        };
 
     const handleSubmit =
         async (e) => {
@@ -97,17 +114,20 @@ function Doctors() {
 
             try {
 
-                const url = editId
+                const url =
 
-                    ?
+                    editId
 
-                    `http://localhost:5000/api/doctors/${editId}`
+                        ?
 
-                    :
+                        `http://localhost:5000/api/doctors/${editId}`
 
-                    "http://localhost:5000/api/doctors";
+                        :
+
+                        "http://localhost:5000/api/doctors";
 
                 const method =
+
                     editId
                         ? "PUT"
                         : "POST";
@@ -259,10 +279,13 @@ function Doctors() {
             <div
                 style={{
                     display: "flex",
+
                     justifyContent:
                         "space-between",
+
                     alignItems:
                         "center",
+
                     marginBottom:
                         "20px",
                 }}
@@ -288,6 +311,7 @@ function Doctors() {
                 onSubmit={
                     handleSubmit
                 }
+
                 className="patient-form"
             >
 
@@ -360,7 +384,9 @@ function Doctors() {
 
                 </select>
 
-                <button type="submit">
+                <button
+                    type="submit"
+                >
 
                     {editId
 
@@ -378,99 +404,118 @@ function Doctors() {
 
             <div className="cards">
 
-                {doctors.map(
-                    (doctor) => (
+                {doctors.length > 0 ? (
 
-                        <div
-                            className="card"
-                            key={doctor.id}
-                        >
+                    doctors.map(
+                        (doctor) => (
 
-                            <h2>
-
-                                {doctor.emri}
-                                {" "}
-                                {doctor.mbiemri}
-
-                            </h2>
-
-                            <p>
-
-                                <strong>
-                                    Specializimi:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    doctor.specializimi
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Telefoni:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    doctor.telefoni
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Department:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    departments.find(
-                                        (d) =>
-                                            d.id ===
-                                            doctor.department_id
-                                    )?.emri
-                                    ||
-                                    "Pa department"
-                                }
-
-                            </p>
-
-                            <button
-                                onClick={() =>
-                                    handleEdit(
-                                        doctor
-                                    )
-                                }
+                            <div
+                                className="card"
+                                key={doctor.id}
                             >
-                                Edit
-                            </button>
 
-                            <button
-                                onClick={() =>
-                                    handleDelete(
-                                        doctor.id
-                                    )
-                                }
+                                <h2>
 
-                                style={{
-                                    marginLeft:
-                                        "10px",
-                                    background:
-                                        "crimson",
-                                }}
-                            >
-                                Delete
-                            </button>
+                                    {
+                                        doctor.emri
+                                    }
 
-                        </div>
+                                    {" "}
+
+                                    {
+                                        doctor.mbiemri
+                                    }
+
+                                </h2>
+
+                                <p>
+
+                                    <strong>
+                                        Specializimi:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        doctor.specializimi
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Telefoni:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        doctor.telefoni
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Department:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        departments.find(
+                                            (d) =>
+                                                d.id
+                                                ===
+                                                doctor.department_id
+                                        )?.emri
+
+                                        ||
+
+                                        "Pa department"
+                                    }
+
+                                </p>
+
+                                <button
+                                    onClick={() =>
+                                        handleEdit(
+                                            doctor
+                                        )
+                                    }
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDelete(
+                                            doctor.id
+                                        )
+                                    }
+
+                                    style={{
+                                        marginLeft:
+                                            "10px",
+
+                                        background:
+                                            "crimson",
+                                    }}
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
+                        )
                     )
+
+                ) : (
+
+                    <p>
+                        Nuk ka doctors.
+                    </p>
                 )}
 
             </div>
