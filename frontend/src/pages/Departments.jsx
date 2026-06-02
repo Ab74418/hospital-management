@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react";
 
+import {
+    useNavigate
+} from "react-router-dom";
+
 export default function Departments() {
 
-    const [departments, setDepartments] =
+    const navigate =
+        useNavigate();
+
+    const [departments,
+        setDepartments] =
         useState([]);
 
-    const [form, setForm] = useState({
-        emri: "",
-    });
-
-    const [editId, setEditId] =
+    const [editId,
+        setEditId] =
         useState(null);
+
+    const [form, setForm] =
+        useState({
+
+            emri: "",
+
+            pershkrimi: "",
+
+            lokacioni: "",
+        });
 
     const fetchDepartments =
         async () => {
@@ -25,111 +40,109 @@ export default function Departments() {
                 const data =
                     await res.json();
 
-                setDepartments(data);
+                setDepartments(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
 
-            } catch (error) {
+            } catch (err) {
 
-                console.log(error);
+                console.log(err);
             }
         };
 
     useEffect(() => {
 
-        const loadDepartments =
-            async () => {
-
-                await fetchDepartments();
-            };
-
-        loadDepartments();
+        fetchDepartments();
 
     }, []);
 
-    const handleChange = (e) => {
-
-        setForm({
-            ...form,
-            emri: e.target.value,
-        });
-    };
-
-    const handleEdit = (dep) => {
-
-        setEditId(dep.id);
-
-        setForm({
-            emri: dep.emri,
-        });
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        try {
-
-            const url = editId
-                ? `http://localhost:5000/api/departments/${editId}`
-                : "http://localhost:5000/api/departments";
-
-            const method = editId
-                ? "PUT"
-                : "POST";
-
-            const res = await fetch(
-                url,
-                {
-                    method: method,
-
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-                    },
-
-                    body: JSON.stringify(
-                        form
-                    ),
-                }
-            );
-
-            const result =
-                await res.json();
-
-            if (!res.ok) {
-
-                alert(
-                    result.message
-                );
-
-                return;
-            }
-
-            alert(
-                editId
-                    ? "Department u editua me sukses!"
-                    : "Department u shtua me sukses!"
-            );
+    const handleChange =
+        (e) => {
 
             setForm({
-                emri: "",
+
+                ...form,
+
+                [e.target.name]:
+                    e.target.value,
             });
+        };
 
-            setEditId(null);
+    const handleSubmit =
+        async (e) => {
 
-            fetchDepartments();
+            e.preventDefault();
 
-        } catch (error) {
+            try {
 
-            console.log(error);
-        }
-    };
+                const url =
+
+                    editId
+
+                        ?
+
+                        `http://localhost:5000/api/departments/${editId}`
+
+                        :
+
+                        "http://localhost:5000/api/departments";
+
+                const method =
+
+                    editId
+                        ? "PUT"
+                        : "POST";
+
+                const res =
+                    await fetch(url, {
+
+                        method,
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+
+                        body:
+                            JSON.stringify(
+                                form
+                            ),
+                    });
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        "Gabim"
+                    );
+                }
+
+                setForm({
+
+                    emri: "",
+
+                    pershkrimi: "",
+
+                    lokacioni: "",
+                });
+
+                setEditId(null);
+
+                fetchDepartments();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
 
     const handleDelete =
         async (id) => {
 
             const confirmDelete =
                 window.confirm(
-                    "A je e sigurt që don me fshi këtë department?"
+                    "A je e sigurt?"
                 );
 
             if (!confirmDelete)
@@ -137,135 +150,200 @@ export default function Departments() {
 
             try {
 
-                const res =
-                    await fetch(
-                        `http://localhost:5000/api/departments/${id}`,
-                        {
-                            method:
-                                "DELETE",
-                        }
-                    );
-
-                const result =
-                    await res.json();
-
-                if (!res.ok) {
-
-                    alert(
-                        result.message
-                    );
-
-                    return;
-                }
-
-                alert(
-                    "Department u fshi me sukses!"
+                await fetch(
+                    `http://localhost:5000/api/departments/${id}`,
+                    {
+                        method:
+                            "DELETE",
+                    }
                 );
 
                 fetchDepartments();
 
-            } catch (error) {
+            } catch (err) {
 
-                console.log(error);
+                console.log(err);
             }
+        };
+
+    const handleEdit =
+        (department) => {
+
+            setEditId(
+                department.id
+            );
+
+            setForm({
+
+                emri:
+                    department.emri || "",
+
+                pershkrimi:
+                    department.pershkrimi || "",
+
+                lokacioni:
+                    department.lokacioni || "",
+            });
         };
 
     return (
 
-        <div
-            style={{
-                padding: "20px",
-            }}
-        >
+        <div className="page-card">
 
-            <h2>
-                Departments
-            </h2>
+            <div
+                style={{
+                    display: "flex",
+
+                    justifyContent:
+                        "space-between",
+
+                    alignItems:
+                        "center",
+
+                    marginBottom:
+                        "20px",
+                }}
+            >
+
+                <button
+                    onClick={() =>
+                        navigate("/home")
+                    }
+                >
+                    Back
+                </button>
+
+                <h1>
+                    Departments
+                </h1>
+
+                <div></div>
+
+            </div>
 
             <form
                 onSubmit={
                     handleSubmit
                 }
+
+                className="patient-form"
             >
 
                 <input
                     type="text"
+                    name="emri"
                     placeholder="Emri i department"
                     value={form.emri}
-                    onChange={
-                        handleChange
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    type="text"
+                    name="pershkrimi"
+                    placeholder="Pershkrimi"
+                    value={
+                        form.pershkrimi
                     }
+                    onChange={handleChange}
+                    required
+                />
+
+                <input
+                    type="text"
+                    name="lokacioni"
+                    placeholder="Salla / Lokacioni"
+                    value={
+                        form.lokacioni
+                    }
+                    onChange={handleChange}
                     required
                 />
 
                 <button
                     type="submit"
-                    style={{
-                        marginLeft:
-                            "10px",
-                    }}
                 >
 
                     {editId
-                        ? "Update"
-                        : "Add"}
+
+                        ?
+
+                        "Update Department"
+
+                        :
+
+                        "Add Department"}
 
                 </button>
 
             </form>
 
-            <hr />
+            <div className="cards">
 
-            {departments.length ===
-                0 ? (
-
-                <p>
-                    Nuk ka
-                    departments.
-                </p>
-
-            ) : (
-
-                departments.map(
-                    (dep) => (
+                {departments.map(
+                    (department) => (
 
                         <div
+                            className="card"
                             key={
-                                dep.id
+                                department.id
                             }
-                            style={{
-                                border:
-                                    "1px solid #ccc",
-                                padding:
-                                    "12px",
-                                marginBottom:
-                                    "10px",
-                                borderRadius:
-                                    "8px",
-                            }}
                         >
 
-                            <p>
-                                <b>
-                                    ID:
-                                </b>{" "}
+                            <h2>
+
                                 {
-                                    dep.id * 100}D
+                                    department.emri
+                                }
+
+                            </h2>
+
+                            <p>
+
+                                <strong>
+                                    ID:
+                                </strong>
+
+                                {" "}
+
+                                {
+                                    department.id
+                                }
+
                             </p>
 
                             <p>
-                                <b>
-                                    Emri:
-                                </b>{" "}
+
+                                <strong>
+                                    Pershkrimi:
+                                </strong>
+
+                                {" "}
+
                                 {
-                                    dep.emri
+                                    department.pershkrimi
                                 }
+
+                            </p>
+
+                            <p>
+
+                                <strong>
+                                    Salla:
+                                </strong>
+
+                                {" "}
+
+                                {
+                                    department.lokacioni
+                                }
+
                             </p>
 
                             <button
                                 onClick={() =>
                                     handleEdit(
-                                        dep
+                                        department
                                     )
                                 }
                             >
@@ -275,26 +353,27 @@ export default function Departments() {
                             <button
                                 onClick={() =>
                                     handleDelete(
-                                        dep.id
+                                        department.id
                                     )
                                 }
+
                                 style={{
                                     marginLeft:
                                         "10px",
-                                    color:
-                                        "red",
+
+                                    background:
+                                        "crimson",
                                 }}
                             >
                                 Delete
                             </button>
 
                         </div>
-
                     )
-                )
-            )}
+                )}
+
+            </div>
 
         </div>
     );
-
 }

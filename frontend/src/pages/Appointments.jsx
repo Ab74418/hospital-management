@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Appointments() {
+
+    const navigate = useNavigate();
 
     const [appointments, setAppointments] =
         useState([]);
@@ -8,10 +11,20 @@ export default function Appointments() {
     const [doctors, setDoctors] =
         useState([]);
 
+    const [patients, setPatients] =
+        useState([]);
+
+    const [editId, setEditId] =
+        useState(null);
+
+    const [selectedDoctor,
+        setSelectedDoctor] =
+        useState("");
+
     const [form, setForm] =
         useState({
 
-            patient_name: "",
+            patient_id: "",
 
             doctor_id: "",
 
@@ -24,62 +37,88 @@ export default function Appointments() {
             shenime: "",
         });
 
-    const [editId, setEditId] =
-        useState(null);
+    const fetchAppointments =
+        async () => {
 
-    const [selectedDoctor,
-        setSelectedDoctor] =
-        useState("");
+            try {
 
-    async function fetchAppointments() {
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/appointments"
+                    );
 
-        try {
+                const data =
+                    await res.json();
 
-            const res =
-                await fetch(
-                    "http://localhost:5000/api/appointments"
+                setAppointments(
+                    Array.isArray(data)
+                        ? data
+                        : []
                 );
 
-            const data =
-                await res.json();
+            } catch (err) {
 
-            setAppointments(
-                Array.isArray(data)
-                    ? data
-                    : []
-            );
+                console.log(err);
+            }
+        };
 
-        } catch (err) {
+    const fetchDoctors =
+        async () => {
 
-            console.log(err);
-        }
-    }
+            try {
 
-    useEffect(() => {
-
-        const loadData =
-            async () => {
-
-                await fetchAppointments();
-
-                const doctorsRes =
+                const res =
                     await fetch(
                         "http://localhost:5000/api/doctors"
                     );
 
-                const doctorsData =
-                    await doctorsRes.json();
+                const data =
+                    await res.json();
 
                 setDoctors(
-                    Array.isArray(
-                        doctorsData
-                    )
-                        ? doctorsData
+                    Array.isArray(data)
+                        ? data
                         : []
                 );
-            };
 
-        loadData();
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const fetchPatients =
+        async () => {
+
+            try {
+
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/patients"
+                    );
+
+                const data =
+                    await res.json();
+
+                setPatients(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    useEffect(() => {
+
+        fetchAppointments();
+
+        fetchDoctors();
+
+        fetchPatients();
 
     }, []);
 
@@ -87,36 +126,11 @@ export default function Appointments() {
         (e) => {
 
             setForm({
+
                 ...form,
+
                 [e.target.name]:
                     e.target.value,
-            });
-        };
-
-    const handleEdit =
-        (app) => {
-
-            setEditId(app.id);
-
-            setForm({
-
-                patient_name:
-                    app.patient_name,
-
-                doctor_id:
-                    app.doctor_id,
-
-                data:
-                    app.data?.slice(0, 10),
-
-                ora:
-                    app.ora?.slice(11, 16),
-
-                statusi:
-                    app.statusi,
-
-                shenime:
-                    app.shenime || "",
             });
         };
 
@@ -126,27 +140,32 @@ export default function Appointments() {
             e.preventDefault();
 
             const overlap =
-                appointments.find((a) =>
+                appointments.find(
+                    (a) =>
 
-                    Number(a.doctor_id)
-                    ===
-                    Number(form.doctor_id)
+                        Number(
+                            a.doctor_id
+                        )
+                        ===
+                        Number(
+                            form.doctor_id
+                        )
 
-                    &&
+                        &&
 
-                    a.data?.slice(0, 10)
-                    ===
-                    form.data
+                        a.data?.slice(0, 10)
+                        ===
+                        form.data
 
-                    &&
+                        &&
 
-                    a.ora?.slice(11, 16)
-                    ===
-                    form.ora
+                        a.ora?.slice(11, 16)
+                        ===
+                        form.ora
 
-                    &&
+                        &&
 
-                    a.id !== editId
+                        a.id !== editId
                 );
 
             if (overlap) {
@@ -158,23 +177,25 @@ export default function Appointments() {
                 return;
             }
 
-            const url =
-                editId
-
-                    ?
-
-                    `http://localhost:5000/api/appointments/${editId}`
-
-                    :
-
-                    "http://localhost:5000/api/appointments";
-
-            const method =
-                editId
-                    ? "PUT"
-                    : "POST";
-
             try {
+
+                const url =
+
+                    editId
+
+                        ?
+
+                        `http://localhost:5000/api/appointments/${editId}`
+
+                        :
+
+                        "http://localhost:5000/api/appointments";
+
+                const method =
+
+                    editId
+                        ? "PUT"
+                        : "POST";
 
                 const res =
                     await fetch(url, {
@@ -187,7 +208,9 @@ export default function Appointments() {
                         },
 
                         body:
-                            JSON.stringify(form),
+                            JSON.stringify(
+                                form
+                            ),
                     });
 
                 const result =
@@ -217,7 +240,7 @@ export default function Appointments() {
 
                 setForm({
 
-                    patient_name: "",
+                    patient_id: "",
 
                     doctor_id: "",
 
@@ -269,6 +292,33 @@ export default function Appointments() {
             }
         };
 
+    const handleEdit =
+        (app) => {
+
+            setEditId(app.id);
+
+            setForm({
+
+                patient_id:
+                    app.patient_id || "",
+
+                doctor_id:
+                    app.doctor_id || "",
+
+                data:
+                    app.data?.slice(0, 10),
+
+                ora:
+                    app.ora?.slice(11, 16),
+
+                statusi:
+                    app.statusi || "",
+
+                shenime:
+                    app.shenime || "",
+            });
+        };
+
     const filteredAppointments =
 
         selectedDoctor
@@ -278,9 +328,13 @@ export default function Appointments() {
             appointments.filter(
                 (app) =>
 
-                    Number(app.doctor_id)
+                    Number(
+                        app.doctor_id
+                    )
                     ===
-                    Number(selectedDoctor)
+                    Number(
+                        selectedDoctor
+                    )
             )
 
             :
@@ -293,40 +347,62 @@ export default function Appointments() {
 
             <button
                 onClick={() =>
-                    window.history.back()
+                    navigate("/home")
                 }
 
                 style={{
+
+                    background:
+                        "#1ea5e7",
+
+                    color:
+                        "white",
+
+                    border:
+                        "none",
+
+                    padding:
+                        "14px 24px",
+
+                    borderRadius:
+                        "14px",
+
+                    fontSize:
+                        "18px",
+
+                    fontWeight:
+                        "bold",
+
+                    cursor:
+                        "pointer",
+
                     marginBottom:
                         "20px",
 
-                    background:
-                        "#0f172a",
+                    boxShadow:
+                        "0 2px 10px rgba(0,0,0,0.1)",
                 }}
             >
-                ← Back
+                Back
             </button>
 
-            <h2>
+            <h1>
                 Appointments
-            </h2>
+            </h1>
 
             <form
                 className="patient-form"
+
                 onSubmit={
                     handleSubmit
                 }
             >
 
-                <input
-                    type="text"
-
-                    name="patient_name"
-
-                    placeholder="Shkruaj pacientin"
+                <select
+                    name="patient_id"
 
                     value={
-                        form.patient_name
+                        form.patient_id
                     }
 
                     onChange={
@@ -334,7 +410,29 @@ export default function Appointments() {
                     }
 
                     required
-                />
+                >
+
+                    <option value="">
+                        Select Patient
+                    </option>
+
+                    {patients.map(
+                        (p) => (
+
+                            <option
+                                key={p.id}
+                                value={p.id}
+                            >
+
+                                {p.emri}
+                                {" "}
+                                {p.mbiemri}
+
+                            </option>
+                        )
+                    )}
+
+                </select>
 
                 <select
                     name="doctor_id"
@@ -368,12 +466,6 @@ export default function Appointments() {
                             >
 
                                 {
-                                    doctor.id
-                                }
-
-                                {" - "}
-
-                                {
                                     doctor.emri
                                 }
 
@@ -384,7 +476,6 @@ export default function Appointments() {
                                 }
 
                             </option>
-
                         )
                     )}
 
@@ -439,7 +530,9 @@ export default function Appointments() {
                     }
                 />
 
-                <button type="submit">
+                <button
+                    type="submit"
+                >
 
                     {editId
 
@@ -455,9 +548,12 @@ export default function Appointments() {
 
             </form>
 
-            <hr />
-
-            <h3>
+            <h3
+                style={{
+                    marginTop:
+                        "30px",
+                }}
+            >
                 Schedule View për doktor
             </h3>
 
@@ -491,12 +587,6 @@ export default function Appointments() {
                         >
 
                             {
-                                doctor.id
-                            }
-
-                            {" - "}
-
-                            {
                                 doctor.emri
                             }
 
@@ -507,154 +597,146 @@ export default function Appointments() {
                             }
 
                         </option>
-
                     )
                 )}
 
             </select>
 
-            {
-                filteredAppointments.map(
-                    (app) => (
+            <div className="cards">
 
-                        <div
-                            key={app.id}
+                {
+                    filteredAppointments.map(
+                        (app) => (
 
-                            style={{
-                                border:
-                                    "1px solid #ccc",
-
-                                padding:
-                                    "10px",
-
-                                marginTop:
-                                    "10px",
-
-                                borderRadius:
-                                    "10px",
-
-                                background:
-                                    "white",
-                            }}
-                        >
-
-                            <p>
-
-                                <strong>
-                                    Pacienti:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.patient_name
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Doktori:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.doctors?.emri
-                                }
-
-                                {" "}
-
-                                {
-                                    app.doctors?.mbiemri
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Data:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.data?.slice(0, 10)
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Ora:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.ora?.slice(11, 16)
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Statusi:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.statusi
-                                }
-
-                            </p>
-
-                            <p>
-
-                                <strong>
-                                    Shënime:
-                                </strong>
-
-                                {" "}
-
-                                {
-                                    app.shenime
-                                }
-
-                            </p>
-
-                            <button
-                                onClick={() =>
-                                    handleEdit(app)
-                                }
+                            <div
+                                className="card"
+                                key={app.id}
                             >
-                                Edit
-                            </button>
 
-                            <button
-                                onClick={() =>
-                                    handleDelete(
-                                        app.id
-                                    )
-                                }
+                                <h2>
 
-                                style={{
-                                    marginLeft:
-                                        "10px",
-                                }}
-                            >
-                                Delete
-                            </button>
+                                    {
+                                        app.patients?.emri
+                                    }
 
-                        </div>
+                                    {" "}
+
+                                    {
+                                        app.patients?.mbiemri
+                                    }
+
+                                </h2>
+
+                                <p>
+
+                                    <strong>
+                                        Doktori:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        app.doctors?.emri
+                                    }
+
+                                    {" "}
+
+                                    {
+                                        app.doctors?.mbiemri
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Data:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        app.data?.slice(0, 10)
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Ora:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        app.ora?.slice(11, 16)
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Statusi:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        app.statusi
+                                    }
+
+                                </p>
+
+                                <p>
+
+                                    <strong>
+                                        Shënime:
+                                    </strong>
+
+                                    {" "}
+
+                                    {
+                                        app.shenime
+                                    }
+
+                                </p>
+
+                                <button
+                                    onClick={() =>
+                                        handleEdit(
+                                            app
+                                        )
+                                    }
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        handleDelete(
+                                            app.id
+                                        )
+                                    }
+
+                                    style={{
+                                        marginLeft:
+                                            "10px",
+
+                                        background:
+                                            "crimson",
+                                    }}
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
+                        )
                     )
-                )
-            }
+                }
+
+            </div>
 
         </div>
     );

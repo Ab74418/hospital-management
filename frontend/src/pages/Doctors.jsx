@@ -27,54 +27,48 @@ function Doctors() {
             department_id: "",
         });
 
-    const fetchDoctors = () => {
+    const fetchDoctors = async () => {
 
-        fetch(
-            "http://localhost:5000/api/doctors"
-        )
-            .then((res) => res.json())
-            .then((data) => {
+        try {
 
-                if (
-                    Array.isArray(data)
-                ) {
-
-                    setDoctors(data);
-
-                } else {
-
-                    setDoctors([]);
-                }
-            })
-
-            .catch((err) =>
-                console.log(err)
+            const res = await fetch(
+                "http://localhost:5000/api/doctors"
             );
+
+            const data = await res.json();
+
+            setDoctors(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+        } catch (err) {
+
+            console.log(err);
+        }
     };
 
-    const fetchDepartments = () => {
+    const fetchDepartments = async () => {
 
-        fetch(
-            "http://localhost:5000/api/departments"
-        )
-            .then((res) => res.json())
-            .then((data) => {
+        try {
 
-                if (
-                    Array.isArray(data)
-                ) {
-
-                    setDepartments(data);
-
-                } else {
-
-                    setDepartments([]);
-                }
-            })
-
-            .catch((err) =>
-                console.log(err)
+            const res = await fetch(
+                "http://localhost:5000/api/departments"
             );
+
+            const data = await res.json();
+
+            setDepartments(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+        } catch (err) {
+
+            console.log(err);
+        }
     };
 
     useEffect(() => {
@@ -85,15 +79,16 @@ function Doctors() {
 
     }, []);
 
-    const handleChange =
-        (e) => {
+    const handleChange = (e) => {
 
-            setForm({
-                ...form,
-                [e.target.name]:
-                    e.target.value,
-            });
-        };
+        setForm({
+
+            ...form,
+
+            [e.target.name]:
+                e.target.value,
+        });
+    };
 
     const handleSubmit =
         async (e) => {
@@ -102,23 +97,40 @@ function Doctors() {
 
             try {
 
-                const url =
+                const url = editId
 
-                    editId
+                    ?
 
-                        ?
+                    `http://localhost:5000/api/doctors/${editId}`
 
-                        `http://localhost:5000/api/doctors/${editId}`
+                    :
 
-                        :
-
-                        "http://localhost:5000/api/doctors";
+                    "http://localhost:5000/api/doctors";
 
                 const method =
-
                     editId
                         ? "PUT"
                         : "POST";
+
+                const doctorData = {
+
+                    emri:
+                        form.emri,
+
+                    mbiemri:
+                        form.mbiemri,
+
+                    specializimi:
+                        form.specializimi,
+
+                    telefoni:
+                        form.telefoni,
+
+                    department_id:
+                        Number(
+                            form.department_id
+                        ),
+                };
 
                 const res =
                     await fetch(url, {
@@ -131,7 +143,9 @@ function Doctors() {
                         },
 
                         body:
-                            JSON.stringify(form),
+                            JSON.stringify(
+                                doctorData
+                            ),
                     });
 
                 const result =
@@ -157,14 +171,19 @@ function Doctors() {
 
                         :
 
-                        "Doctor u shtua!"
+                        "Doctor added!"
                 );
 
                 setForm({
+
                     emri: "",
+
                     mbiemri: "",
+
                     specializimi: "",
+
                     telefoni: "",
+
                     department_id: "",
                 });
 
@@ -217,16 +236,16 @@ function Doctors() {
             setForm({
 
                 emri:
-                    doctor.emri,
+                    doctor.emri || "",
 
                 mbiemri:
-                    doctor.mbiemri,
+                    doctor.mbiemri || "",
 
                 specializimi:
-                    doctor.specializimi,
+                    doctor.specializimi || "",
 
                 telefoni:
-                    doctor.telefoni,
+                    doctor.telefoni || "",
 
                 department_id:
                     doctor.department_id || "",
@@ -235,20 +254,15 @@ function Doctors() {
 
     return (
 
-        <div
-            className="page-card"
-        >
+        <div className="page-card">
 
             <div
                 style={{
                     display: "flex",
-
                     justifyContent:
                         "space-between",
-
                     alignItems:
                         "center",
-
                     marginBottom:
                         "20px",
                 }}
@@ -274,7 +288,6 @@ function Doctors() {
                 onSubmit={
                     handleSubmit
                 }
-
                 className="patient-form"
             >
 
@@ -300,7 +313,9 @@ function Doctors() {
                     type="text"
                     name="specializimi"
                     placeholder="Specializimi"
-                    value={form.specializimi}
+                    value={
+                        form.specializimi
+                    }
                     onChange={handleChange}
                     required
                 />
@@ -340,15 +355,12 @@ function Doctors() {
                                 {d.emri}
 
                             </option>
-
                         )
                     )}
 
                 </select>
 
-                <button
-                    type="submit"
-                >
+                <button type="submit">
 
                     {editId
 
@@ -364,30 +376,21 @@ function Doctors() {
 
             </form>
 
-            <div
-                className="cards"
-            >
+            <div className="cards">
 
                 {doctors.map(
                     (doctor) => (
 
                         <div
                             className="card"
-
-                            key={
-                                doctor.id
-                            }
+                            key={doctor.id}
                         >
 
                             <h2>
 
-                                {
-                                    doctor.emri
-                                }
+                                {doctor.emri}
                                 {" "}
-                                {
-                                    doctor.mbiemri
-                                }
+                                {doctor.mbiemri}
 
                             </h2>
 
@@ -430,13 +433,10 @@ function Doctors() {
                                 {
                                     departments.find(
                                         (d) =>
-                                            d.id
-                                            ===
+                                            d.id ===
                                             doctor.department_id
                                     )?.emri
-
                                     ||
-
                                     "Pa department"
                                 }
 
@@ -462,7 +462,6 @@ function Doctors() {
                                 style={{
                                     marginLeft:
                                         "10px",
-
                                     background:
                                         "crimson",
                                 }}

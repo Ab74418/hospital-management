@@ -1,76 +1,106 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function Nurses() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [nurses, setNurses] = useState([]);
-    const [departments, setDepartments] = useState([]);
+    const [nurses, setNurses] =
+        useState([]);
 
-    const [form, setForm] = useState({
-        emri: "",
-        mbiemri: "",
-        department_id: "",
-        turni: "",
-    });
+    const [departments,
+        setDepartments] =
+        useState([]);
 
-    const [editingId, setEditingId] =
+    const [editId,
+        setEditId] =
         useState(null);
 
-    const loadData = async () => {
+    const [form, setForm] =
+        useState({
 
-        try {
+            emri: "",
 
-            const nursesRes = await fetch(
-                "http://localhost:5000/api/nurses"
-            );
+            mbiemri: "",
 
-            const nursesData =
-                await nursesRes.json();
+            department_id: "",
 
-            setNurses(
-                Array.isArray(nursesData)
-                    ? nursesData
-                    : []
-            );
+            turni: "",
+        });
 
-            const departmentsRes =
-                await fetch(
-                    "http://localhost:5000/api/departments"
+    const fetchNurses =
+        async () => {
+
+            try {
+
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/nurses"
+                    );
+
+                const data =
+                    await res.json();
+
+                setNurses(
+                    Array.isArray(data)
+                        ? data
+                        : []
                 );
 
-            const departmentsData =
-                await departmentsRes.json();
+            } catch (err) {
 
-            setDepartments(
-                Array.isArray(
-                    departmentsData
-                )
-                    ? departmentsData
-                    : []
-            );
+                console.log(err);
+            }
+        };
 
-        } catch (error) {
+    const fetchDepartments =
+        async () => {
 
-            console.log(error);
-        }
-    };
+            try {
+
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/departments"
+                    );
+
+                const data =
+                    await res.json();
+
+                setDepartments(
+                    Array.isArray(data)
+                        ? data
+                        : []
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
 
     useEffect(() => {
 
-        loadData();
+        fetchNurses();
+
+        fetchDepartments();
 
     }, []);
 
-    const handleChange = (e) => {
+    const handleChange =
+        (e) => {
 
-        setForm({
-            ...form,
-            [e.target.name]:
-                e.target.value,
-        });
-    };
+            setForm({
+
+                ...form,
+
+                [e.target.name]:
+                    e.target.value,
+            });
+        };
 
     const handleSubmit =
         async (e) => {
@@ -79,109 +109,107 @@ export default function Nurses() {
 
             try {
 
-                let response;
+                const url =
 
-                if (editingId) {
+                    editId
 
-                    response = await fetch(
-                        `http://localhost:5000/api/nurses/${editingId}`,
-                        {
-                            method: "PUT",
+                        ?
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
-                            },
+                        `http://localhost:5000/api/nurses/${editId}`
 
-                            body:
-                                JSON.stringify(
-                                    form
-                                ),
-                        }
-                    );
+                        :
 
-                } else {
+                        "http://localhost:5000/api/nurses";
 
-                    response = await fetch(
-                        "http://localhost:5000/api/nurses",
-                        {
-                            method: "POST",
+                const method =
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json",
-                            },
+                    editId
+                        ? "PUT"
+                        : "POST";
 
-                            body:
-                                JSON.stringify(
-                                    form
-                                ),
-                        }
-                    );
-                }
+                const res =
+                    await fetch(url, {
 
-                if (!response.ok) {
+                        method,
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+                        },
+
+                        body:
+                            JSON.stringify(
+                                form
+                            ),
+                    });
+
+                if (!res.ok) {
 
                     throw new Error(
-                        "Failed"
+                        "Gabim"
                     );
                 }
 
                 setForm({
+
                     emri: "",
+
                     mbiemri: "",
+
                     department_id:
                         "",
+
                     turni: "",
                 });
 
-                setEditingId(null);
+                setEditId(null);
 
-                loadData();
+                fetchNurses();
 
-            } catch (error) {
+            } catch (err) {
 
-                console.log(error);
+                console.log(err);
             }
         };
 
     const handleDelete =
         async (id) => {
 
+            const confirmDelete =
+                window.confirm(
+                    "A je e sigurt?"
+                );
+
+            if (!confirmDelete)
+                return;
+
             try {
 
-                const response =
-                    await fetch(
-                        `http://localhost:5000/api/nurses/${id}`,
-                        {
-                            method:
-                                "DELETE",
-                        }
-                    );
+                await fetch(
+                    `http://localhost:5000/api/nurses/${id}`,
+                    {
+                        method:
+                            "DELETE",
+                    }
+                );
 
-                if (!response.ok) {
+                fetchNurses();
 
-                    throw new Error(
-                        "Failed"
-                    );
-                }
+            } catch (err) {
 
-                loadData();
-
-            } catch (error) {
-
-                console.log(error);
+                console.log(err);
             }
         };
 
     const handleEdit =
         (nurse) => {
 
-            setEditingId(
+            setEditId(
                 nurse.id
             );
 
             setForm({
+
                 emri:
                     nurse.emri || "",
 
@@ -189,8 +217,7 @@ export default function Nurses() {
                     nurse.mbiemri || "",
 
                 department_id:
-                    nurse.department_id ||
-                    "",
+                    nurse.department_id || "",
 
                 turni:
                     nurse.turni || "",
@@ -199,83 +226,63 @@ export default function Nurses() {
 
     return (
 
-        <div
-            style={{
-                padding: "30px",
-            }}
-        >
+        <div className="page-card">
 
-            <button
-                onClick={() =>
-                    navigate("/home")
-                }
+            <div
                 style={{
-                    background:
-                        "#1ea5e7",
+                    display: "flex",
 
-                    color: "white",
+                    justifyContent:
+                        "space-between",
 
-                    border: "none",
-
-                    padding:
-                        "10px 20px",
-
-                    borderRadius:
-                        "10px",
-
-                    cursor: "pointer",
+                    alignItems:
+                        "center",
 
                     marginBottom:
                         "20px",
                 }}
             >
-                Back
-            </button>
 
-            <h1>Nurses</h1>
+                <button
+                    onClick={() =>
+                        navigate("/home")
+                    }
+                >
+                    Back
+                </button>
+
+                <h1>
+                    Nurses
+                </h1>
+
+                <div></div>
+
+            </div>
 
             <form
                 onSubmit={
                     handleSubmit
                 }
-                style={{
-                    display: "flex",
 
-                    flexDirection:
-                        "column",
-
-                    gap: "10px",
-
-                    maxWidth:
-                        "400px",
-
-                    marginBottom:
-                        "30px",
-                }}
+                className="patient-form"
             >
 
                 <input
                     type="text"
                     name="emri"
                     placeholder="Emri"
-                    value={
-                        form.emri
-                    }
-                    onChange={
-                        handleChange
-                    }
+                    value={form.emri}
+                    onChange={handleChange}
+                    required
                 />
 
                 <input
                     type="text"
                     name="mbiemri"
                     placeholder="Mbiemri"
-                    value={
-                        form.mbiemri
-                    }
-                    onChange={
-                        handleChange
-                    }
+                    value={form.mbiemri}
+                    onChange={handleChange}
+                    required
                 />
 
                 <select
@@ -286,6 +293,7 @@ export default function Nurses() {
                     onChange={
                         handleChange
                     }
+                    required
                 >
 
                     <option value="">
@@ -293,26 +301,16 @@ export default function Nurses() {
                     </option>
 
                     {departments.map(
-                        (
-                            department
-                        ) => (
+                        (d) => (
 
                             <option
-                                key={
-                                    department.id
-                                }
-
-                                value={
-                                    department.id
-                                }
+                                key={d.id}
+                                value={d.id}
                             >
 
-                                {
-                                    department.emri
-                                }
+                                {d.emri}
 
                             </option>
-
                         )
                     )}
 
@@ -322,88 +320,79 @@ export default function Nurses() {
                     type="text"
                     name="turni"
                     placeholder="Turni"
-                    value={
-                        form.turni
-                    }
-                    onChange={
-                        handleChange
-                    }
+                    value={form.turni}
+                    onChange={handleChange}
+                    required
                 />
 
                 <button
                     type="submit"
                 >
 
-                    {editingId
-                        ? "Update Nurse"
-                        : "Add Nurse"}
+                    {editId
+
+                        ?
+
+                        "Update Nurse"
+
+                        :
+
+                        "Add Nurse"}
 
                 </button>
 
             </form>
 
-            {nurses.length ===
-                0 ? (
+            <div className="cards">
 
-                <p>
-                    No nurses found
-                </p>
-
-            ) : (
-
-                nurses.map(
+                {nurses.map(
                     (nurse) => (
 
                         <div
-                            key={
-                                nurse.id
-                            }
-                            style={{
-                                background:
-                                    "white",
-
-                                padding:
-                                    "15px",
-
-                                marginBottom:
-                                    "10px",
-
-                                borderRadius:
-                                    "10px",
-                            }}
+                            className="card"
+                            key={nurse.id}
                         >
 
-                            <h3>
+                            <h2>
 
-                                {
-                                    nurse.emri
-                                }{" "}
+                                {nurse.emri}
+                                {" "}
+                                {nurse.mbiemri}
 
-                                {
-                                    nurse.mbiemri
-                                }
-
-                            </h3>
+                            </h2>
 
                             <p>
 
-                                Department:
+                                <strong>
+                                    Department:
+                                </strong>
+
                                 {" "}
 
                                 {
-                                    nurse.department_name
+                                    departments.find(
+                                        (d) =>
+                                            d.id
+                                            ===
+                                            nurse.department_id
+                                    )?.emri
+
+                                    ||
+
+                                    "Pa department"
                                 }
 
                             </p>
 
                             <p>
 
-                                Turni:
+                                <strong>
+                                    Turni:
+                                </strong>
+
                                 {" "}
 
-                                {
-                                    nurse.turni
-                                }
+                                {nurse.turni}
 
                             </p>
 
@@ -423,16 +412,23 @@ export default function Nurses() {
                                         nurse.id
                                     )
                                 }
+
+                                style={{
+                                    marginLeft:
+                                        "10px",
+
+                                    background:
+                                        "crimson",
+                                }}
                             >
                                 Delete
                             </button>
 
                         </div>
-
                     )
-                )
+                )}
 
-            )}
+            </div>
 
         </div>
     );
