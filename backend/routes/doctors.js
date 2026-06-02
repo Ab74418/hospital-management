@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
             surname,
             specialization,
             department_id,
-            number,
+            telefoni,
         } = req.body;
 
         const doctor = await prisma.doctors.create({
