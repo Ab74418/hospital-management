@@ -74,7 +74,7 @@ router.post("/", async (req, res) => {
                 surname,
                 specialization,
                 department_id: department_id ? Number(department_id) : null,
-                number,
+                telefoni,
             },
         });
 
@@ -98,7 +98,7 @@ router.put("/:id", async (req, res) => {
             surname,
             specialization,
             department_id,
-            number,
+            telefoni,
         } = req.body;
 
         const updatedDoctor = await prisma.doctors.update({
@@ -110,7 +110,7 @@ router.put("/:id", async (req, res) => {
                 surname,
                 specialization,
                 department_id: department_id ? Number(department_id) : null,
-                number,
+                telefoni,
             },
         });
 
