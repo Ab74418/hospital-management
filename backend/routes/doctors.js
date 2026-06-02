@@ -80,16 +80,16 @@ router.post("/", async (req, res) => {
     try {
 
         const {
-            emri,
-            mbiemri,
+            name,
+            surname,
             department_id,
         } = req.body;
 
         const doctor =
             await prisma.doctors.create({
                 data: {
-                    emri,
-                    mbiemri,
+                    name,
+                    surname,
                     department_id:
                         Number(department_id),
                 },
@@ -119,8 +119,8 @@ router.put("/:id", async (req, res) => {
         const { id } = req.params;
 
         const {
-            emri,
-            mbiemri,
+            name,
+            surname,
             department_id,
         } = req.body;
 
@@ -131,8 +131,8 @@ router.put("/:id", async (req, res) => {
                 },
 
                 data: {
-                    emri,
-                    mbiemri,
+                    name,
+                    surname,
                     department_id:
                         Number(department_id),
                 },
