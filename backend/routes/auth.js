@@ -1,3 +1,4 @@
+
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -53,15 +54,6 @@ router.post("/register", async (req, res) => {
                 message: "Doctor code gabim",
             });
         }
-        if (
-            role === "nurse" &&
-            secretCode !== "NURSE2026"
-        ) {
-
-            return res.status(403).json({
-                message: "Nurse code gabim",
-            });
-        }
 
         if (
             role === "receptionist" &&
@@ -81,11 +73,31 @@ router.post("/register", async (req, res) => {
                 data: {
                     username,
                     password: hashedPassword,
-                    role,
                 },
             });
 
-        res.json({
+        const roleData =
+            await prisma.roles.findFirst({
+                where: {
+                    emri: role,
+                },
+            });
+
+        if (!roleData) {
+
+            return res.status(404).json({
+                message: "Role not found",
+            });
+        }
+
+        await prisma.userroles.create({
+            data: {
+                user_id: user.id,
+                role_id: roleData.id,
+            },
+        });
+
+        res.status(201).json({
             message: "Registered successfully",
             user,
         });
@@ -114,6 +126,14 @@ router.post("/login", async (req, res) => {
                 where: {
                     username,
                 },
+
+                include: {
+                    userroles: {
+                        include: {
+                            roles: true,
+                        },
+                    },
+                },
             });
 
         if (!user) {
@@ -136,10 +156,13 @@ router.post("/login", async (req, res) => {
             });
         }
 
+        const role =
+            user.userroles[0]?.roles?.emri;
+
         const token = jwt.sign(
             {
                 id: user.id,
-                role: user.role,
+                role,
             },
             SECRET,
             {
@@ -149,7 +172,7 @@ router.post("/login", async (req, res) => {
 
         res.json({
             token,
-            role: user.role,
+            role,
             username: user.username,
         });
 
