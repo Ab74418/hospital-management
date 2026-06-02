@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
             nurses.mbiemri,
             nurses.department_id,
             nurses.turni,
-            departments.emertimi AS department_name
+            departments.emri AS department_name
         FROM nurses
         LEFT JOIN departments
         ON nurses.department_id = departments.id
@@ -27,7 +27,9 @@ router.get("/", (req, res) => {
                 err
             );
 
-            return res.status(500).json(err);
+            return res
+                .status(500)
+                .json(err);
         }
 
         res.json(results);
@@ -43,7 +45,7 @@ router.get("/:id", (req, res) => {
             nurses.mbiemri,
             nurses.department_id,
             nurses.turni,
-            departments.emertimi AS department_name
+            departments.emri AS department_name
         FROM nurses
         LEFT JOIN departments
         ON nurses.department_id = departments.id

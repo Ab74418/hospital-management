@@ -6,9 +6,7 @@ export default function Nurses() {
     const navigate = useNavigate();
 
     const [nurses, setNurses] = useState([]);
-
-    const [departments, setDepartments] =
-        useState([]);
+    const [departments, setDepartments] = useState([]);
 
     const [form, setForm] = useState({
         emri: "",
@@ -20,20 +18,13 @@ export default function Nurses() {
     const [editingId, setEditingId] =
         useState(null);
 
-    useEffect(() => {
-
-        loadData();
-
-    }, []);
-
     const loadData = async () => {
 
         try {
 
-            const nursesRes =
-                await fetch(
-                    "http://localhost:5000/api/nurses"
-                );
+            const nursesRes = await fetch(
+                "http://localhost:5000/api/nurses"
+            );
 
             const nursesData =
                 await nursesRes.json();
@@ -53,40 +44,24 @@ export default function Nurses() {
                 await departmentsRes.json();
 
             setDepartments(
-                Array.isArray(departmentsData)
+                Array.isArray(
+                    departmentsData
+                )
                     ? departmentsData
                     : []
             );
 
-        } catch (err) {
+        } catch (error) {
 
-            console.log(err);
+            console.log(error);
         }
     };
 
-    const fetchNurses = async () => {
+    useEffect(() => {
 
-        try {
+        loadData();
 
-            const res =
-                await fetch(
-                    "http://localhost:5000/api/nurses"
-                );
-
-            const data =
-                await res.json();
-
-            setNurses(
-                Array.isArray(data)
-                    ? data
-                    : []
-            );
-
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
+    }, []);
 
     const handleChange = (e) => {
 
@@ -104,13 +79,14 @@ export default function Nurses() {
 
             try {
 
+                let response;
+
                 if (editingId) {
 
-                    await fetch(
+                    response = await fetch(
                         `http://localhost:5000/api/nurses/${editingId}`,
                         {
-                            method:
-                                "PUT",
+                            method: "PUT",
 
                             headers: {
                                 "Content-Type":
@@ -126,11 +102,10 @@ export default function Nurses() {
 
                 } else {
 
-                    await fetch(
+                    response = await fetch(
                         "http://localhost:5000/api/nurses",
                         {
-                            method:
-                                "POST",
+                            method: "POST",
 
                             headers: {
                                 "Content-Type":
@@ -145,6 +120,13 @@ export default function Nurses() {
                     );
                 }
 
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Failed"
+                    );
+                }
+
                 setForm({
                     emri: "",
                     mbiemri: "",
@@ -153,15 +135,13 @@ export default function Nurses() {
                     turni: "",
                 });
 
-                setEditingId(
-                    null
-                );
+                setEditingId(null);
 
-                fetchNurses();
+                loadData();
 
-            } catch (err) {
+            } catch (error) {
 
-                console.log(err);
+                console.log(error);
             }
         };
 
@@ -170,19 +150,27 @@ export default function Nurses() {
 
             try {
 
-                await fetch(
-                    `http://localhost:5000/api/nurses/${id}`,
-                    {
-                        method:
-                            "DELETE",
-                    }
-                );
+                const response =
+                    await fetch(
+                        `http://localhost:5000/api/nurses/${id}`,
+                        {
+                            method:
+                                "DELETE",
+                        }
+                    );
 
-                fetchNurses();
+                if (!response.ok) {
 
-            } catch (err) {
+                    throw new Error(
+                        "Failed"
+                    );
+                }
 
-                console.log(err);
+                loadData();
+
+            } catch (error) {
+
+                console.log(error);
             }
         };
 
@@ -195,16 +183,17 @@ export default function Nurses() {
 
             setForm({
                 emri:
-                    nurse.emri,
+                    nurse.emri || "",
 
                 mbiemri:
-                    nurse.mbiemri,
+                    nurse.mbiemri || "",
 
                 department_id:
-                    nurse.department_id,
+                    nurse.department_id ||
+                    "",
 
                 turni:
-                    nurse.turni,
+                    nurse.turni || "",
             });
         };
 
@@ -251,6 +240,7 @@ export default function Nurses() {
                 }
                 style={{
                     display: "flex",
+
                     flexDirection:
                         "column",
 
@@ -368,7 +358,6 @@ export default function Nurses() {
                             key={
                                 nurse.id
                             }
-
                             style={{
                                 background:
                                     "white",
