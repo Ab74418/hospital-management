@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 export default function Specializations() {
-
     const [specializations, setSpecializations] = useState([]);
 
     useEffect(() => {
@@ -12,14 +11,19 @@ export default function Specializations() {
     }, []);
 
     return (
-        <div>
+        <div className="page-container">
             <h1>Specializations</h1>
 
-            {specializations.map((s) => (
-                <div key={s.id}>
-                    {JSON.stringify(s)}
-                </div>
-            ))}
+            <div className="cards">
+                {specializations.map((s) => (
+                    <div className="card" key={s.id}>
+                        <h2>{s.emri}</h2>
+                        <p>
+                            <b>ID:</b> {s.id}
+                        </p>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
