@@ -31,33 +31,6 @@ export default function Rooms() {
             .then((res) => res.json())
 
             .then((data) => {
-<<<<<<< HEAD
-                const validRooms = data.filter(
-                    (room) => room.numri_dhomes && room.lloji && room.statusi
-                );
-                setRooms(validRooms);
-            })
-            .catch((err) => console.log(err));
-    }, []);
-
-    const freeRooms = rooms.filter((room) => room.statusi === "free").length;
-    const occupiedRooms = rooms.filter((room) => room.statusi === "occupied").length;
-
-    return (
-        <div className="page-container">
-            <h1>Rooms</h1>
-
-            <div className="stats">
-                <div className="stat-card">
-                    <div className="stat-title">Free Rooms</div>
-                    <div className="stat-number">{freeRooms}</div>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-title">Occupied Rooms</div>
-                    <div className="stat-number">{occupiedRooms}</div>
-                </div>
-=======
 
                 setRooms(data);
 
@@ -275,7 +248,6 @@ export default function Rooms() {
 
                 </div>
 
->>>>>>> ce331e9cee3ee489b68a6fb3d24dd58f3f2cec0b
             </div>
 
             <form
@@ -447,6 +419,7 @@ export default function Rooms() {
                                 <td>
 
                                     <button
+                                        type="button"
                                         className="edit-btn"
                                         onClick={() =>
                                             handleEdit(room)
@@ -456,6 +429,7 @@ export default function Rooms() {
                                     </button>
 
                                     <button
+                                        type="button"
                                         className="delete-btn"
                                         onClick={() =>
                                             handleDelete(room.id)
