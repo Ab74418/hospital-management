@@ -127,21 +127,36 @@ function Allergies() {
 
     return (
 
-        <div style={{ padding: "20px" }}>
+        <div
+            style={{
+                padding: "30px",
+                background: "#eef3f8",
+                minHeight: "100vh",
+            }}
+        >
 
             <div
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "20px",
+                    marginBottom: "30px",
                 }}
             >
 
                 <button
                     onClick={() =>
-                        navigate("/patients")
+                        navigate("/home")
                     }
+                    style={{
+                        background: "#1da1f2",
+                        color: "white",
+                        border: "none",
+                        padding: "16px 28px",
+                        borderRadius: "15px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                    }}
                 >
                     Back
                 </button>
@@ -153,17 +168,45 @@ function Allergies() {
 
                         navigate("/login");
                     }}
+                    style={{
+                        background: "#1da1f2",
+                        color: "white",
+                        border: "none",
+                        padding: "16px 28px",
+                        borderRadius: "15px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                    }}
                 >
                     Logout
                 </button>
 
             </div>
 
-            <h1>Allergies</h1>
+            <h1
+                style={{
+                    textAlign: "center",
+                    color: "#0d4d8b",
+                    fontSize: "70px",
+                    marginBottom: "40px",
+                }}
+            >
+                Allergies
+            </h1>
 
             <form
-                className="patient-form"
                 onSubmit={handleSubmit}
+                style={{
+                    background: "white",
+                    padding: "35px",
+                    borderRadius: "25px",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "20px",
+                    marginBottom: "40px",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+                }}
             >
 
                 <select
@@ -175,6 +218,12 @@ function Allergies() {
                         })
                     }
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border: "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 >
 
                     <option value="">
@@ -206,9 +255,26 @@ function Allergies() {
                         })
                     }
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border: "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 />
 
-                <button type="submit">
+                <button
+                    type="submit"
+                    style={{
+                        background: "#1da1f2",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "15px",
+                        fontSize: "22px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                    }}
+                >
 
                     {editingId
                         ? "Update Allergy"
@@ -218,62 +284,174 @@ function Allergies() {
 
             </form>
 
-            <table>
+            <div
+                style={{
+                    background: "white",
+                    borderRadius: "25px",
+                    overflow: "hidden",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+                }}
+            >
 
-                <thead>
+                <table
+                    style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                    }}
+                >
 
-                    <tr>
-                        <th>ID</th>
-                        <th>Patient</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
+                    <thead>
 
-                </thead>
+                        <tr
+                            style={{
+                                background: "#1da1f2",
+                                color: "white",
+                            }}
+                        >
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                ID
+                            </th>
 
-                <tbody>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Patient
+                            </th>
 
-                    {allergies.map((allergy) => (
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Description
+                            </th>
 
-                        <tr key={allergy.id}>
-
-                            <td>{allergy.id}</td>
-
-                            <td>
-                                {allergy.patient_name}
-                            </td>
-
-                            <td>
-                                {allergy.pershkrimi}
-                            </td>
-
-                            <td>
-
-                                <button
-                                    onClick={() =>
-                                        handleEdit(allergy)
-                                    }
-                                >
-                                    Update
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        handleDelete(allergy.id)
-                                    }
-                                >
-                                    Delete
-                                </button>
-
-                            </td>
-
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Actions
+                            </th>
                         </tr>
 
-                    ))}
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        {allergies.map((allergy) => (
+
+                            <tr
+                                key={allergy.id}
+                                style={{
+                                    textAlign: "center",
+                                    borderBottom:
+                                        "1px solid #e2e8f0",
+                                }}
+                            >
+
+                                <td
+                                    style={{
+                                        padding: "25px",
+                                        fontSize: "22px",
+                                    }}
+                                >
+                                    {allergy.id}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding: "25px",
+                                        fontSize: "22px",
+                                    }}
+                                >
+                                    {allergy.patient_name}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding: "25px",
+                                        fontSize: "22px",
+                                    }}
+                                >
+                                    {allergy.pershkrimi}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding: "25px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        gap: "15px",
+                                    }}
+                                >
+
+                                    <button
+                                        onClick={() =>
+                                            handleEdit(allergy)
+                                        }
+                                        style={{
+                                            background: "#1da1f2",
+                                            color: "white",
+                                            border: "none",
+                                            padding:
+                                                "14px 22px",
+                                            borderRadius:
+                                                "12px",
+                                            fontWeight:
+                                                "bold",
+                                            cursor: "pointer",
+                                            fontSize: "18px",
+                                        }}
+                                    >
+                                        Update
+                                    </button>
+
+                                    <button
+                                        onClick={() =>
+                                            handleDelete(
+                                                allergy.id
+                                            )
+                                        }
+                                        style={{
+                                            background:
+                                                "crimson",
+                                            color: "white",
+                                            border: "none",
+                                            padding:
+                                                "14px 22px",
+                                            borderRadius:
+                                                "12px",
+                                            fontWeight:
+                                                "bold",
+                                            cursor: "pointer",
+                                            fontSize: "18px",
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        ))}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
     );

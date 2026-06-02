@@ -164,25 +164,80 @@ function MedicalRecords() {
 
     return (
 
-        <div style={{ padding: "20px" }}>
+        <div
+            style={{
+                padding: "30px",
+                background: "#eef3f8",
+                minHeight: "100vh",
+            }}
+        >
 
-            <button
-                onClick={() =>
-                    navigate("/patients")
-                }
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "30px",
+                }}
             >
-                Back
-            </button>
 
-            <h1>Medical Records</h1>
+                <button
+                    onClick={() =>
+                        navigate("/home")
+                    }
+                    style={{
+                        background: "#1da1f2",
+                        color: "white",
+                        border: "none",
+                        padding: "16px 28px",
+                        borderRadius: "15px",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                    }}
+                >
+                    Back
+                </button>
 
-            <form onSubmit={handleSubmit}>
+            </div>
+
+            <h1
+                style={{
+                    textAlign: "center",
+                    color: "#0d4d8b",
+                    fontSize: "70px",
+                    marginBottom: "40px",
+                }}
+            >
+                Medical Records
+            </h1>
+
+            <form
+                onSubmit={handleSubmit}
+                style={{
+                    background: "white",
+                    padding: "35px",
+                    borderRadius: "25px",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "20px",
+                    marginBottom: "40px",
+                    boxShadow:
+                        "0 4px 15px rgba(0,0,0,0.08)",
+                }}
+            >
 
                 <select
                     name="patient_id"
                     value={form.patient_id}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 >
 
                     <option value="">
@@ -207,6 +262,13 @@ function MedicalRecords() {
                     value={form.doctor_id}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 >
 
                     <option value="">
@@ -233,6 +295,13 @@ function MedicalRecords() {
                     value={form.diagnoza}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 />
 
                 <input
@@ -242,6 +311,13 @@ function MedicalRecords() {
                     value={form.trajtimi}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 />
 
                 <input
@@ -251,6 +327,13 @@ function MedicalRecords() {
                     value={form.prescriptions}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 />
 
                 <input
@@ -259,9 +342,28 @@ function MedicalRecords() {
                     value={form.data}
                     onChange={handleChange}
                     required
+                    style={{
+                        padding: "18px",
+                        borderRadius: "15px",
+                        border:
+                            "1px solid #cbd5e1",
+                        fontSize: "18px",
+                    }}
                 />
 
-                <button type="submit">
+                <button
+                    type="submit"
+                    style={{
+                        background: "#1da1f2",
+                        color: "white",
+                        border: "none",
+                        padding: "15px 25px",
+                        borderRadius: "12px",
+                        fontWeight: "bold",
+                        fontSize: "18px",
+                        cursor: "pointer",
+                    }}
+                >
 
                     {editingId
                         ? "Update"
@@ -271,91 +373,283 @@ function MedicalRecords() {
 
             </form>
 
-            <table
-                border="1"
-                cellPadding="10"
-                cellSpacing="0"
-                width="100%"
+            <div
                 style={{
-                    marginTop: "30px",
+                    background: "white",
+                    borderRadius: "25px",
+                    overflow: "hidden",
+                    boxShadow:
+                        "0 4px 15px rgba(0,0,0,0.08)",
                 }}
             >
 
-                <thead>
+                <table
+                    style={{
+                        width: "100%",
+                        borderCollapse: "collapse",
+                    }}
+                >
 
-                    <tr>
-                        <th>ID</th>
-                        <th>Patient</th>
-                        <th>Doctor</th>
-                        <th>Diagnoza</th>
-                        <th>Trajtimi</th>
-                        <th>Barnat</th>
-                        <th>Data</th>
-                        <th>Actions</th>
-                    </tr>
+                    <thead>
 
-                </thead>
+                        <tr
+                            style={{
+                                background: "#1da1f2",
+                                color: "white",
+                            }}
+                        >
 
-                <tbody>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                ID
+                            </th>
 
-                    {records.map((r) => (
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Patient
+                            </th>
 
-                        <tr key={r.id}>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Doctor
+                            </th>
 
-                            <td>{r.id}</td>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Diagnoza
+                            </th>
 
-                            <td>
-                                {r.patient_name}
-                            </td>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Trajtimi
+                            </th>
 
-                            <td>
-                                {r.doctor_name}
-                            </td>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Barnat
+                            </th>
 
-                            <td>
-                                {r.diagnoza}
-                            </td>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Data
+                            </th>
 
-                            <td>
-                                {r.trajtimi}
-                            </td>
-
-                            <td>
-                                {r.prescriptions}
-                            </td>
-
-                            <td>
-                                {new Date(
-                                    r.data
-                                ).toLocaleDateString()}
-                            </td>
-
-                            <td>
-
-                                <button
-                                    onClick={() =>
-                                        handleEdit(r)
-                                    }
-                                >
-                                    Update
-                                </button>
-
-                                <button
-                                    onClick={() =>
-                                        handleDelete(r.id)
-                                    }
-                                >
-                                    Delete
-                                </button>
-
-                            </td>
+                            <th
+                                style={{
+                                    padding: "20px",
+                                    fontSize: "24px",
+                                }}
+                            >
+                                Actions
+                            </th>
 
                         </tr>
-                    ))}
 
-                </tbody>
+                    </thead>
 
-            </table>
+                    <tbody>
+
+                        {records.map((r) => (
+
+                            <tr
+                                key={r.id}
+                                style={{
+                                    textAlign:
+                                        "center",
+                                    borderBottom:
+                                        "1px solid #e2e8f0",
+                                }}
+                            >
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.id}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.patient_name}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.doctor_name}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.diagnoza}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.trajtimi}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {r.prescriptions}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "25px",
+                                        fontSize:
+                                            "22px",
+                                    }}
+                                >
+                                    {new Date(
+                                        r.data
+                                    ).toLocaleDateString()}
+                                </td>
+
+                                <td
+                                    style={{
+                                        padding:
+                                            "20px",
+                                    }}
+                                >
+
+                                    <div
+                                        style={{
+                                            display:
+                                                "flex",
+                                            gap:
+                                                "10px",
+                                            justifyContent:
+                                                "center",
+                                        }}
+                                    >
+
+                                        <button
+                                            onClick={() =>
+                                                handleEdit(
+                                                    r
+                                                )
+                                            }
+                                            style={{
+                                                background:
+                                                    "#1da1f2",
+                                                color:
+                                                    "white",
+                                                border:
+                                                    "none",
+                                                padding:
+                                                    "12px 22px",
+                                                borderRadius:
+                                                    "12px",
+                                                fontWeight:
+                                                    "bold",
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                        >
+                                            Update
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                handleDelete(
+                                                    r.id
+                                                )
+                                            }
+                                            style={{
+                                                background:
+                                                    "crimson",
+                                                color:
+                                                    "white",
+                                                border:
+                                                    "none",
+                                                padding:
+                                                    "12px 22px",
+                                                borderRadius:
+                                                    "12px",
+                                                fontWeight:
+                                                    "bold",
+                                                cursor:
+                                                    "pointer",
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        ))}
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
     );
