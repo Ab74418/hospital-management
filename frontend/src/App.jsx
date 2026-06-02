@@ -5,6 +5,14 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+
+import DoctorDashboard from "./pages/DoctorDashboard";
+import ReceptionistDashboard from "./pages/ReceptionistDashboard";
+import UserDashboard from "./pages/UserDashboard";
+
+
+
+
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/PatientDetails";
 import Doctors from "./pages/Doctors";
@@ -22,6 +30,8 @@ import Schedules from "./pages/Schedules";
 import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 import Vitals from "./pages/Vitals";
+
+
 
 function App() {
     return (
@@ -191,7 +201,34 @@ function App() {
                     </ProtectedRoute>
                 }
             />
+           
+            <Route
+                path="/doctor"
+                element={
+                    <ProtectedRoute allowedRole="doctor">
+                        <DoctorDashboard />
+                    </ProtectedRoute>
+                }
+            />
 
+            <Route
+                path="/receptionist"
+                element={
+                    <ProtectedRoute allowedRole="receptionist">
+                        <ReceptionistDashboard />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/user"
+                element={
+                    <ProtectedRoute allowedRole="user">
+                        <UserDashboard />
+                    </ProtectedRoute>
+                }
+            />
+     
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     );

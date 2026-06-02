@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import axios from "axios";
 
@@ -32,8 +33,6 @@ function Login() {
 
             console.log(res.data);
 
-            // Save token and role
-
             localStorage.setItem(
                 "token",
                 res.data.token
@@ -44,9 +43,25 @@ function Login() {
                 res.data.role
             );
 
-            // Redirect to Home
+            if (res.data.role === "admin") {
 
-            navigate("/home");
+                navigate("/home");
+            }
+
+            else if (res.data.role === "doctor") {
+
+                navigate("/doctor");
+            }
+
+            else if (res.data.role === "receptionist") {
+
+                navigate("/receptionist");
+            }
+
+            else {
+
+                navigate("/user");
+            }
 
         } catch (err) {
 
@@ -115,4 +130,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Login
