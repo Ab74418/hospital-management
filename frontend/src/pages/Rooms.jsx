@@ -136,7 +136,6 @@ export default function Rooms() {
                     required
                 >
                     <option value="">Select Department</option>
-
                     {departments.map((dep) => (
                         <option key={dep.id} value={dep.id}>
                             {dep.emri}
@@ -151,7 +150,6 @@ export default function Rooms() {
                     required
                 >
                     <option value="">Select Room Type</option>
-
                     {roomtypes.map((type) => (
                         <option key={type.id} value={type.id}>
                             {type.emri}
@@ -212,6 +210,7 @@ export default function Rooms() {
                                 <td>{room.kapaciteti}</td>
                                 <td>
                                     <button
+                                        type="button"
                                         className="edit-btn"
                                         onClick={() => handleEdit(room)}
                                     >
@@ -219,6 +218,7 @@ export default function Rooms() {
                                     </button>
 
                                     <button
+                                        type="button"
                                         className="delete-btn"
                                         onClick={() => handleDelete(room.id)}
                                     >
