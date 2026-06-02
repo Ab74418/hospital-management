@@ -22,47 +22,47 @@ export default function Nurses() {
 
     useEffect(() => {
 
-        async function loadData() {
-
-            try {
-
-                const nursesRes =
-                    await fetch(
-                        "http://localhost:5000/api/nurses"
-                    );
-
-                const nursesData =
-                    await nursesRes.json();
-
-                setNurses(
-                    Array.isArray(nursesData)
-                        ? nursesData
-                        : []
-                );
-
-                const departmentsRes =
-                    await fetch(
-                        "http://localhost:5000/api/departments"
-                    );
-
-                const departmentsData =
-                    await departmentsRes.json();
-
-                setDepartments(
-                    Array.isArray(departmentsData)
-                        ? departmentsData
-                        : []
-                );
-
-            } catch (err) {
-
-                console.log(err);
-            }
-        }
-
         loadData();
 
     }, []);
+
+    const loadData = async () => {
+
+        try {
+
+            const nursesRes =
+                await fetch(
+                    "http://localhost:5000/api/nurses"
+                );
+
+            const nursesData =
+                await nursesRes.json();
+
+            setNurses(
+                Array.isArray(nursesData)
+                    ? nursesData
+                    : []
+            );
+
+            const departmentsRes =
+                await fetch(
+                    "http://localhost:5000/api/departments"
+                );
+
+            const departmentsData =
+                await departmentsRes.json();
+
+            setDepartments(
+                Array.isArray(departmentsData)
+                    ? departmentsData
+                    : []
+            );
+
+        } catch (err) {
+
+            console.log(err);
+        }
+    };
 
     const fetchNurses = async () => {
 
@@ -318,7 +318,7 @@ export default function Nurses() {
                             >
 
                                 {
-                                    department.emertimi
+                                    department.emri
                                 }
 
                             </option>
