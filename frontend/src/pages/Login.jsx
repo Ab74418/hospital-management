@@ -39,6 +39,11 @@ function Login() {
             );
 
             localStorage.setItem(
+                "refreshToken",
+                res.data.refreshToken
+            );
+
+            localStorage.setItem(
                 "role",
                 res.data.role
             );
