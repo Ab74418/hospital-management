@@ -7,12 +7,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 
 import DoctorDashboard from "./pages/DoctorDashboard";
+import DoctorAppointments from "./pages/DoctorAppointments";
 import ReceptionistDashboard from "./pages/ReceptionistDashboard";
 import UserDashboard from "./pages/UserDashboard";
-
-
-
-
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/PatientDetails";
 import Doctors from "./pages/Doctors";
@@ -30,6 +27,7 @@ import Schedules from "./pages/Schedules";
 import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 import Vitals from "./pages/Vitals";
+import MyAppointments from "./pages/MyAppointments";
 
 
 
@@ -227,6 +225,26 @@ function App() {
                         <UserDashboard />
                     </ProtectedRoute>
                 }
+            />
+
+            <Route
+                path="/userdashboard"
+                element={<UserDashboard />}
+            />
+
+            <Route
+                path="/myappointments"
+                element={<MyAppointments />}
+            />
+
+            <Route
+                path="/doctordashboard"
+                element={<DoctorDashboard />}
+            />
+
+            <Route
+                path="/doctorappointments"
+                element={<DoctorAppointments />}
             />
      
             <Route path="*" element={<Navigate to="/" />} />

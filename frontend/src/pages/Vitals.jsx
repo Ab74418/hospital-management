@@ -8,9 +8,6 @@ function Vitals() {
     const navigate = useNavigate();
 
     const [vitals, setVitals] = useState([]);
-    const [patients, setPatients] = useState([]);
-    const [nurses, setNurses] = useState([]);
-
     const [editingId, setEditingId] = useState(null);
 
     const [form, setForm] = useState({
@@ -26,24 +23,8 @@ function Vitals() {
         setVitals(res.data);
     };
 
-    const fetchPatients = async () => {
-        const res = await axios.get("http://localhost:5000/api/patients");
-        setPatients(res.data);
-    };
-
-    const fetchNurses = async () => {
-        const res = await axios.get("http://localhost:5000/api/nurses");
-        setNurses(res.data);
-    };
-
     useEffect(() => {
-        const loadData = async () => {
-            await fetchVitals();
-            await fetchPatients();
-            await fetchNurses();
-        };
-
-        loadData();
+        fetchVitals();
     }, []);
 
     const handleChange = (e) => {
@@ -63,7 +44,7 @@ function Vitals() {
             await axios.post(API, form);
         }
 
-        fetchVitals();
+        await fetchVitals();
 
         setForm({
             patient_id: "",
@@ -93,42 +74,30 @@ function Vitals() {
 
     return (
         <div style={{ padding: "20px" }}>
-            <button onClick={() => navigate("/patients")}>
+            <button onClick={() => navigate("/home")}>
                 Back
             </button>
 
             <h1>Vitals</h1>
 
             <form onSubmit={handleSubmit}>
-                <select
+                <input
+                    type="number"
                     name="patient_id"
+                    placeholder="Patient ID"
                     value={form.patient_id}
                     onChange={handleChange}
                     required
-                >
-                    <option value="">Select Patient</option>
+                />
 
-                    {patients.map((p) => (
-                        <option key={p.id} value={p.id}>
-                            {p.emri || p.name} {p.mbiemri}
-                        </option>
-                    ))}
-                </select>
-
-                <select
+                <input
+                    type="number"
                     name="nurse_id"
+                    placeholder="Nurse ID"
                     value={form.nurse_id}
                     onChange={handleChange}
                     required
-                >
-                    <option value="">Select Nurse</option>
-
-                    {nurses.map((n) => (
-                        <option key={n.id} value={n.id}>
-                            {n.emri} {n.mbiemri}
-                        </option>
-                    ))}
-                </select>
+                />
 
                 <input
                     type="number"

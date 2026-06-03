@@ -132,18 +132,19 @@ model medicalrecords {
 
   prescriptions prescriptions[]
 }
-
 model nurses {
   id            Int          @id @default(autoincrement())
   emri          String?      @db.VarChar(50)
   mbiemri       String?      @db.VarChar(50)
   department_id Int?
   turni         String?      @db.VarChar(50)
+
   departments   departments? @relation(fields: [department_id], references: [id], onUpdate: Restrict, map: "nurses_ibfk_1")
+
+  vitals        vitals[]
 
   @@index([department_id], map: "department_id")
 }
-
 model patients {
   id             Int              @id @default(autoincrement())
   emri           String?          @db.VarChar(50)
@@ -259,14 +260,20 @@ model users {
   doctors   doctors[]
   userroles userroles[]
 }
-
 model vitals {
-  id          Int       @id @default(autoincrement())
-  patient_id  Int?
-  temperatura Decimal?  @db.Decimal(4, 1)
-  tensioni    String?   @db.VarChar(20)
-  data        DateTime? @db.DateTime(0)
-  patients    patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "vitals_ibfk_1")
+  id           Int       @id @default(autoincrement())
+
+  patient_id   Int?
+  nurse_id     Int?
+
+  temperatura  Decimal?  @db.Decimal(4, 1)
+  tensioni     String?   @db.VarChar(20)
+  data         DateTime? @db.DateTime(0)
+
+  patients     patients? @relation(fields: [patient_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "vitals_ibfk_1")
+
+  nurses       nurses? @relation(fields: [nurse_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "vitals_ibfk_2")
 
   @@index([patient_id], map: "fk_vitals_patient")
-}
+  @@index([nurse_id], map: "fk_vitals_nurse")
+}   

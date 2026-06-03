@@ -3,8 +3,8 @@ import db from "../config/db.js";
 
 const router = express.Router();
 
-// GET vitals + patient + nurse
 router.get("/", (req, res) => {
+
     const sql = `
         SELECT
             v.*,
@@ -20,17 +20,19 @@ router.get("/", (req, res) => {
     `;
 
     db.query(sql, (err, results) => {
+
         if (err) {
-            console.log("GET /vitals ERROR:", err);
-            return res.status(500).json(err);
+            return res.status(500).json({
+                error: err.message,
+            });
         }
 
         res.json(results);
     });
 });
 
-// ADD vital
 router.post("/", (req, res) => {
+
     const {
         patient_id,
         nurse_id,
@@ -54,27 +56,37 @@ router.post("/", (req, res) => {
     db.query(
         sql,
         [
-            patient_id,
-            nurse_id || null,
-            temperatura,
+            Number(patient_id),
+
+            nurse_id
+                ? Number(nurse_id)
+                : null,
+
+            Number(temperatura),
+
             tensioni,
+
             data,
         ],
-        (err) => {
+
+        (err, result) => {
+
             if (err) {
-                console.log("POST /vitals ERROR:", err);
-                return res.status(500).json(err);
+                return res.status(500).json({
+                    error: err.message,
+                });
             }
 
             res.json({
                 message: "Vital added successfully",
+                result,
             });
         }
     );
 });
 
-// UPDATE vital
 router.put("/:id", (req, res) => {
+
     const {
         patient_id,
         nurse_id,
@@ -97,40 +109,62 @@ router.put("/:id", (req, res) => {
     db.query(
         sql,
         [
-            patient_id,
-            nurse_id || null,
-            temperatura,
+            Number(patient_id),
+
+            nurse_id
+                ? Number(nurse_id)
+                : null,
+
+            Number(temperatura),
+
             tensioni,
+
             data,
+
             req.params.id,
         ],
-        (err) => {
+
+        (err, result) => {
+
             if (err) {
-                console.log("PUT /vitals ERROR:", err);
-                return res.status(500).json(err);
+                return res.status(500).json({
+                    error: err.message,
+                });
             }
 
             res.json({
                 message: "Vital updated successfully",
+                result,
             });
         }
     );
 });
 
-// DELETE vital
 router.delete("/:id", (req, res) => {
-    const sql = "DELETE FROM vitals WHERE id = ?";
 
-    db.query(sql, [req.params.id], (err) => {
-        if (err) {
-            console.log("DELETE /vitals ERROR:", err);
-            return res.status(500).json(err);
+    const sql = `
+        DELETE FROM vitals
+        WHERE id = ?
+    `;
+
+    db.query(
+        sql,
+        [req.params.id],
+
+        (err, result) => {
+
+            if (err) {
+                return res.status(500).json({
+                    error: err.message,
+                });
+            }
+
+            res.json({
+                message: "Vital deleted successfully",
+                result,
+            });
         }
-
-        res.json({
-            message: "Vital deleted successfully",
-        });
-    });
+    );
 });
 
 export default router;

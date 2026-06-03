@@ -44,6 +44,71 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.get("/my/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const appointments =
+            await prisma.appointments.findMany({
+
+                where: {
+                    patient_id:
+                        Number(id),
+                },
+
+                include: {
+                    doctors: true,
+                },
+            });
+
+        res.json(appointments);
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message:
+                "Gabim gjatë marrjes së appointments",
+        });
+    }
+});
+
+router.get("/doctor/:id", async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const appointments =
+            await prisma.appointments.findMany({
+
+                where: {
+                    doctor_id:
+                        Number(id),
+                },
+
+                include: {
+                    patients: true,
+                    doctors: true,
+                },
+            });
+
+        res.json(appointments);
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.status(500).json({
+            message:
+                "Gabim gjatë marrjes së appointments",
+        });
+    }
+});
+
 router.get("/:id", async (req, res) => {
 
     try {
