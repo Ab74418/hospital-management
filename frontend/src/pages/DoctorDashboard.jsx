@@ -1,108 +1,55 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function DoctorDashboard() {
-
     const navigate = useNavigate();
 
-    const [appointments, setAppointments] =
-        useState([]);
-
-    const doctorId = 1;
-
-    useEffect(() => {
-
-        fetch(
-            `http://localhost:5000/api/appointments/doctor/${doctorId}`
-        )
-            .then((res) => res.json())
-            .then((data) => setAppointments(data))
-            .catch((err) => console.log(err));
-
-    }, []);
-
-    const nextAppointment =
-        appointments[0];
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
 
     return (
+        <div className="doctor-page">
+            <div className="doctor-header">
+                <h1>Doctor Dashboard</h1>
 
-        <div className="page-card">
-
-            <h1>
-                Doctor Dashboard
-            </h1>
-
-            <div className="cards">
-
-                <div className="card">
-
-                    <h2>
-                        Total Appointments
-                    </h2>
-
-                    <p>
-                        {appointments.length}
-                    </p>
-
-                </div>
-
-                <div className="card">
-
-                    <h2>
-                        Upcoming Appointment
-                    </h2>
-
-                    <p>
-
-                        {
-                            nextAppointment?.data?.slice(0, 10)
-                            || "No appointment"
-                        }
-
-                    </p>
-
-                </div>
-
+                <button onClick={handleLogout} className="logout-doctor-btn">
+                    Log Out
+                </button>
             </div>
 
-            <button
-                onClick={() =>
-                    navigate("/doctorappointments")
-                }
+            <div className="doctor-grid">
+                <Link to="/doctorappointments" className="doctor-card">
+                    <h2>My Appointments</h2>
+                    <p>View your scheduled appointments</p>
+                </Link>
 
-                style={{
+                <Link to="/patients" className="doctor-card">
+                    <h2>Patients</h2>
+                    <p>View patient information</p>
+                </Link>
 
-                    background:
-                        "#1ea5e7",
+                <Link to="/patientvisits" className="doctor-card">
+                    <h2>Patient Visits</h2>
+                    <p>Add diagnosis and treatment</p>
+                </Link>
 
-                    color:
-                        "white",
+                <Link to="/prescriptions" className="doctor-card">
+                    <h2>Prescriptions</h2>
+                    <p>Add patient medications</p>
+                </Link>
 
-                    border:
-                        "none",
+                <Link to="/medicalrecords" className="doctor-card">
+                    <h2>Medical Records</h2>
+                    <p>View patient medical history</p>
+                </Link>
 
-                    padding:
-                        "14px 24px",
-
-                    borderRadius:
-                        "14px",
-
-                    fontSize:
-                        "18px",
-
-                    fontWeight:
-                        "bold",
-
-                    cursor:
-                        "pointer",
-
-                    marginTop:
-                        "20px",
-                }}
-            >
-                My Appointments
-            </button>
-
+                <Link to="/schedules" className="doctor-card">
+                    <h2>Schedules</h2>
+                    <p>View your working schedule</p>
+                </Link>
+            </div>
         </div>
     );
 }
