@@ -317,8 +317,87 @@ a {
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 }
 
-@media (max-width: 900px) {
+/* SPECIALIZATIONS */
 
+.spec-page {
+    width: 95%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 35px 20px;
+}
+
+    .spec-page h1 {
+        text-align: center;
+        color: #0f4c81;
+        font-size: 48px;
+        margin-bottom: 45px;
+    }
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.spec-card {
+    background: white;
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    transition: 0.3s;
+}
+
+    .spec-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .spec-card h2 {
+        color: #020617;
+        font-size: 34px;
+        margin-bottom: 20px;
+    }
+
+.spec-info {
+    text-align: left;
+}
+
+    .spec-info p {
+        color: #64748b;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+.spec-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.spec-edit {
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 25px;
+    cursor: pointer;
+}
+
+.spec-delete {
+    background: #e11d48;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 25px;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
     .sidebar {
         width: 220px;
     }
@@ -330,10 +409,13 @@ a {
     .cards {
         grid-template-columns: repeat(2,1fr);
     }
+
+    .spec-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-
     .dashboard {
         flex-direction: column;
     }
@@ -368,5 +450,11 @@ a {
 
     .stats {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .spec-grid {
+        grid-template-columns: 1fr;
     }
 }
