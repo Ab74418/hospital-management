@@ -1,164 +1,253 @@
 import { useEffect, useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function Schedules() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [schedules, setSchedules] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [schedules,
+        setSchedules] =
         useState([]);
 
-    const [doctors, setDoctors] =
+    const [doctors,
+        setDoctors] =
         useState([]);
 
-    const [doctorId, setDoctorId] =
+    const [doctorId,
+        setDoctorId] =
         useState("");
 
-    const [dita, setDita] =
+    const [dita,
+        setDita] =
         useState("");
 
-    const [oraFillimit, setOraFillimit] =
+    const [oraFillimit,
+        setOraFillimit] =
         useState("");
 
-    const [oraMbarimit, setOraMbarimit] =
+    const [oraMbarimit,
+        setOraMbarimit] =
         useState("");
 
-    const [editingId, setEditingId] =
+    const [editingId,
+        setEditingId] =
         useState(null);
 
     useEffect(() => {
 
         getSchedules();
+
         getDoctors();
 
     }, []);
 
-    const getSchedules = async () => {
+    const getSchedules =
+        async () => {
 
-        try {
+            try {
 
-            const response =
-                await axios.get(
-                    "http://localhost:5000/api/schedules"
+                const response =
+                    await axios.get(
+                        "http://localhost:5000/api/schedules"
+                    );
+
+                setSchedules(
+                    response.data
                 );
 
-            setSchedules(response.data);
+            } catch (error) {
 
-        } catch (error) {
+                console.log(error);
+            }
+        };
 
-            console.log(error);
-        }
-    };
+    const getDoctors =
+        async () => {
 
-    const getDoctors = async () => {
+            try {
 
-        try {
+                const response =
+                    await axios.get(
+                        "http://localhost:5000/api/doctors"
+                    );
 
-            const response =
-                await axios.get(
-                    "http://localhost:5000/api/doctors"
+                setDoctors(
+                    response.data
                 );
 
-            setDoctors(response.data);
+            } catch (error) {
 
-        } catch (error) {
+                console.log(error);
+            }
+        };
 
-            console.log(error);
-        }
-    };
+    const resetForm =
+        () => {
 
-    const resetForm = () => {
+            setDoctorId("");
 
-        setDoctorId("");
-        setDita("");
-        setOraFillimit("");
-        setOraMbarimit("");
-        setEditingId(null);
-    };
+            setDita("");
 
-    const handleSubmit = async () => {
+            setOraFillimit("");
 
-        try {
+            setOraMbarimit("");
 
-            const data = {
+            setEditingId(null);
+        };
 
-                doctor_id:
-                    Number(doctorId),
+    const handleSubmit =
+        async () => {
 
-                dita,
+            try {
 
-                ora_fillimit:
-                    oraFillimit,
+                const data = {
 
-                ora_mbarimit:
-                    oraMbarimit,
-            };
+                    doctor_id:
+                        Number(
+                            doctorId
+                        ),
 
-            if (editingId) {
+                    dita,
 
-                await axios.put(
+                    ora_fillimit:
+                        oraFillimit,
 
-                    `http://localhost:5000/api/schedules/${editingId}`,
+                    ora_mbarimit:
+                        oraMbarimit,
+                };
 
-                    data
-                );
+                if (editingId) {
 
-            } else {
+                    await axios.put(
 
-                await axios.post(
+                        `http://localhost:5000/api/schedules/${editingId}`,
 
-                    "http://localhost:5000/api/schedules",
+                        data
+                    );
 
-                    data
+                    alert(
+                        "Schedule updated!"
+                    );
+
+                } else {
+
+                    await axios.post(
+
+                        "http://localhost:5000/api/schedules",
+
+                        data
+                    );
+
+                    alert(
+                        "Schedule added!"
+                    );
+                }
+
+                getSchedules();
+
+                resetForm();
+
+            } catch (error) {
+
+                console.log(error);
+
+                alert(
+                    "Error saving schedule"
                 );
             }
+        };
 
-            getSchedules();
+    const handleDelete =
+        async (id) => {
 
-            resetForm();
+            const confirmDelete =
+                window.confirm(
+                    "A don me fshi schedule?"
+                );
 
-        } catch (error) {
+            if (!confirmDelete)
+                return;
 
-            console.log(error);
-        }
-    };
+            try {
 
-    const handleDelete = async (id) => {
+                await axios.delete(
 
-        try {
+                    `http://localhost:5000/api/schedules/${id}`
+                );
 
-            await axios.delete(
+                alert(
+                    "Schedule deleted!"
+                );
 
-                `http://localhost:5000/api/schedules/${id}`
+                getSchedules();
+
+            } catch (error) {
+
+                console.log(error);
+            }
+        };
+
+    const handleEdit =
+        (schedule) => {
+
+            setEditingId(
+                schedule.id
             );
 
-            getSchedules();
+            setDoctorId(
+                schedule.doctor_id
+            );
 
-        } catch (error) {
+            setDita(
+                schedule.dita
+            );
 
-            console.log(error);
-        }
-    };
+            setOraFillimit(
 
-    const handleEdit = (schedule) => {
+                schedule.ora_fillimit
+                    ?.slice(0, 5)
+            );
 
-        setEditingId(schedule.id);
+            setOraMbarimit(
 
-        setDoctorId(schedule.doctor_id);
-
-        setDita(schedule.dita);
-
-        setOraFillimit(
-            schedule.ora_fillimit
-                ?.slice(0, 5)
-        );
-
-        setOraMbarimit(
-            schedule.ora_mbarimit
-                ?.slice(0, 5)
-        );
-    };
+                schedule.ora_mbarimit
+                    ?.slice(0, 5)
+            );
+        };
 
     return (
 
@@ -168,8 +257,8 @@ export default function Schedules() {
 
                 className="back-btn"
 
-                onClick={() =>
-                    navigate("/home")
+                onClick={
+                    handleBack
                 }
             >
 
@@ -177,13 +266,17 @@ export default function Schedules() {
 
             </button>
 
-            <h1>Schedules</h1>
+            <h1>
+                Schedules
+            </h1>
 
             <div className="form-container">
 
                 <select
 
-                    value={doctorId}
+                    value={
+                        doctorId
+                    }
 
                     onChange={(e) =>
                         setDoctorId(
@@ -196,20 +289,28 @@ export default function Schedules() {
                         Select Doctor
                     </option>
 
-                    {doctors.map((doctor) => (
+                    {doctors.map(
+                        (doctor) => (
 
-                        <option
+                            <option
 
-                            key={doctor.id}
+                                key={
+                                    doctor.id
+                                }
 
-                            value={doctor.id}
-                        >
+                                value={
+                                    doctor.id
+                                }
+                            >
 
-                            {doctor.emri}{" "}
-                            {doctor.mbiemri}
+                                {doctor.emri}
+                                {" "}
 
-                        </option>
-                    ))}
+                                {doctor.mbiemri}
+
+                            </option>
+                        )
+                    )}
 
                 </select>
 
@@ -232,7 +333,9 @@ export default function Schedules() {
 
                     type="time"
 
-                    value={oraFillimit}
+                    value={
+                        oraFillimit
+                    }
 
                     onChange={(e) =>
                         setOraFillimit(
@@ -245,7 +348,9 @@ export default function Schedules() {
 
                     type="time"
 
-                    value={oraMbarimit}
+                    value={
+                        oraMbarimit
+                    }
 
                     onChange={(e) =>
                         setOraMbarimit(
@@ -258,12 +363,20 @@ export default function Schedules() {
 
                     className="add-btn"
 
-                    onClick={handleSubmit}
+                    onClick={
+                        handleSubmit
+                    }
                 >
 
                     {editingId
-                        ? "Update Schedule"
-                        : "Add Schedule"}
+
+                        ?
+
+                        "Update Schedule"
+
+                        :
+
+                        "Add Schedule"}
 
                 </button>
 
@@ -278,10 +391,15 @@ export default function Schedules() {
                         <tr>
 
                             <th>ID</th>
+
                             <th>Doctor</th>
+
                             <th>Day</th>
+
                             <th>Start</th>
+
                             <th>End</th>
+
                             <th>Actions</th>
 
                         </tr>
@@ -290,65 +408,97 @@ export default function Schedules() {
 
                     <tbody>
 
-                        {schedules.map((schedule) => (
+                        {schedules.map(
+                            (schedule) => (
 
-                            <tr key={schedule.id}>
+                                <tr
+                                    key={
+                                        schedule.id
+                                    }
+                                >
 
-                                <td>
-                                    {schedule.id}
-                                </td>
+                                    <td>
+                                        {schedule.id}
+                                    </td>
 
-                                <td>
+                                    <td>
 
-                                    {schedule.doctors?.emri}{" "}
-                                    {schedule.doctors?.mbiemri}
-
-                                </td>
-
-                                <td>
-                                    {schedule.dita}
-                                </td>
-
-                                <td>
-                                    {schedule.ora_fillimit}
-                                </td>
-
-                                <td>
-                                    {schedule.ora_mbarimit}
-                                </td>
-
-                                <td>
-
-                                    <button
-
-                                        className="edit-btn"
-
-                                        onClick={() =>
-                                            handleEdit(schedule)
+                                        {
+                                            schedule.doctors?.emri
                                         }
-                                    >
 
-                                        Edit
+                                        {" "}
 
-                                    </button>
-
-                                    <button
-
-                                        className="delete-btn"
-
-                                        onClick={() =>
-                                            handleDelete(schedule.id)
+                                        {
+                                            schedule.doctors?.mbiemri
                                         }
-                                    >
 
-                                        Delete
+                                    </td>
 
-                                    </button>
+                                    <td>
+                                        {schedule.dita}
+                                    </td>
 
-                                </td>
+                                    <td>
+                                        {
+                                            schedule.ora_fillimit
+                                        }
+                                    </td>
 
-                            </tr>
-                        ))}
+                                    <td>
+                                        {
+                                            schedule.ora_mbarimit
+                                        }
+                                    </td>
+
+                                    <td>
+
+                                        <button
+
+                                            className="edit-btn"
+
+                                            onClick={() =>
+                                                handleEdit(
+                                                    schedule
+                                                )
+                                            }
+                                        >
+
+                                            Edit
+
+                                        </button>
+
+                                        <button
+
+                                            className="delete-btn"
+
+                                            onClick={() =>
+                                                handleDelete(
+                                                    schedule.id
+                                                )
+                                            }
+
+                                            style={{
+                                                marginLeft:
+                                                    "10px",
+
+                                                background:
+                                                    "crimson",
+
+                                                color:
+                                                    "white",
+                                            }}
+                                        >
+
+                                            Delete
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            )
+                        )}
 
                     </tbody>
 

@@ -1,125 +1,215 @@
-import { useEffect, useState } from "react"; import axios from "axios";
+import { useEffect, useState } from "react";
 
-import { useParams, useNavigate, } from "react-router-dom";
+import axios from "axios";
+
+import {
+    useParams,
+    useNavigate,
+} from "react-router-dom";
 
 function PatientDetails() {
 
-    const { id } = useParams();
+    const { id } =
+        useParams();
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [data, setData] = useState(null);
+    const role =
+        localStorage.getItem("role");
 
+    const handleBack = () => {
 
-    const [loading, setLoading] = useState(true);
+        switch (role) {
 
+            case "admin":
+                navigate("/home");
+                break;
 
-    const [error, setError] = useState("");
+            case "doctor":
+                navigate("/doctor");
+                break;
 
+            case "receptionist":
+                navigate("/receptionist");
+                break;
 
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [data,
+        setData] =
+        useState(null);
+
+    const [loading,
+        setLoading] =
+        useState(true);
+
+    const [error,
+        setError] =
+        useState("");
 
     useEffect(() => {
 
-        const getDetails = async () => {
+        const getDetails =
+            async () => {
 
-            try {
+                try {
 
-                const res = await axios.get(
-                    `http://localhost:5000/api/patients/${id}/details`
-                );
+                    const res =
+                        await axios.get(
+                            `http://localhost:5000/api/patients/${id}/details`
+                        );
 
-                setData(res.data);
+                    setData(
+                        res.data
+                    );
 
-            } catch (err) {
+                } catch (err) {
 
-                console.log(err);
+                    console.log(err);
 
-                setError("Failed to load patient details");
+                    setError(
+                        "Failed to load patient details"
+                    );
 
-            } finally {
+                } finally {
 
-                setLoading(false);
-            }
-        };
+                    setLoading(
+                        false
+                    );
+                }
+            };
 
         getDetails();
 
     }, [id]);
 
-
-
-
     if (loading) {
+
         return (
-            <div style={{ padding: "20px" }}>
-                <h2>Loading...</h2>
+
+            <div
+                style={{
+                    padding:
+                        "20px",
+                }}
+            >
+                <h2>
+                    Loading...
+                </h2>
             </div>
         );
     }
-
-
-
 
     if (error) {
+
         return (
-            <div style={{ padding: "20px" }}>
-                <h2>{error}</h2>
+
+            <div
+                style={{
+                    padding:
+                        "20px",
+                }}
+            >
+                <h2>
+                    {error}
+                </h2>
             </div>
         );
     }
-
-
 
     return (
 
         <div
             style={{
-                padding: "20px",
-                minHeight: "100vh",
-                backgroundColor: "#f5f5f5",
+
+                padding:
+                    "20px",
+
+                minHeight:
+                    "100vh",
+
+                backgroundColor:
+                    "#f5f5f5",
             }}
         >
 
             <button
                 type="button"
-                onClick={() => navigate("/patients")}
+
+                onClick={
+                    handleBack
+                }
+
                 style={{
-                    marginBottom: "20px",
-                    padding: "10px 20px",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    backgroundColor: "#2563eb",
-                    color: "white",
-                    fontWeight: "bold",
+
+                    marginBottom:
+                        "20px",
+
+                    padding:
+                        "10px 20px",
+
+                    border:
+                        "none",
+
+                    borderRadius:
+                        "8px",
+
+                    cursor:
+                        "pointer",
+
+                    backgroundColor:
+                        "#2563eb",
+
+                    color:
+                        "white",
+
+                    fontWeight:
+                        "bold",
                 }}
             >
                 Back
             </button>
 
-
-
             <h1
                 style={{
-                    marginBottom: "30px",
+                    marginBottom:
+                        "30px",
                 }}
             >
                 Patient Details
             </h1>
 
-
             {!data ? (
 
-                <p>No data found</p>
+                <p>
+                    No data found
+                </p>
 
             ) : (
 
                 <div
                     style={{
-                        backgroundColor: "white",
-                        padding: "25px",
-                        borderRadius: "15px",
-                        marginBottom: "25px",
+
+                        backgroundColor:
+                            "white",
+
+                        padding:
+                            "25px",
+
+                        borderRadius:
+                            "15px",
+
+                        marginBottom:
+                            "25px",
+
                         boxShadow:
                             "0 4px 15px rgba(0,0,0,0.1)",
                     }}
@@ -127,108 +217,212 @@ function PatientDetails() {
 
                     <h2
                         style={{
-                            marginBottom: "20px",
-                            color: "#2563eb",
+
+                            marginBottom:
+                                "20px",
+
+                            color:
+                                "#2563eb",
                         }}
                     >
                         Patient Information
                     </h2>
 
                     <p>
-                        <strong>Emri:</strong>{" "}
-                        {data.emri} {data.mbiemri}
+                        <strong>
+                            Emri:
+                        </strong>
+
+                        {" "}
+
+                        {data.emri}
+                        {" "}
+                        {data.mbiemri}
                     </p>
 
                     <p>
-                        <strong>Data Lindjes:</strong>{" "}
-                        {data.data_lindjes?.split("T")[0]}
+                        <strong>
+                            Data Lindjes:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.data_lindjes?.split("T")[0]
+                        }
                     </p>
 
                     <p>
-                        <strong>Gjinia:</strong>{" "}
-                        {data.gjinia}
+                        <strong>
+                            Gjinia:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.gjinia
+                        }
                     </p>
 
                     <p>
-                        <strong>Telefoni:</strong>{" "}
-                        {data.telefoni}
+                        <strong>
+                            Telefoni:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.telefoni
+                        }
                     </p>
 
                     <p>
-                        <strong>Adresa:</strong>{" "}
-                        {data.adresa}
+                        <strong>
+                            Adresa:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.adresa
+                        }
                     </p>
 
                     <p>
-                        <strong>Grupi i gjakut:</strong>{" "}
-                        {data.grupa_gjakut}
+                        <strong>
+                            Grupi i gjakut:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.grupa_gjakut
+                        }
                     </p>
 
                     <hr
                         style={{
-                            margin: "25px 0",
+                            margin:
+                                "25px 0",
                         }}
                     />
 
                     <h2
                         style={{
-                            marginBottom: "20px",
-                            color: "#dc2626",
+
+                            marginBottom:
+                                "20px",
+
+                            color:
+                                "#dc2626",
                         }}
                     >
                         Medical Record
                     </h2>
 
                     <p>
-                        <strong>Diagnoza:</strong>{" "}
-                        {data.diagnoza || "N/A"}
+                        <strong>
+                            Diagnoza:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.diagnoza
+                            || "N/A"
+                        }
                     </p>
 
                     <p>
-                        <strong>Trajtimi:</strong>{" "}
-                        {data.trajtimi || "N/A"}
+                        <strong>
+                            Trajtimi:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.trajtimi
+                            || "N/A"
+                        }
                     </p>
 
                     <hr
                         style={{
-                            margin: "25px 0",
+                            margin:
+                                "25px 0",
                         }}
                     />
 
                     <h2
                         style={{
-                            marginBottom: "20px",
-                            color: "#16a34a",
+
+                            marginBottom:
+                                "20px",
+
+                            color:
+                                "#16a34a",
                         }}
                     >
                         Prescription
                     </h2>
 
                     <p>
-                        <strong>Bari:</strong>{" "}
-                        {data.bari || "N/A"}
+                        <strong>
+                            Bari:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.bari
+                            || "N/A"
+                        }
                     </p>
 
                     <p>
-                        <strong>Dozimi:</strong>{" "}
-                        {data.dozimi || "N/A"}
+                        <strong>
+                            Dozimi:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.dozimi
+                            || "N/A"
+                        }
                     </p>
 
                     <p>
-                        <strong>Kohezgjatja:</strong>{" "}
-                        {data.kohezgjatja || "N/A"}
+                        <strong>
+                            Kohezgjatja:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.kohezgjatja
+                            || "N/A"
+                        }
                     </p>
 
                     <p>
-                        <strong>Udhezime:</strong>{" "}
-                        {data.udhezime || "N/A"}
+                        <strong>
+                            Udhezime:
+                        </strong>
+
+                        {" "}
+
+                        {
+                            data.udhezime
+                            || "N/A"
+                        }
                     </p>
 
                 </div>
             )}
+
         </div>
     );
-
 }
 
 export default PatientDetails;

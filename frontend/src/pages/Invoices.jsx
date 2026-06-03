@@ -1,54 +1,117 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function Invoices() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [form, setForm] = useState({
+    const role =
+        localStorage.getItem("role");
 
-        admission_id: "",
-        amount: "",
-        status: ""
-    });
+    const handleBack = () => {
 
-    const handleSubmit = async (e) => {
+        switch (role) {
 
-        e.preventDefault();
+            case "admin":
+                navigate("/home");
+                break;
 
-        await fetch(
-            "http://localhost:5000/api/invoices",
-            {
+            case "doctor":
+                navigate("/doctor");
+                break;
 
-                method: "POST",
+            case "receptionist":
+                navigate("/receptionist");
+                break;
 
-                headers: {
-                    "Content-Type":
-                        "application/json",
-                },
+            case "user":
+                navigate("/user");
+                break;
 
-                body:
-                    JSON.stringify(form),
-            }
-        );
+            default:
+                navigate("/");
+        }
+    };
 
-        alert("Invoice added");
-
-        setForm({
+    const [form,
+        setForm] =
+        useState({
 
             admission_id: "",
+
             amount: "",
+
             status: ""
         });
-    };
+
+    const handleSubmit =
+        async (e) => {
+
+            e.preventDefault();
+
+            try {
+
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/invoices",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    form
+                                ),
+                        }
+                    );
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        "Failed to add invoice"
+                    );
+                }
+
+                alert(
+                    "Invoice added successfully"
+                );
+
+                setForm({
+
+                    admission_id: "",
+
+                    amount: "",
+
+                    status: ""
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error adding invoice"
+                );
+            }
+        };
 
     return (
 
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/receptionist")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -90,52 +153,76 @@ export default function Invoices() {
 
             <form
                 className="patient-form"
-                onSubmit={handleSubmit}
+
+                onSubmit={
+                    handleSubmit
+                }
             >
 
                 <input
                     type="text"
-                    placeholder="Admission ID"
 
-                    value={form.admission_id}
+                    placeholder=
+                    "Admission ID"
+
+                    value={
+                        form.admission_id
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             admission_id:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <input
                     type="text"
-                    placeholder="Amount"
 
-                    value={form.amount}
+                    placeholder=
+                    "Amount"
+
+                    value={
+                        form.amount
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             amount:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <input
                     type="text"
-                    placeholder="Status"
 
-                    value={form.status}
+                    placeholder=
+                    "Status"
+
+                    value={
+                        form.status
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             status:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <button type="submit">

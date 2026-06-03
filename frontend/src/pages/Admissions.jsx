@@ -1,57 +1,110 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function Admissions() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [form, setForm] = useState({
+    const role =
+        localStorage.getItem("role");
 
-        patient_id: "",
-        room_id: "",
-        admit_date: "",
-        status: ""
-    });
+    const handleBack = () => {
 
-    const handleSubmit = async (e) => {
+        switch (role) {
 
-        e.preventDefault();
+            case "admin":
+                navigate("/home");
+                break;
 
-        await fetch(
-            "http://localhost:5000/api/admissions",
-            {
+            case "doctor":
+                navigate("/doctor");
+                break;
 
-                method: "POST",
+            case "receptionist":
+                navigate("/receptionist");
+                break;
 
-                headers: {
-                    "Content-Type":
-                        "application/json",
-                },
+            case "user":
+                navigate("/user");
+                break;
 
-                body:
-                    JSON.stringify(form),
-            }
-        );
+            default:
+                navigate("/");
+        }
+    };
 
-        alert("Admission added");
-
-        setForm({
+    const [form, setForm] =
+        useState({
 
             patient_id: "",
             room_id: "",
             admit_date: "",
             status: ""
         });
-    };
+
+    const handleSubmit =
+        async (e) => {
+
+            e.preventDefault();
+
+            try {
+
+                const res =
+                    await fetch(
+                        "http://localhost:5000/api/admissions",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+                            },
+
+                            body:
+                                JSON.stringify(form),
+                        }
+                    );
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        "Failed to add admission"
+                    );
+                }
+
+                alert(
+                    "Admission added successfully"
+                );
+
+                setForm({
+
+                    patient_id: "",
+                    room_id: "",
+                    admit_date: "",
+                    status: ""
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error adding admission"
+                );
+            }
+        };
 
     return (
 
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/receptionist")
-                }
+                onClick={handleBack}
 
                 style={{
 
@@ -92,66 +145,95 @@ export default function Admissions() {
 
             <form
                 className="patient-form"
-                onSubmit={handleSubmit}
+
+                onSubmit={
+                    handleSubmit
+                }
             >
 
                 <input
                     type="text"
-                    placeholder="Patient ID"
 
-                    value={form.patient_id}
+                    placeholder=
+                    "Patient ID"
+
+                    value={
+                        form.patient_id
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             patient_id:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <input
                     type="text"
-                    placeholder="Room ID"
 
-                    value={form.room_id}
+                    placeholder=
+                    "Room ID"
+
+                    value={
+                        form.room_id
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             room_id:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <input
                     type="date"
 
-                    value={form.admit_date}
+                    value={
+                        form.admit_date
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             admit_date:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <input
                     type="text"
-                    placeholder="Status"
 
-                    value={form.status}
+                    placeholder=
+                    "Status"
+
+                    value={
+                        form.status
+                    }
 
                     onChange={(e) =>
                         setForm({
                             ...form,
+
                             status:
                                 e.target.value
                         })
                     }
+
+                    required
                 />
 
                 <button type="submit">

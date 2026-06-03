@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 const API =
     "http://localhost:5000/api/prescriptions";
@@ -9,6 +13,34 @@ function Prescriptions() {
 
     const navigate =
         useNavigate();
+
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
 
     const [prescriptions,
         setPrescriptions] =
@@ -150,11 +182,19 @@ function Prescriptions() {
                         data
                     );
 
+                    alert(
+                        "Prescription updated!"
+                    );
+
                 } else {
 
                     await axios.post(
                         API,
                         data
+                    );
+
+                    alert(
+                        "Prescription added!"
                     );
                 }
 
@@ -167,6 +207,10 @@ function Prescriptions() {
                 console.log(
                     err.response?.data ||
                     err.message
+                );
+
+                alert(
+                    "Error saving prescription"
                 );
             }
         };
@@ -186,6 +230,10 @@ function Prescriptions() {
 
                 await axios.delete(
                     `${API}/${id}`
+                );
+
+                alert(
+                    "Prescription deleted!"
                 );
 
                 fetchPrescriptions();
@@ -217,7 +265,9 @@ function Prescriptions() {
                     p.udhezime || "",
             });
 
-            setEditingId(p.id);
+            setEditingId(
+                p.id
+            );
         };
 
     return (
@@ -229,8 +279,8 @@ function Prescriptions() {
                 <button
                     className="back-btn"
 
-                    onClick={() =>
-                        navigate("/home")
+                    onClick={
+                        handleBack
                     }
                 >
                     Back
@@ -270,10 +320,12 @@ function Prescriptions() {
 
                             <option
                                 key={r.id}
+
                                 value={r.id}
                             >
 
                                 {r.patients
+
                                     ?
 
                                     `${r.patients.emri} ${r.patients.mbiemri}`
@@ -294,34 +346,67 @@ function Prescriptions() {
 
                     <input
                         type="text"
+
                         name="bari"
-                        value={form.bari}
-                        onChange={handleChange}
+
+                        value={
+                            form.bari
+                        }
+
+                        onChange={
+                            handleChange
+                        }
+
                         placeholder="Bari"
+
                         required
                     />
 
                     <input
                         type="text"
+
                         name="dozimi"
-                        value={form.dozimi}
-                        onChange={handleChange}
+
+                        value={
+                            form.dozimi
+                        }
+
+                        onChange={
+                            handleChange
+                        }
+
                         placeholder="Dozimi"
                     />
 
                     <input
                         type="text"
+
                         name="kohezgjatja"
-                        value={form.kohezgjatja}
-                        onChange={handleChange}
+
+                        value={
+                            form.kohezgjatja
+                        }
+
+                        onChange={
+                            handleChange
+                        }
+
                         placeholder="Kohezgjatja"
                     />
 
                     <input
                         type="text"
+
                         name="udhezime"
-                        value={form.udhezime}
-                        onChange={handleChange}
+
+                        value={
+                            form.udhezime
+                        }
+
+                        onChange={
+                            handleChange
+                        }
+
                         placeholder="Udhezime"
                     />
 
@@ -392,6 +477,7 @@ function Prescriptions() {
                                         <td>
 
                                             {p.medicalrecords?.patients
+
                                                 ?
 
                                                 `${p.medicalrecords.patients.emri} ${p.medicalrecords.patients.mbiemri}`
@@ -404,7 +490,9 @@ function Prescriptions() {
 
                                         <td>
 
-                                            {p.medicalrecords?.diagnoza}
+                                            {
+                                                p.medicalrecords?.diagnoza
+                                            }
 
                                         </td>
 

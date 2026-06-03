@@ -1,27 +1,64 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function Appointments() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [appointments, setAppointments] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [appointments,
+        setAppointments] =
         useState([]);
 
-    const [doctors, setDoctors] =
+    const [doctors,
+        setDoctors] =
         useState([]);
 
-    const [patients, setPatients] =
+    const [patients,
+        setPatients] =
         useState([]);
 
-    const [editId, setEditId] =
+    const [editId,
+        setEditId] =
         useState(null);
 
     const [selectedDoctor,
         setSelectedDoctor] =
         useState("");
 
-    const [form, setForm] =
+    const [form,
+        setForm] =
         useState({
 
             patient_id: "",
@@ -260,6 +297,10 @@ export default function Appointments() {
             } catch (err) {
 
                 console.log(err);
+
+                alert(
+                    "Error saving appointment"
+                );
             }
         };
 
@@ -282,6 +323,10 @@ export default function Appointments() {
                         method:
                             "DELETE",
                     }
+                );
+
+                alert(
+                    "Appointment deleted!"
                 );
 
                 fetchAppointments();
@@ -346,8 +391,8 @@ export default function Appointments() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/home")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -483,48 +528,65 @@ export default function Appointments() {
 
                 <input
                     type="date"
+
                     name="data"
+
                     value={
                         form.data
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="time"
+
                     name="ora"
+
                     value={
                         form.ora
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="statusi"
+
                     placeholder="Statusi"
+
                     value={
                         form.statusi
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="shenime"
+
                     placeholder="Shënime"
+
                     value={
                         form.shenime
                     }
+
                     onChange={
                         handleChange
                     }
@@ -610,6 +672,7 @@ export default function Appointments() {
 
                             <div
                                 className="card"
+
                                 key={app.id}
                             >
 

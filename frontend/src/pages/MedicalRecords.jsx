@@ -1,198 +1,353 @@
 import { useEffect, useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 const API =
     "http://localhost:5000/api/medical-records";
 
 function MedicalRecords() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [records, setRecords] = useState([]);
+    const role =
+        localStorage.getItem("role");
 
-    const [patients, setPatients] = useState([]);
+    const handleBack = () => {
 
-    const [doctors, setDoctors] = useState([]);
+        switch (role) {
 
-    const [editingId, setEditingId] = useState(null);
+            case "admin":
+                navigate("/home");
+                break;
 
-    const [form, setForm] = useState({
-        patient_id: "",
-        doctor_id: "",
-        diagnoza: "",
-        trajtimi: "",
-        prescriptions: "",
-        data: "",
-    });
+            case "doctor":
+                navigate("/doctor");
+                break;
 
-    const fetchRecords = async () => {
+            case "receptionist":
+                navigate("/receptionist");
+                break;
 
-        try {
+            case "user":
+                navigate("/user");
+                break;
 
-            const res = await axios.get(API);
-
-            setRecords(res.data);
-
-        } catch (err) {
-
-            console.log(err);
+            default:
+                navigate("/");
         }
     };
 
-    const fetchPatients = async () => {
+    const [records,
+        setRecords] =
+        useState([]);
 
-        try {
+    const [patients,
+        setPatients] =
+        useState([]);
 
-            const res = await axios.get(
-                "http://localhost:5000/api/patients"
-            );
+    const [doctors,
+        setDoctors] =
+        useState([]);
 
-            setPatients(res.data);
+    const [editingId,
+        setEditingId] =
+        useState(null);
 
-        } catch (err) {
+    const [form,
+        setForm] =
+        useState({
 
-            console.log(err);
-        }
-    };
+            patient_id: "",
 
-    const fetchDoctors = async () => {
+            doctor_id: "",
 
-        try {
+            diagnoza: "",
 
-            const res = await axios.get(
-                "http://localhost:5000/api/doctors"
-            );
+            trajtimi: "",
 
-            setDoctors(res.data);
+            prescriptions: "",
 
-        } catch (err) {
+            data: "",
+        });
 
-            console.log(err);
-        }
-    };
+    const fetchRecords =
+        async () => {
+
+            try {
+
+                const res =
+                    await axios.get(
+                        API
+                    );
+
+                setRecords(
+                    res.data
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const fetchPatients =
+        async () => {
+
+            try {
+
+                const res =
+                    await axios.get(
+                        "http://localhost:5000/api/patients"
+                    );
+
+                setPatients(
+                    res.data
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const fetchDoctors =
+        async () => {
+
+            try {
+
+                const res =
+                    await axios.get(
+                        "http://localhost:5000/api/doctors"
+                    );
+
+                setDoctors(
+                    res.data
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
 
     useEffect(() => {
 
-        const loadData = async () => {
+        const loadData =
+            async () => {
 
-            await Promise.all([
-                fetchRecords(),
-                fetchPatients(),
-                fetchDoctors(),
-            ]);
-        };
+                await Promise.all([
+                    fetchRecords(),
+                    fetchPatients(),
+                    fetchDoctors(),
+                ]);
+            };
 
         loadData();
 
     }, []);
 
-    const handleChange = (e) => {
-
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        try {
-
-            if (editingId) {
-
-                await axios.put(
-                    `${API}/${editingId}`,
-                    form
-                );
-
-                setEditingId(null);
-
-            } else {
-
-                await axios.post(API, form);
-            }
-
-            fetchRecords();
+    const handleChange =
+        (e) => {
 
             setForm({
-                patient_id: "",
-                doctor_id: "",
-                diagnoza: "",
-                trajtimi: "",
-                prescriptions: "",
-                data: "",
+
+                ...form,
+
+                [e.target.name]:
+                    e.target.value,
+            });
+        };
+
+    const handleSubmit =
+        async (e) => {
+
+            e.preventDefault();
+
+            try {
+
+                if (editingId) {
+
+                    await axios.put(
+                        `${API}/${editingId}`,
+                        form
+                    );
+
+                    alert(
+                        "Medical record updated!"
+                    );
+
+                    setEditingId(
+                        null
+                    );
+
+                } else {
+
+                    await axios.post(
+                        API,
+                        form
+                    );
+
+                    alert(
+                        "Medical record added!"
+                    );
+                }
+
+                fetchRecords();
+
+                setForm({
+
+                    patient_id: "",
+
+                    doctor_id: "",
+
+                    diagnoza: "",
+
+                    trajtimi: "",
+
+                    prescriptions: "",
+
+                    data: "",
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error saving medical record"
+                );
+            }
+        };
+
+    const handleDelete =
+        async (id) => {
+
+            const confirmDelete =
+                window.confirm(
+                    "A je e sigurt?"
+                );
+
+            if (!confirmDelete)
+                return;
+
+            try {
+
+                await axios.delete(
+                    `${API}/${id}`
+                );
+
+                alert(
+                    "Medical record deleted!"
+                );
+
+                fetchRecords();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleEdit =
+        (r) => {
+
+            setForm({
+
+                patient_id:
+                    r.patient_id,
+
+                doctor_id:
+                    r.doctor_id,
+
+                diagnoza:
+                    r.diagnoza,
+
+                trajtimi:
+                    r.trajtimi,
+
+                prescriptions:
+                    r.prescriptions,
+
+                data:
+                    r.data?.split("T")[0],
             });
 
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    const handleDelete = async (id) => {
-
-        try {
-
-            await axios.delete(
-                `${API}/${id}`
+            setEditingId(
+                r.id
             );
-
-            fetchRecords();
-
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    const handleEdit = (r) => {
-
-        setForm({
-            patient_id: r.patient_id,
-            doctor_id: r.doctor_id,
-            diagnoza: r.diagnoza,
-            trajtimi: r.trajtimi,
-            prescriptions: r.prescriptions,
-            data: r.data?.split("T")[0],
-        });
-
-        setEditingId(r.id);
-    };
+        };
 
     return (
 
         <div
             style={{
-                padding: "30px",
-                background: "#eef3f8",
-                minHeight: "100vh",
+
+                padding:
+                    "30px",
+
+                background:
+                    "#eef3f8",
+
+                minHeight:
+                    "100vh",
             }}
         >
 
             <div
                 style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "30px",
+
+                    display:
+                        "flex",
+
+                    justifyContent:
+                        "space-between",
+
+                    marginBottom:
+                        "30px",
+
+                    flexWrap:
+                        "wrap",
+
+                    gap:
+                        "15px",
                 }}
             >
 
                 <button
-                    onClick={() =>
-                        navigate("/home")
+                    onClick={
+                        handleBack
                     }
+
                     style={{
-                        background: "#1da1f2",
-                        color: "white",
-                        border: "none",
-                        padding: "16px 28px",
-                        borderRadius: "15px",
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
+
+                        background:
+                            "#1da1f2",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "16px 28px",
+
+                        borderRadius:
+                            "15px",
+
+                        fontSize:
+                            "18px",
+
+                        fontWeight:
+                            "bold",
+
+                        cursor:
+                            "pointer",
                     }}
                 >
                     Back
@@ -202,25 +357,51 @@ function MedicalRecords() {
 
             <h1
                 style={{
-                    textAlign: "center",
-                    color: "#0d4d8b",
-                    fontSize: "70px",
-                    marginBottom: "40px",
+
+                    textAlign:
+                        "center",
+
+                    color:
+                        "#0d4d8b",
+
+                    fontSize:
+                        "70px",
+
+                    marginBottom:
+                        "40px",
                 }}
             >
                 Medical Records
             </h1>
 
             <form
-                onSubmit={handleSubmit}
+                onSubmit={
+                    handleSubmit
+                }
+
                 style={{
-                    background: "white",
-                    padding: "35px",
-                    borderRadius: "25px",
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "20px",
-                    marginBottom: "40px",
+
+                    background:
+                        "white",
+
+                    padding:
+                        "35px",
+
+                    borderRadius:
+                        "25px",
+
+                    display:
+                        "grid",
+
+                    gridTemplateColumns:
+                        "repeat(auto-fit, minmax(250px, 1fr))",
+
+                    gap:
+                        "20px",
+
+                    marginBottom:
+                        "40px",
+
                     boxShadow:
                         "0 4px 15px rgba(0,0,0,0.08)",
                 }}
@@ -228,15 +409,30 @@ function MedicalRecords() {
 
                 <select
                     name="patient_id"
-                    value={form.patient_id}
-                    onChange={handleChange}
+
+                    value={
+                        form.patient_id
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 >
 
@@ -248,9 +444,12 @@ function MedicalRecords() {
 
                         <option
                             key={p.id}
+
                             value={p.id}
                         >
-                            {p.emri} {p.mbiemri}
+                            {p.emri}
+                            {" "}
+                            {p.mbiemri}
                         </option>
 
                     ))}
@@ -259,15 +458,30 @@ function MedicalRecords() {
 
                 <select
                     name="doctor_id"
-                    value={form.doctor_id}
-                    onChange={handleChange}
+
+                    value={
+                        form.doctor_id
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 >
 
@@ -279,9 +493,12 @@ function MedicalRecords() {
 
                         <option
                             key={d.id}
+
                             value={d.id}
                         >
-                            {d.emri} {d.mbiemri}
+                            {d.emri}
+                            {" "}
+                            {d.mbiemri}
                         </option>
 
                     ))}
@@ -290,78 +507,165 @@ function MedicalRecords() {
 
                 <input
                     type="text"
+
                     name="diagnoza"
-                    placeholder="Diagnoza"
-                    value={form.diagnoza}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Diagnoza"
+
+                    value={
+                        form.diagnoza
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 />
 
                 <input
                     type="text"
+
                     name="trajtimi"
-                    placeholder="Trajtimi"
-                    value={form.trajtimi}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Trajtimi"
+
+                    value={
+                        form.trajtimi
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 />
 
                 <input
                     type="text"
+
                     name="prescriptions"
-                    placeholder="Barnat"
-                    value={form.prescriptions}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Barnat"
+
+                    value={
+                        form.prescriptions
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 />
 
                 <input
                     type="date"
+
                     name="data"
-                    value={form.data}
-                    onChange={handleChange}
+
+                    value={
+                        form.data
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
+
                     style={{
-                        padding: "18px",
-                        borderRadius: "15px",
+
+                        padding:
+                            "18px",
+
+                        borderRadius:
+                            "15px",
+
                         border:
                             "1px solid #cbd5e1",
-                        fontSize: "18px",
+
+                        fontSize:
+                            "18px",
                     }}
                 />
 
                 <button
                     type="submit"
+
                     style={{
-                        background: "#1da1f2",
-                        color: "white",
-                        border: "none",
-                        padding: "15px 25px",
-                        borderRadius: "12px",
-                        fontWeight: "bold",
-                        fontSize: "18px",
-                        cursor: "pointer",
+
+                        background:
+                            "#1da1f2",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "15px 25px",
+
+                        borderRadius:
+                            "12px",
+
+                        fontWeight:
+                            "bold",
+
+                        fontSize:
+                            "18px",
+
+                        cursor:
+                            "pointer",
                     }}
                 >
 
@@ -375,9 +679,16 @@ function MedicalRecords() {
 
             <div
                 style={{
-                    background: "white",
-                    borderRadius: "25px",
-                    overflow: "hidden",
+
+                    overflowX:
+                        "auto",
+
+                    background:
+                        "white",
+
+                    borderRadius:
+                        "25px",
+
                     boxShadow:
                         "0 4px 15px rgba(0,0,0,0.08)",
                 }}
@@ -385,8 +696,15 @@ function MedicalRecords() {
 
                 <table
                     style={{
-                        width: "100%",
-                        borderCollapse: "collapse",
+
+                        width:
+                            "100%",
+
+                        borderCollapse:
+                            "collapse",
+
+                        minWidth:
+                            "1200px",
                     }}
                 >
 
@@ -394,80 +712,44 @@ function MedicalRecords() {
 
                         <tr
                             style={{
-                                background: "#1da1f2",
-                                color: "white",
+
+                                background:
+                                    "#1da1f2",
+
+                                color:
+                                    "white",
                             }}
                         >
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 ID
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Patient
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Doctor
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Diagnoza
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Trajtimi
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Barnat
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Data
                             </th>
 
-                            <th
-                                style={{
-                                    padding: "20px",
-                                    fontSize: "24px",
-                                }}
-                            >
+                            <th style={{ padding: "20px" }}>
                                 Actions
                             </th>
 
@@ -481,88 +763,42 @@ function MedicalRecords() {
 
                             <tr
                                 key={r.id}
+
                                 style={{
+
                                     textAlign:
                                         "center",
+
                                     borderBottom:
                                         "1px solid #e2e8f0",
                                 }}
                             >
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.id}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.patient_name}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.doctor_name}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.diagnoza}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.trajtimi}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {r.prescriptions}
                                 </td>
 
-                                <td
-                                    style={{
-                                        padding:
-                                            "25px",
-                                        fontSize:
-                                            "22px",
-                                    }}
-                                >
+                                <td style={{ padding: "25px" }}>
                                     {new Date(
                                         r.data
                                     ).toLocaleDateString()}
@@ -577,12 +813,18 @@ function MedicalRecords() {
 
                                     <div
                                         style={{
+
                                             display:
                                                 "flex",
+
                                             gap:
                                                 "10px",
+
                                             justifyContent:
                                                 "center",
+
+                                            flexWrap:
+                                                "wrap",
                                         }}
                                     >
 
@@ -592,19 +834,27 @@ function MedicalRecords() {
                                                     r
                                                 )
                                             }
+
                                             style={{
+
                                                 background:
                                                     "#1da1f2",
+
                                                 color:
                                                     "white",
+
                                                 border:
                                                     "none",
+
                                                 padding:
                                                     "12px 22px",
+
                                                 borderRadius:
                                                     "12px",
+
                                                 fontWeight:
                                                     "bold",
+
                                                 cursor:
                                                     "pointer",
                                             }}
@@ -618,19 +868,27 @@ function MedicalRecords() {
                                                     r.id
                                                 )
                                             }
+
                                             style={{
+
                                                 background:
                                                     "crimson",
+
                                                 color:
                                                     "white",
+
                                                 border:
                                                     "none",
+
                                                 padding:
                                                     "12px 22px",
+
                                                 borderRadius:
                                                     "12px",
+
                                                 fontWeight:
                                                     "bold",
+
                                                 cursor:
                                                     "pointer",
                                             }}

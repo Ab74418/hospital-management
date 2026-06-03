@@ -9,6 +9,34 @@ export default function Rooms() {
     const navigate =
         useNavigate();
 
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
     const [rooms,
         setRooms] =
         useState([]);
@@ -148,55 +176,87 @@ export default function Rooms() {
 
             e.preventDefault();
 
-            const url =
+            try {
 
-                editingId
+                const url =
 
-                    ?
+                    editingId
 
-                    `http://localhost:5000/api/rooms/${editingId}`
+                        ?
 
-                    :
+                        `http://localhost:5000/api/rooms/${editingId}`
 
-                    "http://localhost:5000/api/rooms";
+                        :
 
-            const method =
-                editingId
-                    ? "PUT"
-                    : "POST";
+                        "http://localhost:5000/api/rooms";
 
-            await fetch(url, {
+                const method =
+                    editingId
+                        ? "PUT"
+                        : "POST";
 
-                method,
+                const res =
+                    await fetch(url, {
 
-                headers: {
+                        method,
 
-                    "Content-Type":
-                        "application/json"
-                },
+                        headers: {
 
-                body:
-                    JSON.stringify(
-                        formData
-                    )
-            });
+                            "Content-Type":
+                                "application/json"
+                        },
 
-            fetchRooms();
+                        body:
+                            JSON.stringify(
+                                formData
+                            )
+                    });
 
-            setEditingId(null);
+                if (!res.ok) {
 
-            setFormData({
+                    throw new Error(
+                        "Gabim gjatë ruajtjes"
+                    );
+                }
 
-                numri_dhomes: "",
+                alert(
 
-                department_id: "",
+                    editingId
 
-                roomtype_id: "",
+                        ?
 
-                statusi: "",
+                        "Room updated!"
 
-                kapaciteti: ""
-            });
+                        :
+
+                        "Room added!"
+                );
+
+                fetchRooms();
+
+                setEditingId(null);
+
+                setFormData({
+
+                    numri_dhomes: "",
+
+                    department_id: "",
+
+                    roomtype_id: "",
+
+                    statusi: "",
+
+                    kapaciteti: ""
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error saving room"
+                );
+            }
         };
 
     const handleDelete =
@@ -210,15 +270,26 @@ export default function Rooms() {
             if (!confirmDelete)
                 return;
 
-            await fetch(
-                `http://localhost:5000/api/rooms/${id}`,
-                {
-                    method:
-                        "DELETE"
-                }
-            );
+            try {
 
-            fetchRooms();
+                await fetch(
+                    `http://localhost:5000/api/rooms/${id}`,
+                    {
+                        method:
+                            "DELETE"
+                    }
+                );
+
+                alert(
+                    "Room deleted!"
+                );
+
+                fetchRooms();
+
+            } catch (err) {
+
+                console.log(err);
+            }
         };
 
     const freeRooms =
@@ -242,8 +313,8 @@ export default function Rooms() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/home")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -340,25 +411,33 @@ export default function Rooms() {
 
                 <input
                     type="text"
+
                     name="numri_dhomes"
+
                     placeholder="Room Number"
+
                     value={
                         formData.numri_dhomes
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <select
                     name="department_id"
+
                     value={
                         formData.department_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -371,6 +450,7 @@ export default function Rooms() {
 
                             <option
                                 key={dep.id}
+
                                 value={dep.id}
                             >
 
@@ -384,12 +464,15 @@ export default function Rooms() {
 
                 <select
                     name="roomtype_id"
+
                     value={
                         formData.roomtype_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -402,6 +485,7 @@ export default function Rooms() {
 
                             <option
                                 key={type.id}
+
                                 value={type.id}
                             >
 
@@ -415,12 +499,15 @@ export default function Rooms() {
 
                 <select
                     name="statusi"
+
                     value={
                         formData.statusi
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -444,14 +531,19 @@ export default function Rooms() {
 
                 <input
                     type="number"
+
                     name="kapaciteti"
+
                     placeholder="Capacity"
+
                     value={
                         formData.kapaciteti
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 

@@ -9,7 +9,36 @@ export default function Nurses() {
     const navigate =
         useNavigate();
 
-    const [nurses, setNurses] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [nurses,
+        setNurses] =
         useState([]);
 
     const [departments,
@@ -20,7 +49,8 @@ export default function Nurses() {
         setEditId] =
         useState(null);
 
-    const [form, setForm] =
+    const [form,
+        setForm] =
         useState({
 
             emri: "",
@@ -150,6 +180,19 @@ export default function Nurses() {
                     );
                 }
 
+                alert(
+
+                    editId
+
+                        ?
+
+                        "Nurse updated!"
+
+                        :
+
+                        "Nurse added!"
+                );
+
                 setForm({
 
                     emri: "",
@@ -169,6 +212,10 @@ export default function Nurses() {
             } catch (err) {
 
                 console.log(err);
+
+                alert(
+                    "Error saving nurse"
+                );
             }
         };
 
@@ -191,6 +238,10 @@ export default function Nurses() {
                         method:
                             "DELETE",
                     }
+                );
+
+                alert(
+                    "Nurse deleted!"
                 );
 
                 fetchNurses();
@@ -230,7 +281,9 @@ export default function Nurses() {
 
             <div
                 style={{
-                    display: "flex",
+
+                    display:
+                        "flex",
 
                     justifyContent:
                         "space-between",
@@ -240,13 +293,46 @@ export default function Nurses() {
 
                     marginBottom:
                         "20px",
+
+                    flexWrap:
+                        "wrap",
+
+                    gap:
+                        "15px",
                 }}
             >
 
                 <button
-                    onClick={() =>
-                        navigate("/home")
+                    onClick={
+                        handleBack
                     }
+
+                    style={{
+
+                        background:
+                            "#1ea5e7",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "14px 24px",
+
+                        borderRadius:
+                            "14px",
+
+                        fontSize:
+                            "18px",
+
+                        fontWeight:
+                            "bold",
+
+                        cursor:
+                            "pointer",
+                    }}
                 >
                     Back
                 </button>
@@ -269,30 +355,51 @@ export default function Nurses() {
 
                 <input
                     type="text"
+
                     name="emri"
+
                     placeholder="Emri"
-                    value={form.emri}
-                    onChange={handleChange}
+
+                    value={
+                        form.emri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="mbiemri"
+
                     placeholder="Mbiemri"
-                    value={form.mbiemri}
-                    onChange={handleChange}
+
+                    value={
+                        form.mbiemri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <select
                     name="department_id"
+
                     value={
                         form.department_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -305,6 +412,7 @@ export default function Nurses() {
 
                             <option
                                 key={d.id}
+
                                 value={d.id}
                             >
 
@@ -318,10 +426,19 @@ export default function Nurses() {
 
                 <input
                     type="text"
+
                     name="turni"
+
                     placeholder="Turni"
-                    value={form.turni}
-                    onChange={handleChange}
+
+                    value={
+                        form.turni
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
@@ -350,6 +467,7 @@ export default function Nurses() {
 
                         <div
                             className="card"
+
                             key={nurse.id}
                         >
 

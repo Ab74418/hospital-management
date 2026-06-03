@@ -1,11 +1,44 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function DoctorAppointments() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [appointments, setAppointments] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [appointments,
+        setAppointments] =
         useState([]);
 
     const doctorId = 1;
@@ -15,9 +48,17 @@ export default function DoctorAppointments() {
         fetch(
             `http://localhost:5000/api/appointments/doctor/${doctorId}`
         )
-            .then((res) => res.json())
-            .then((data) => setAppointments(data))
-            .catch((err) => console.log(err));
+            .then((res) =>
+                res.json()
+            )
+
+            .then((data) =>
+                setAppointments(data)
+            )
+
+            .catch((err) =>
+                console.log(err)
+            );
 
     }, []);
 
@@ -26,8 +67,8 @@ export default function DoctorAppointments() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/doctordashboard")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -81,6 +122,7 @@ export default function DoctorAppointments() {
 
                     <div
                         className="card"
+
                         key={app.id}
                     >
 

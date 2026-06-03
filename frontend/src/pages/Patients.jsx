@@ -1,195 +1,404 @@
 import { useEffect, useState } from "react";
+
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 function Patients() {
 
-    const [patients, setPatients] = useState([]);
-    const [doctors, setDoctors] = useState([]);
+    const [patients,
+        setPatients] =
+        useState([]);
 
-    const [form, setForm] = useState({
-        emri: "",
-        mbiemri: "",
-        data_lindjes: "",
-        gjinia: "",
-        telefoni: "",
-        adresa: "",
-        grupa_gjakut: "",
-        doctor_id: "",
-    });
+    const [doctors,
+        setDoctors] =
+        useState([]);
 
-    const [editingId, setEditingId] = useState(null);
+    const role =
+        localStorage.getItem("role");
 
-    const navigate = useNavigate();
+    const [form,
+        setForm] =
+        useState({
 
-    const fetchPatients = async () => {
+            emri: "",
 
-        try {
+            mbiemri: "",
 
-            const res = await axios.get(
-                "http://localhost:5000/api/patients"
-            );
+            data_lindjes: "",
 
-            setPatients(res.data);
+            gjinia: "",
 
-        } catch (err) {
+            telefoni: "",
 
-            console.log(err);
+            adresa: "",
+
+            grupa_gjakut: "",
+
+            doctor_id: "",
+        });
+
+    const [editingId,
+        setEditingId] =
+        useState(null);
+
+    const navigate =
+        useNavigate();
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
         }
     };
 
-    const fetchDoctors = async () => {
+    const fetchPatients =
+        async () => {
 
-        try {
+            try {
 
-            const res = await axios.get(
-                "http://localhost:5000/api/doctors"
-            );
+                const res =
+                    await axios.get(
+                        "http://localhost:5000/api/patients"
+                    );
 
-            setDoctors(res.data);
+                setPatients(
+                    res.data
+                );
 
-        } catch (err) {
+            } catch (err) {
 
-            console.log(err);
-        }
-    };
+                console.log(err);
+            }
+        };
+
+    const fetchDoctors =
+        async () => {
+
+            try {
+
+                const res =
+                    await axios.get(
+                        "http://localhost:5000/api/doctors"
+                    );
+
+                setDoctors(
+                    res.data
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
 
     useEffect(() => {
 
         fetchPatients();
+
         fetchDoctors();
 
     }, []);
 
-    const handleChange = (e) => {
-
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-
-        try {
-
-            if (editingId) {
-
-                await axios.put(
-                    `http://localhost:5000/api/patients/${editingId}`,
-                    form
-                );
-
-                setEditingId(null);
-
-            } else {
-
-                await axios.post(
-                    "http://localhost:5000/api/patients",
-                    form
-                );
-            }
-
-            fetchPatients();
+    const handleChange =
+        (e) => {
 
             setForm({
-                emri: "",
-                mbiemri: "",
-                data_lindjes: "",
-                gjinia: "",
-                telefoni: "",
-                adresa: "",
-                grupa_gjakut: "",
-                doctor_id: "",
+
+                ...form,
+
+                [e.target.name]:
+                    e.target.value,
             });
+        };
 
-        } catch (err) {
+    const handleSubmit =
+        async (e) => {
 
-            console.log(err);
-        }
-    };
+            e.preventDefault();
 
-    const filterByDoctor = async (doctorId) => {
+            try {
 
-        try {
+                if (editingId) {
 
-            if (!doctorId) {
+                    await axios.put(
+                        `http://localhost:5000/api/patients/${editingId}`,
+                        form
+                    );
+
+                    alert(
+                        "Patient updated!"
+                    );
+
+                    setEditingId(
+                        null
+                    );
+
+                } else {
+
+                    await axios.post(
+                        "http://localhost:5000/api/patients",
+                        form
+                    );
+
+                    alert(
+                        "Patient added!"
+                    );
+                }
 
                 fetchPatients();
-                return;
+
+                setForm({
+
+                    emri: "",
+
+                    mbiemri: "",
+
+                    data_lindjes: "",
+
+                    gjinia: "",
+
+                    telefoni: "",
+
+                    adresa: "",
+
+                    grupa_gjakut: "",
+
+                    doctor_id: "",
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error saving patient"
+                );
             }
+        };
 
-            const res = await axios.get(
-                `http://localhost:5000/api/patients/doctor/${doctorId}`
+    const filterByDoctor =
+        async (doctorId) => {
+
+            try {
+
+                if (!doctorId) {
+
+                    fetchPatients();
+
+                    return;
+                }
+
+                const res =
+                    await axios.get(
+                        `http://localhost:5000/api/patients/doctor/${doctorId}`
+                    );
+
+                setPatients(
+                    res.data
+                );
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleDelete =
+        async (id) => {
+
+            const confirmDelete =
+                window.confirm(
+                    "A je e sigurt?"
+                );
+
+            if (!confirmDelete)
+                return;
+
+            try {
+
+                await axios.delete(
+                    `http://localhost:5000/api/patients/${id}`
+                );
+
+                alert(
+                    "Patient deleted!"
+                );
+
+                fetchPatients();
+
+            } catch (err) {
+
+                console.log(err);
+            }
+        };
+
+    const handleEdit =
+        (patient) => {
+
+            setEditingId(
+                patient.id
             );
 
-            setPatients(res.data);
+            setForm({
 
-        } catch (err) {
+                emri:
+                    patient.emri || "",
 
-            console.log(err);
-        }
-    };
+                mbiemri:
+                    patient.mbiemri || "",
 
-    const handleDelete = async (id) => {
+                data_lindjes:
+                    patient.data_lindjes?.split("T")[0] || "",
 
-        try {
+                gjinia:
+                    patient.gjinia || "",
 
-            await axios.delete(
-                `http://localhost:5000/api/patients/${id}`
+                telefoni:
+                    patient.telefoni || "",
+
+                adresa:
+                    patient.adresa || "",
+
+                grupa_gjakut:
+                    patient.grupa_gjakut || "",
+
+                doctor_id:
+                    patient.doctor_id || "",
+            });
+        };
+
+    const handleLogout =
+        () => {
+
+            localStorage.removeItem(
+                "token"
             );
 
-            fetchPatients();
+            localStorage.removeItem(
+                "role"
+            );
 
-        } catch (err) {
-
-            console.log(err);
-        }
-    };
-
-    const handleEdit = (patient) => {
-
-        setEditingId(patient.id);
-
-        setForm({
-            emri: patient.emri || "",
-            mbiemri: patient.mbiemri || "",
-            data_lindjes:
-                patient.data_lindjes?.split("T")[0] || "",
-            gjinia: patient.gjinia || "",
-            telefoni: patient.telefoni || "",
-            adresa: patient.adresa || "",
-            grupa_gjakut: patient.grupa_gjakut || "",
-            doctor_id: patient.doctor_id || "",
-        });
-    };
-
-    const handleLogout = () => {
-
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-
-        navigate("/login");
-    };
+            navigate("/login");
+        };
 
     return (
 
-        <div style={{ padding: "20px" }}>
+        <div
+            style={{
+                padding:
+                    "20px",
+            }}
+        >
 
             <div
                 style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "20px",
+
+                    display:
+                        "flex",
+
+                    justifyContent:
+                        "space-between",
+
+                    alignItems:
+                        "center",
+
+                    marginBottom:
+                        "20px",
+
+                    flexWrap:
+                        "wrap",
+
+                    gap:
+                        "15px",
                 }}
             >
 
-                <h1>Patients</h1>
+                <button
+                    onClick={
+                        handleBack
+                    }
 
-                <button onClick={handleLogout}>
+                    style={{
+
+                        background:
+                            "#1ea5e7",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "12px 22px",
+
+                        borderRadius:
+                            "12px",
+
+                        cursor:
+                            "pointer",
+
+                        fontWeight:
+                            "bold",
+                    }}
+                >
+                    Back
+                </button>
+
+                <h1>
+                    Patients
+                </h1>
+
+                <button
+                    onClick={
+                        handleLogout
+                    }
+
+                    style={{
+
+                        background:
+                            "crimson",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "12px 22px",
+
+                        borderRadius:
+                            "12px",
+
+                        cursor:
+                            "pointer",
+
+                        fontWeight:
+                            "bold",
+                    }}
+                >
                     Logout
                 </button>
 
@@ -197,75 +406,147 @@ function Patients() {
 
             <form
                 className="patient-form"
-                onSubmit={handleSubmit}
+
+                onSubmit={
+                    handleSubmit
+                }
             >
 
                 <input
                     type="text"
+
                     name="emri"
+
                     placeholder="Emri"
-                    value={form.emri}
-                    onChange={handleChange}
+
+                    value={
+                        form.emri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="mbiemri"
+
                     placeholder="Mbiemri"
-                    value={form.mbiemri}
-                    onChange={handleChange}
+
+                    value={
+                        form.mbiemri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="date"
+
                     name="data_lindjes"
-                    value={form.data_lindjes}
-                    onChange={handleChange}
+
+                    value={
+                        form.data_lindjes
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="gjinia"
+
                     placeholder="Gjinia"
-                    value={form.gjinia}
-                    onChange={handleChange}
+
+                    value={
+                        form.gjinia
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="telefoni"
+
                     placeholder="Telefoni"
-                    value={form.telefoni}
-                    onChange={handleChange}
+
+                    value={
+                        form.telefoni
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="adresa"
+
                     placeholder="Adresa"
-                    value={form.adresa}
-                    onChange={handleChange}
+
+                    value={
+                        form.adresa
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="grupa_gjakut"
-                    placeholder="Grupa e gjakut"
-                    value={form.grupa_gjakut}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Grupa e gjakut"
+
+                    value={
+                        form.grupa_gjakut
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <select
                     name="doctor_id"
-                    value={form.doctor_id}
-                    onChange={handleChange}
+
+                    value={
+                        form.doctor_id
+                    }
+
+                    onChange={
+                        handleChange
+                    }
                 >
 
                     <option value="">
@@ -276,9 +557,12 @@ function Patients() {
 
                         <option
                             key={doctor.id}
+
                             value={doctor.id}
                         >
-                            {doctor.emri} {doctor.mbiemri}
+                            {doctor.emri}
+                            {" "}
+                            {doctor.mbiemri}
                         </option>
 
                     ))}
@@ -295,7 +579,12 @@ function Patients() {
 
             </form>
 
-            <div style={{ margin: "20px 0" }}>
+            <div
+                style={{
+                    margin:
+                        "20px 0",
+                }}
+            >
 
                 <label>
                     Filter by Doctor:
@@ -303,7 +592,9 @@ function Patients() {
 
                 <select
                     onChange={(e) =>
-                        filterByDoctor(e.target.value)
+                        filterByDoctor(
+                            e.target.value
+                        )
                     }
                 >
 
@@ -315,9 +606,12 @@ function Patients() {
 
                         <option
                             key={doctor.id}
+
                             value={doctor.id}
                         >
-                            {doctor.emri} {doctor.mbiemri}
+                            {doctor.emri}
+                            {" "}
+                            {doctor.mbiemri}
                         </option>
 
                     ))}
@@ -331,11 +625,17 @@ function Patients() {
                 <thead>
 
                     <tr>
+
                         <th>ID</th>
+
                         <th>Emri</th>
+
                         <th>Mbiemri</th>
+
                         <th>Doctor</th>
+
                         <th>Actions</th>
+
                     </tr>
 
                 </thead>
@@ -346,26 +646,46 @@ function Patients() {
 
                         <tr key={p.id}>
 
-                            <td>{p.id}</td>
+                            <td>
+                                {p.id}
+                            </td>
 
-                            <td>{p.emri}</td>
+                            <td>
+                                {p.emri}
+                            </td>
 
-                            <td>{p.mbiemri}</td>
+                            <td>
+                                {p.mbiemri}
+                            </td>
 
                             <td>
 
                                 {p.doctor_emri
-                                    ? `${p.doctor_emri} ${p.doctor_mbiemri}`
-                                    : "No Doctor"}
+
+                                    ?
+
+                                    `${p.doctor_emri} ${p.doctor_mbiemri}`
+
+                                    :
+
+                                    "No Doctor"}
 
                             </td>
 
                             <td
                                 style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    flexWrap: "wrap",
-                                    justifyContent: "center",
+
+                                    display:
+                                        "flex",
+
+                                    gap:
+                                        "10px",
+
+                                    flexWrap:
+                                        "wrap",
+
+                                    justifyContent:
+                                        "center",
                                 }}
                             >
 

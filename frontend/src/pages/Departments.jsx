@@ -9,6 +9,34 @@ export default function Departments() {
     const navigate =
         useNavigate();
 
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
     const [departments,
         setDepartments] =
         useState([]);
@@ -118,6 +146,19 @@ export default function Departments() {
                     );
                 }
 
+                alert(
+
+                    editId
+
+                        ?
+
+                        "Department updated!"
+
+                        :
+
+                        "Department added!"
+                );
+
                 setForm({
 
                     emri: "",
@@ -134,6 +175,10 @@ export default function Departments() {
             } catch (err) {
 
                 console.log(err);
+
+                alert(
+                    "Error saving department"
+                );
             }
         };
 
@@ -156,6 +201,10 @@ export default function Departments() {
                         method:
                             "DELETE",
                     }
+                );
+
+                alert(
+                    "Department deleted!"
                 );
 
                 fetchDepartments();
@@ -192,7 +241,9 @@ export default function Departments() {
 
             <div
                 style={{
-                    display: "flex",
+
+                    display:
+                        "flex",
 
                     justifyContent:
                         "space-between",
@@ -202,13 +253,46 @@ export default function Departments() {
 
                     marginBottom:
                         "20px",
+
+                    flexWrap:
+                        "wrap",
+
+                    gap:
+                        "15px",
                 }}
             >
 
                 <button
-                    onClick={() =>
-                        navigate("/home")
+                    onClick={
+                        handleBack
                     }
+
+                    style={{
+
+                        background:
+                            "#1ea5e7",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "14px 24px",
+
+                        borderRadius:
+                            "14px",
+
+                        fontSize:
+                            "18px",
+
+                        fontWeight:
+                            "bold",
+
+                        cursor:
+                            "pointer",
+                    }}
                 >
                     Back
                 </button>
@@ -231,32 +315,58 @@ export default function Departments() {
 
                 <input
                     type="text"
+
                     name="emri"
-                    placeholder="Emri i department"
-                    value={form.emri}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Emri i department"
+
+                    value={
+                        form.emri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="pershkrimi"
-                    placeholder="Pershkrimi"
+
+                    placeholder=
+                    "Pershkrimi"
+
                     value={
                         form.pershkrimi
                     }
-                    onChange={handleChange}
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="lokacioni"
-                    placeholder="Salla / Lokacioni"
+
+                    placeholder=
+                    "Salla / Lokacioni"
+
                     value={
                         form.lokacioni
                     }
-                    onChange={handleChange}
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
@@ -285,6 +395,7 @@ export default function Departments() {
 
                         <div
                             className="card"
+
                             key={
                                 department.id
                             }

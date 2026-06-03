@@ -9,6 +9,34 @@ export default function Payments() {
     const navigate =
         useNavigate();
 
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
     const [payments,
         setPayments] =
         useState([]);
@@ -146,11 +174,21 @@ export default function Payments() {
                     resetForm();
 
                     fetchPayments();
+
+                } else {
+
+                    alert(
+                        "Gabim gjatë ruajtjes"
+                    );
                 }
 
             } catch (error) {
 
                 console.error(error);
+
+                alert(
+                    "Error saving payment"
+                );
             }
         };
 
@@ -217,8 +255,8 @@ export default function Payments() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/home")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -271,53 +309,73 @@ export default function Payments() {
 
                 <input
                     type="number"
+
                     name="invoice_id"
+
                     placeholder="Invoice ID"
+
                     value={
                         formData.invoice_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="number"
+
                     name="amount"
+
                     placeholder="Amount"
+
                     value={
                         formData.amount
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="payment_method"
+
                     placeholder="Payment Method"
+
                     value={
                         formData.payment_method
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="statusi"
+
                     placeholder="Statusi"
+
                     value={
                         formData.statusi
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 />
 
@@ -349,6 +407,12 @@ export default function Payments() {
                         style={{
                             background:
                                 "gray",
+
+                            color:
+                                "white",
+
+                            marginLeft:
+                                "10px",
                         }}
                     >
                         Cancel
@@ -373,6 +437,7 @@ export default function Payments() {
 
                         <div
                             className="card"
+
                             key={p.id}
                         >
 

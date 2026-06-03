@@ -1,12 +1,59 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 function UserDashboard() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [appointments, setAppointments] =
+    const [appointments,
+        setAppointments] =
         useState([]);
+
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const handleLogout =
+        () => {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            localStorage.removeItem(
+                "role"
+            );
+
+            navigate("/login");
+        };
 
     const userId = 1;
 
@@ -15,9 +62,17 @@ function UserDashboard() {
         fetch(
             `http://localhost:5000/api/appointments/my/${userId}`
         )
-            .then((res) => res.json())
-            .then((data) => setAppointments(data))
-            .catch((err) => console.log(err));
+            .then((res) =>
+                res.json()
+            )
+
+            .then((data) =>
+                setAppointments(data)
+            )
+
+            .catch((err) =>
+                console.log(err)
+            );
 
     }, []);
 
@@ -27,6 +82,44 @@ function UserDashboard() {
     return (
 
         <div className="page-card">
+
+            <button
+                onClick={
+                    handleBack
+                }
+
+                style={{
+
+                    background:
+                        "#1ea5e7",
+
+                    color:
+                        "white",
+
+                    border:
+                        "none",
+
+                    padding:
+                        "14px 24px",
+
+                    borderRadius:
+                        "14px",
+
+                    fontSize:
+                        "18px",
+
+                    fontWeight:
+                        "bold",
+
+                    cursor:
+                        "pointer",
+
+                    marginBottom:
+                        "20px",
+                }}
+            >
+                Back
+            </button>
 
             <h1>
                 User Dashboard
@@ -67,9 +160,18 @@ function UserDashboard() {
 
             <div
                 style={{
-                    display: "flex",
-                    gap: "15px",
-                    marginTop: "20px",
+
+                    display:
+                        "flex",
+
+                    gap:
+                        "15px",
+
+                    marginTop:
+                        "20px",
+
+                    flexWrap:
+                        "wrap",
                 }}
             >
 
@@ -83,11 +185,39 @@ function UserDashboard() {
 
                 <button
                     onClick={() =>
-                        navigate("/login")
+                        navigate("/patients")
+                    }
+                >
+                    Patients
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/medicalrecords")
+                    }
+                >
+                    Medical Records
+                </button>
+
+                <button
+                    onClick={() =>
+                        navigate("/prescriptions")
+                    }
+                >
+                    Prescriptions
+                </button>
+
+                <button
+                    onClick={
+                        handleLogout
                     }
 
                     style={{
-                        background: "crimson",
+                        background:
+                            "crimson",
+
+                        color:
+                            "white",
                     }}
                 >
                     Logout

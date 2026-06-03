@@ -9,6 +9,34 @@ export default function RoomTypes() {
     const navigate =
         useNavigate();
 
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
     const [roomtypes,
         setRoomTypes] =
         useState([]);
@@ -67,50 +95,82 @@ export default function RoomTypes() {
 
             e.preventDefault();
 
-            const url =
+            try {
 
-                editId
+                const url =
 
-                    ?
+                    editId
 
-                    `http://localhost:5000/api/roomtypes/${editId}`
+                        ?
 
-                    :
+                        `http://localhost:5000/api/roomtypes/${editId}`
 
-                    "http://localhost:5000/api/roomtypes";
+                        :
 
-            const method =
+                        "http://localhost:5000/api/roomtypes";
 
-                editId
-                    ? "PUT"
-                    : "POST";
+                const method =
 
-            await fetch(url, {
+                    editId
+                        ? "PUT"
+                        : "POST";
 
-                method,
+                const res =
+                    await fetch(url, {
 
-                headers: {
+                        method,
 
-                    "Content-Type":
-                        "application/json"
-                },
+                        headers: {
 
-                body:
-                    JSON.stringify(
-                        form
-                    )
-            });
+                            "Content-Type":
+                                "application/json"
+                        },
 
-            fetchRoomTypes();
+                        body:
+                            JSON.stringify(
+                                form
+                            )
+                    });
 
-            setEditId(null);
+                if (!res.ok) {
 
-            setForm({
+                    throw new Error(
+                        "Gabim gjatë ruajtjes"
+                    );
+                }
 
-                emri: "",
+                alert(
 
-                cmimi: ""
-            });
+                    editId
+
+                        ?
+
+                        "Room Type updated!"
+
+                        :
+
+                        "Room Type added!"
+                );
+
+                fetchRoomTypes();
+
+                setEditId(null);
+
+                setForm({
+
+                    emri: "",
+
+                    cmimi: ""
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+                alert(
+                    "Error saving room type"
+                );
+            }
         };
 
     const handleEdit =
@@ -139,15 +199,26 @@ export default function RoomTypes() {
             if (!confirmDelete)
                 return;
 
-            await fetch(
-                `http://localhost:5000/api/roomtypes/${id}`,
-                {
-                    method:
-                        "DELETE"
-                }
-            );
+            try {
 
-            fetchRoomTypes();
+                await fetch(
+                    `http://localhost:5000/api/roomtypes/${id}`,
+                    {
+                        method:
+                            "DELETE"
+                    }
+                );
+
+                alert(
+                    "Room Type deleted!"
+                );
+
+                fetchRoomTypes();
+
+            } catch (err) {
+
+                console.log(err);
+            }
         };
 
     return (
@@ -155,8 +226,8 @@ export default function RoomTypes() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/home")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -213,19 +284,33 @@ export default function RoomTypes() {
 
                 <input
                     type="text"
+
                     name="emri"
+
                     placeholder="Room Type"
+
                     value={form.emri}
-                    onChange={handleChange}
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="number"
+
                     name="cmimi"
+
                     placeholder="Price"
+
                     value={form.cmimi}
-                    onChange={handleChange}
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 

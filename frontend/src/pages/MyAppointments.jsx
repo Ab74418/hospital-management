@@ -1,11 +1,44 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import {
+    useNavigate
+} from "react-router-dom";
 
 export default function MyAppointments() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const [appointments, setAppointments] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [appointments,
+        setAppointments] =
         useState([]);
 
     const userId = 1;
@@ -15,9 +48,16 @@ export default function MyAppointments() {
         fetch(
             `http://localhost:5000/api/appointments/my/${userId}`
         )
-            .then((res) => res.json())
-            .then((data) => setAppointments(data))
-            .catch((err) => console.log(err));
+            .then((res) =>
+                res.json()
+            )
+
+            .then((data) =>
+                setAppointments(data)
+            )
+
+            .catch((err) =>
+                console.log(err));
 
     }, []);
 
@@ -26,8 +66,8 @@ export default function MyAppointments() {
         <div className="page-card">
 
             <button
-                onClick={() =>
-                    navigate("/userdashboard")
+                onClick={
+                    handleBack
                 }
 
                 style={{
@@ -68,6 +108,14 @@ export default function MyAppointments() {
             </h1>
 
             <div className="cards">
+
+                {appointments.length === 0 && (
+
+                    <p>
+                        No appointments found.
+                    </p>
+
+                )}
 
                 {appointments.map((app) => (
 

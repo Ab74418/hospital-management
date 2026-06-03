@@ -6,24 +6,61 @@ import {
 
 function Doctors() {
 
-    const [doctors, setDoctors] =
+    const [doctors,
+        setDoctors] =
         useState([]);
 
-    const [departments, setDepartments] =
+    const [departments,
+        setDepartments] =
         useState([]);
 
-    const [editId, setEditId] =
+    const [editId,
+        setEditId] =
         useState(null);
 
     const navigate =
         useNavigate();
 
-    const [form, setForm] =
+    const role =
+        localStorage.getItem("role");
+
+    const handleBack = () => {
+
+        switch (role) {
+
+            case "admin":
+                navigate("/home");
+                break;
+
+            case "doctor":
+                navigate("/doctor");
+                break;
+
+            case "receptionist":
+                navigate("/receptionist");
+                break;
+
+            case "user":
+                navigate("/user");
+                break;
+
+            default:
+                navigate("/");
+        }
+    };
+
+    const [form,
+        setForm] =
         useState({
+
             emri: "",
+
             mbiemri: "",
+
             specializimi: "",
+
             telefoni: "",
+
             department_id: "",
         });
 
@@ -214,6 +251,10 @@ function Doctors() {
             } catch (err) {
 
                 console.log(err);
+
+                alert(
+                    "Error saving doctor"
+                );
             }
         };
 
@@ -236,6 +277,10 @@ function Doctors() {
                         method:
                             "DELETE",
                     }
+                );
+
+                alert(
+                    "Doctor deleted!"
                 );
 
                 fetchDoctors();
@@ -278,7 +323,9 @@ function Doctors() {
 
             <div
                 style={{
-                    display: "flex",
+
+                    display:
+                        "flex",
 
                     justifyContent:
                         "space-between",
@@ -288,13 +335,46 @@ function Doctors() {
 
                     marginBottom:
                         "20px",
+
+                    flexWrap:
+                        "wrap",
+
+                    gap:
+                        "15px",
                 }}
             >
 
                 <button
-                    onClick={() =>
-                        navigate("/home")
+                    onClick={
+                        handleBack
                     }
+
+                    style={{
+
+                        background:
+                            "#1ea5e7",
+
+                        color:
+                            "white",
+
+                        border:
+                            "none",
+
+                        padding:
+                            "14px 24px",
+
+                        borderRadius:
+                            "14px",
+
+                        fontSize:
+                            "18px",
+
+                        fontWeight:
+                            "bold",
+
+                        cursor:
+                            "pointer",
+                    }}
                 >
                     Back
                 </button>
@@ -317,50 +397,89 @@ function Doctors() {
 
                 <input
                     type="text"
+
                     name="emri"
+
                     placeholder="Emri"
-                    value={form.emri}
-                    onChange={handleChange}
+
+                    value={
+                        form.emri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="mbiemri"
+
                     placeholder="Mbiemri"
-                    value={form.mbiemri}
-                    onChange={handleChange}
+
+                    value={
+                        form.mbiemri
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="specializimi"
-                    placeholder="Specializimi"
+
+                    placeholder=
+                    "Specializimi"
+
                     value={
                         form.specializimi
                     }
-                    onChange={handleChange}
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <input
                     type="text"
+
                     name="telefoni"
-                    placeholder="Telefoni"
-                    value={form.telefoni}
-                    onChange={handleChange}
+
+                    placeholder=
+                    "Telefoni"
+
+                    value={
+                        form.telefoni
+                    }
+
+                    onChange={
+                        handleChange
+                    }
+
                     required
                 />
 
                 <select
                     name="department_id"
+
                     value={
                         form.department_id
                     }
+
                     onChange={
                         handleChange
                     }
+
                     required
                 >
 
@@ -373,6 +492,7 @@ function Doctors() {
 
                             <option
                                 key={d.id}
+
                                 value={d.id}
                             >
 
@@ -411,6 +531,7 @@ function Doctors() {
 
                             <div
                                 className="card"
+
                                 key={doctor.id}
                             >
 
