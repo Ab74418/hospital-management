@@ -4,8 +4,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-
 import DoctorDashboard from "./pages/DoctorDashboard";
 import DoctorAppointments from "./pages/DoctorAppointments";
 import ReceptionistDashboard from "./pages/ReceptionistDashboard";
@@ -28,6 +26,8 @@ import Specializations from "./pages/Specializations";
 import DoctorSpecializations from "./pages/DoctorSpecializations";
 import Vitals from "./pages/Vitals";
 import MyAppointments from "./pages/MyAppointments";
+import Admissions from "./pages/Admissions";
+import Invoices from "./pages/Invoices";
 
 
 
@@ -225,6 +225,16 @@ function App() {
                         <UserDashboard />
                     </ProtectedRoute>
                 }
+            />
+
+            <Route
+                path="/admissions"
+                element={<Admissions />}
+            />
+
+            <Route
+                path="/invoices"
+                element={<Invoices />}
             />
 
             <Route
